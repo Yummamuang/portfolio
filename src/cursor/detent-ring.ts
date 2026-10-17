@@ -23,7 +23,7 @@ interface DetentRingOptions {
 const FREE_SIZE = 24
 const OUTSET = 4
 const PILL_RADIUS = 999
-const CONTROL_SELECTOR = 'a[href], button, [role="slider"]'
+const CONTROL_SELECTOR = 'a[href], button'
 const DARK_SURFACE_SELECTOR = '.status-strip'
 
 export function freeBox(x: number, y: number): RingBox {
@@ -51,12 +51,25 @@ function cornerRadius(element: Element): number {
   return Number.isNaN(value) ? 0 : value
 }
 
+function boxUnderPointer(control: Element, clientX: number, clientY: number): Box {
+  const lines = Array.from(control.getClientRects())
+  const hit = lines.find(
+    (line) =>
+      clientX >= line.left &&
+      clientX <= line.right &&
+      clientY >= line.top &&
+      clientY <= line.bottom,
+  )
+  return hit ?? control.getBoundingClientRect()
+}
+
 export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => void {
-  let frame = 0
+  let pending = false
   let next: { box: RingBox; snapped: boolean } | null = null
+  let lastPoint: { x: number; y: number } | null = null
 
   function paint() {
-    frame = 0
+    pending = false
     if (!next) return
     const { box, snapped } = next
     ring.style.transform = `translate(${box.x}px, ${box.y}px)`
@@ -69,7 +82,14 @@ export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => v
 
   function schedule(box: RingBox, snapped: boolean) {
     next = { box, snapped }
-    if (!frame) frame = requestAnimationFrame(paint)
+    if (pending) return
+    pending = true
+    requestAnimationFrame(paint)
+  }
+
+  function hide() {
+    next = null
+    ring.removeAttribute('data-visible')
   }
 
   function dialStop(clientX: number, clientY: number): RingBox | null {
@@ -81,14 +101,12 @@ export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => v
     return label ? snapBox(label.getBoundingClientRect(), PILL_RADIUS) : null
   }
 
-  function onMove(event: MouseEvent) {
-    const pointerType = 'pointerType' in event ? event.pointerType : 'mouse'
-    if (pointerType !== 'mouse') return
-    const target = event.target instanceof Element ? event.target : null
+  function place(clientX: number, clientY: number, target: Element | null) {
     ring.toggleAttribute('data-on-dark', Boolean(target?.closest(DARK_SURFACE_SELECTOR)))
 
+    // The knob follows the pointer angle while dragged, so hopping by angle shows where it lands.
     if (dialFace && target && dialFace.contains(target)) {
-      const box = dialStop(event.clientX, event.clientY)
+      const box = dialStop(clientX, clientY)
       if (box) {
         schedule(box, true)
         return
@@ -96,13 +114,30 @@ export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => v
     }
     const control = target?.closest(CONTROL_SELECTOR)
     if (control) {
-      schedule(snapBox(control.getBoundingClientRect(), cornerRadius(control)), true)
+      const rect = boxUnderPointer(control, clientX, clientY)
+      schedule(snapBox(rect, cornerRadius(control)), true)
       return
     }
-    schedule(freeBox(event.clientX, event.clientY), false)
+    schedule(freeBox(clientX, clientY), false)
   }
 
-  function onDown() {
+  function onMove(event: MouseEvent) {
+    const pointerType = 'pointerType' in event ? event.pointerType : 'mouse'
+    if (pointerType !== 'mouse') {
+      hide()
+      return
+    }
+    lastPoint = { x: event.clientX, y: event.clientY }
+    place(event.clientX, event.clientY, event.target instanceof Element ? event.target : null)
+  }
+
+  function replace() {
+    if (!lastPoint || !ring.hasAttribute('data-visible')) return
+    place(lastPoint.x, lastPoint.y, document.elementFromPoint(lastPoint.x, lastPoint.y))
+  }
+
+  function onDown(event: MouseEvent) {
+    if ('pointerType' in event && event.pointerType !== 'mouse') return
     ring.setAttribute('data-pressed', '')
   }
 
@@ -111,18 +146,30 @@ export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => v
   }
 
   function onLeave(event: MouseEvent) {
-    if (event.relatedTarget === null) ring.removeAttribute('data-visible')
+    if (event.relatedTarget === null) hide()
+  }
+
+  function onKeyDown(event: KeyboardEvent) {
+    if (event.key === 'Tab') hide()
   }
 
   document.addEventListener('pointermove', onMove)
   document.addEventListener('pointerdown', onDown)
   document.addEventListener('pointerup', onUp)
+  document.addEventListener('pointercancel', onUp)
   document.addEventListener('pointerout', onLeave)
+  document.addEventListener('keydown', onKeyDown)
+  window.addEventListener('scroll', replace, { passive: true })
+  window.addEventListener('resize', replace)
 
   return () => {
     document.removeEventListener('pointermove', onMove)
     document.removeEventListener('pointerdown', onDown)
     document.removeEventListener('pointerup', onUp)
+    document.removeEventListener('pointercancel', onUp)
     document.removeEventListener('pointerout', onLeave)
+    document.removeEventListener('keydown', onKeyDown)
+    window.removeEventListener('scroll', replace)
+    window.removeEventListener('resize', replace)
   }
 }

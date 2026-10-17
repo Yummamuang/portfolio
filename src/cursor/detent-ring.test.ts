@@ -21,6 +21,19 @@ function move(target: Element, clientX: number, clientY: number, pointerType?: s
   target.dispatchEvent(event)
 }
 
+function pointerEvent(type: string, pointerType: string, relatedTarget: Element | null = null) {
+  const event = new MouseEvent(type, { bubbles: true, relatedTarget })
+  Object.defineProperty(event, 'pointerType', { value: pointerType })
+  return event
+}
+
+function stubElementAtPointer(element: Element | null) {
+  Object.defineProperty(document, 'elementFromPoint', {
+    configurable: true,
+    value: () => element,
+  })
+}
+
 describe('freeBox', () => {
   it('centres the free ring on the pointer', () => {
     expect(freeBox(100, 50)).toEqual({ x: 88, y: 38, w: 24, h: 24, r: 12 })
@@ -68,6 +81,7 @@ describe('createDetentRing', () => {
 
   afterEach(() => {
     stop()
+    Reflect.deleteProperty(document, 'elementFromPoint')
     vi.unstubAllGlobals()
   })
 
@@ -77,6 +91,7 @@ describe('createDetentRing', () => {
     move(plain, 300, 300)
 
     expect(ring.style.width).toBe('24px')
+    expect(ring.style.transform).toBe('translate(288px, 288px)')
     expect(ring.hasAttribute('data-snapped')).toBe(false)
     expect(ring.hasAttribute('data-visible')).toBe(true)
   })
@@ -124,5 +139,144 @@ describe('createDetentRing', () => {
     move(plain, 300, 300, 'touch')
 
     expect(ring.hasAttribute('data-visible')).toBe(false)
+  })
+
+  it('follows a snapped control when the page scrolls under a still pointer', () => {
+    const control = document.querySelector<HTMLElement>('.control')
+    if (!control) throw new Error('fixture missing')
+    control.getBoundingClientRect = () => rect(400, 100, 120, 48)
+    move(control, 410, 110)
+    control.getBoundingClientRect = () => rect(400, 40, 120, 48)
+    stubElementAtPointer(control)
+    window.dispatchEvent(new Event('scroll'))
+
+    expect(ring.style.transform).toBe('translate(396px, 36px)')
+  })
+
+  it('returns to the free ring when scrolling moves the control away', () => {
+    const control = document.querySelector<HTMLElement>('.control')
+    const plain = document.querySelector('.plain')
+    if (!control || !plain) throw new Error('fixture missing')
+    control.getBoundingClientRect = () => rect(400, 100, 120, 48)
+    move(control, 410, 110)
+    stubElementAtPointer(plain)
+    window.dispatchEvent(new Event('scroll'))
+
+    expect(ring.style.width).toBe('24px')
+    expect(ring.hasAttribute('data-snapped')).toBe(false)
+  })
+
+  it('re-places the ring when the window is resized', () => {
+    const control = document.querySelector<HTMLElement>('.control')
+    if (!control) throw new Error('fixture missing')
+    control.getBoundingClientRect = () => rect(400, 100, 120, 48)
+    move(control, 410, 110)
+    control.getBoundingClientRect = () => rect(300, 100, 120, 48)
+    stubElementAtPointer(control)
+    window.dispatchEvent(new Event('resize'))
+
+    expect(ring.style.transform).toBe('translate(296px, 96px)')
+  })
+
+  it('does not show the ring on scroll before the pointer has moved', () => {
+    stubElementAtPointer(document.querySelector('.plain'))
+    window.dispatchEvent(new Event('scroll'))
+
+    expect(ring.hasAttribute('data-visible')).toBe(false)
+  })
+
+  it('ignores touch presses', () => {
+    document.dispatchEvent(pointerEvent('pointerdown', 'touch'))
+
+    expect(ring.hasAttribute('data-pressed')).toBe(false)
+  })
+
+  it('releases the press when the pointer is cancelled', () => {
+    document.dispatchEvent(pointerEvent('pointerdown', 'mouse'))
+    document.dispatchEvent(pointerEvent('pointercancel', 'mouse'))
+
+    expect(ring.hasAttribute('data-pressed')).toBe(false)
+  })
+
+  it('hides the ring when a touch pointer moves on a hybrid device', () => {
+    const plain = document.querySelector('.plain')
+    if (!plain) throw new Error('fixture missing')
+    move(plain, 300, 300)
+    move(plain, 310, 310, 'touch')
+
+    expect(ring.hasAttribute('data-visible')).toBe(false)
+  })
+
+  it('hides the ring on Tab and shows it again when the pointer moves', () => {
+    const plain = document.querySelector('.plain')
+    if (!plain) throw new Error('fixture missing')
+    move(plain, 300, 300)
+    document.dispatchEvent(new KeyboardEvent('keydown', { key: 'Tab', bubbles: true }))
+    expect(ring.hasAttribute('data-visible')).toBe(false)
+
+    move(plain, 320, 320)
+    expect(ring.hasAttribute('data-visible')).toBe(true)
+  })
+
+  it('snaps to the line box of a wrapped link that holds the pointer', () => {
+    const control = document.querySelector<HTMLElement>('.control')
+    if (!control) throw new Error('fixture missing')
+    control.getBoundingClientRect = () => rect(0, 100, 300, 60)
+    control.getClientRects = () =>
+      [rect(200, 100, 100, 20), rect(0, 140, 80, 20)] as unknown as DOMRectList
+    move(control, 20, 150)
+
+    expect(ring.style.transform).toBe('translate(-4px, 136px)')
+    expect(ring.style.width).toBe('88px')
+  })
+
+  it('hides the ring when the pointer leaves the window', () => {
+    const plain = document.querySelector('.plain')
+    if (!plain) throw new Error('fixture missing')
+    move(plain, 300, 300)
+    document.dispatchEvent(new MouseEvent('pointerout', { bubbles: true, relatedTarget: null }))
+
+    expect(ring.hasAttribute('data-visible')).toBe(false)
+  })
+
+  it('keeps the ring when the pointer moves between elements', () => {
+    const plain = document.querySelector('.plain')
+    if (!plain) throw new Error('fixture missing')
+    move(plain, 300, 300)
+    document.dispatchEvent(new MouseEvent('pointerout', { bubbles: true, relatedTarget: plain }))
+
+    expect(ring.hasAttribute('data-visible')).toBe(true)
+  })
+
+  it('uses the control corner radius when it is not a pill', () => {
+    const control = document.querySelector<HTMLElement>('.control')
+    if (!control) throw new Error('fixture missing')
+    control.style.borderTopLeftRadius = '8px'
+    control.getBoundingClientRect = () => rect(400, 100, 120, 48)
+    move(control, 410, 110)
+
+    expect(ring.style.borderRadius).toBe('12px')
+  })
+
+  it('turns dark again after the pointer leaves the status strip', () => {
+    const link = document.querySelector<HTMLElement>('.strip-next')
+    const plain = document.querySelector('.plain')
+    if (!link || !plain) throw new Error('fixture missing')
+    link.getBoundingClientRect = () => rect(900, 860, 100, 44)
+    move(link, 910, 870)
+    move(plain, 300, 300)
+
+    expect(ring.hasAttribute('data-on-dark')).toBe(false)
+  })
+
+  it('stops reacting once the cleanup function has run', () => {
+    const plain = document.querySelector('.plain')
+    if (!plain) throw new Error('fixture missing')
+    stop()
+    move(plain, 300, 300)
+    document.dispatchEvent(pointerEvent('pointerdown', 'mouse'))
+
+    expect(ring.hasAttribute('data-visible')).toBe(false)
+    expect(ring.hasAttribute('data-pressed')).toBe(false)
   })
 })
