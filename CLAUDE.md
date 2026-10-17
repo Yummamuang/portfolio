@@ -4,7 +4,7 @@ Personal portfolio of Panatakorn Supak (GitHub: Yummamuang). Product context, au
 
 ## Stack and deploy
 
-- Vite with vanilla TypeScript, no UI framework. pnpm, Node 22 or newer.
+- Vite with vanilla TypeScript, no UI framework. pnpm, Node 22.22.2 or newer (24.15 or newer on the 24 line).
 - `base` is `/portfolio/` because GitHub Pages serves the site at `https://yummamuang.github.io/portfolio/`.
 - `.github/workflows/deploy.yml` builds and deploys `dist/` to GitHub Pages on every push to `main`.
 - The old static site lives unchanged in `public/` and is copied into `dist/` as-is.
