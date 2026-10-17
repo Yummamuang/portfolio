@@ -16,6 +16,7 @@ colors:
   knob: "#2a2a28"
   knob-ring: "#333331"
   knob-edge: "#444441"
+  tuner-idle: "#a3a39d"
   strip: "#1c1c1c"
   strip-text: "#e6e6e1"
 typography:
@@ -169,7 +170,8 @@ A neutral warm-grey appliance palette with a single orange indicator and a darke
 - **Faint Ink** (ink-faint): idle dial ticks and the dial hint.
 - **Rule / Strong Rule** (rule, rule-strong): 1px dividers; strong rule edges the plate and draws the dial ring.
 - **Stop Idle** (stop-idle): the 2px dashed outline of unselected stops; scrollbar thumb.
-- **Knob, Knob Ring, Knob Edge** (knob, knob-ring, knob-edge): the dial knob body and its two inset rings. Used nowhere else.
+- **Knob, Knob Ring, Knob Edge** (knob, knob-ring, knob-edge): the dial knob body and its two inset rings. Knob also fills the phone tuner band, the dial's display window on small screens. Used nowhere else.
+- **Tuner Idle** (tuner-idle): idle program names on the phone tuner band.
 - **Status Strip / Strip Text** (strip, strip-text): the black strip and code blocks, with their light text.
 
 ### Named Rules
@@ -204,7 +206,7 @@ A neutral warm-grey appliance palette with a single orange indicator and a darke
 
 The housing pads the viewport by a fluid frame (housing-pad) and holds one plate that fills at least the viewport height. The plate has a header band (maker mark, name, role; lamp, email, GitHub) over a 1px rule, a body, and the status strip pinned to its bottom edge.
 
-Home body is two columns: the dial (380px to 560px, sticky at 16px) flush left, and the display column on the right with gutter padding. Programs stack in the display column as display-window panels 24px apart. At 900px and below the plate becomes one column, the dial collapses into a sticky bar of wrapping stop labels across the top, and the strip stops being sticky. The featured project stacks media over text below 1280px; the project list and portrait stack at 640px; stage rows and the stack grid go 4 to 2 to 1 columns at 900px and 480px.
+Home body is two columns: the dial (380px to 560px, sticky at 16px) flush left, and the display column on the right with gutter padding. Programs stack in the display column as display-window panels 24px apart. At 900px and below the plate becomes one column, the dial becomes the tuner, a sticky dark band across the top, and the strip stops being sticky. The featured project stacks media over text below 1280px; the project list and portrait stack at 640px; stage rows and the stack grid go 4 to 2 to 1 columns at 900px and 480px.
 
 Write-ups centre a column inside the plate (max 1040px wide, fluid top padding, 96px bottom), with every child held to the measure. On phones, code blocks bleed to the plate edges and lose their radius.
 
@@ -253,7 +255,10 @@ Six buttons in two columns under the featured project, each a stop: 56px minimum
 The dial is the navigation (below). The header carries the maker mark (YM., 1.75rem 800), name, role, the lamp, email and GitHub, all 44px targets. Write-ups reuse the header, with the mark linking home.
 
 ### Program Dial (signature)
-A 560px square face with a thin ring, six program labels placed by angle (first stop at -120°, 48° apart), a tick per stop, and a dark knob carrying an orange pointer. Drag, arrow keys, Home/End or page scroll move the pointer; it detents onto the program with an overshoot curve (`cubic-bezier(0.3, 1.4, 0.5, 1)`, 280ms), the current label turns signal-text, the tick goes solid orange, and the lamp blinks once (400ms, two steps). Dragging tracks the pointer angle without easing and holds at the arc ends. Below 900px the face becomes a wrapping row of labels drawn with the stop grammar.
+A 560px square face with a thin ring, six program labels placed by angle (first stop at -120°, 48° apart), a tick per stop, and a dark knob carrying an orange pointer. Drag, arrow keys, Home/End or page scroll move the pointer; it detents onto the program with an overshoot curve (`cubic-bezier(0.3, 1.4, 0.5, 1)`, 280ms), the current label turns signal-text, the tick goes solid orange, and the lamp blinks once (400ms, two steps). Dragging tracks the pointer angle without easing and holds at the arc ends. Below 900px the face becomes the tuner (next section).
+
+### Phone tuner (dial variant)
+At 900px and below the dial is a 60px sticky band in knob, full bleed, one row of the six program names on a scale. Each name is 86px wide over a tick row: two 1px minor ticks each side and one 2x14px major tick, idle major ticks grey, the current one signal. A fixed pointer, a 12x6px signal notch at the top centre and a 2x20px signal needle at the bottom centre, never crosses the text. The row snap-scrolls with 12px edge fades so about four names show and the edge names are cut off, which says the row scrolls. Swiping only aims: the centred program is chosen once the finger lifts and the row settles, then the page scrolls there. Tap, Enter, arrow keys and Home/End choose directly, Tab alone never does. Page scroll re-centres the row. Idle names are tuner-idle 600, the current name strip-text 800. This band is the one deliberate exception to the Stop Grammar Rule: it is a display window, so selection reads by the pointer, weight and tick, not by outlines.
 
 ### Detent ring cursor
 On fine pointers the system cursor is joined by a 24px ring with a 1.5px ink border. Over any link or button it snaps around the control with a 4px outset, taking the control's corner radius plus 4px (120ms, `cubic-bezier(0.25, 1, 0.5, 1)`). Inside the dial face it hops to a pill around the program label nearest the pointer's angle, showing where a drag would land. Over the status strip the ring turns strip-text. It shrinks to 0.9 while pressed, hides on Tab and when the pointer leaves the window, and never renders on touch or coarse pointers.

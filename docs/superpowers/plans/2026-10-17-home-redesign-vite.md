@@ -4139,6 +4139,54 @@ If the reviewer's fixes changed source files, commit them separately first with 
 
 ---
 
+### Task 18: Mobile tuner nav
+
+**Depends on:** Task 17 and the finish-review fixes (HEAD 5f52289)
+
+Owner decision after the final review: below 901px the wrapped two-row chip bar becomes a one-row "tuner" the visitor swipes with a finger. Approved canvas: board "B · Tuner" in https://claude.ai/artifact/HDoAHhBWLyAak9TzW5oYpA, local source `/private/tmp/claude-501/-Users-yummamuang-Workspace-projects-portfolio/9b224dd8-e2d6-4e99-a3e1-8b49527ed1cd/scratchpad/swipe-nav/project/Tuner.dc.html` (intent and visual values only; the real build uses window scroll, the existing dial and scroll spy). Critique snapshot: `.impeccable/critique/2026-10-17T18-21-50Z__tuner-dc-html.md`.
+
+**Files:**
+- Create: `src/dial/tuner.ts`, `src/dial/tuner.test.ts`
+- Modify: `src/dial/dial.ts`, `src/dial/dial.test.ts` (handle gains `select`, options gain `onChange`)
+- Modify: `src/dial/scroll-spy.ts`, `src/dial/scroll-spy.test.ts` (page-end helper)
+- Modify: `src/main.ts` (wiring only)
+- Modify: `src/styles/dial.css` (the `max-width: 900px` block), `src/styles/shell.css` (remove the desktop `.display` spacer), `src/styles/tokens.css` (one token `--tuner-idle: #a3a39d`)
+
+**Interfaces:**
+- `createDial` options gain `onChange?: (index: number) => void`, called from `render` (initial render included). `DialHandle` gains `select(id: ProgramId): void`, which runs the existing `choose(indexForProgram(id))` path (pending guard, lamp blink, `onSelect`).
+- `scroll-spy.ts` exports `isAtPageEnd(scrollY: number, viewportHeight: number, scrollHeight: number): boolean` (true within 2px of the end).
+- `tuner.ts` exports `createTuner({ list, labels, onCommit, reducedMotion }): { centre(index: number): void; destroy(): void }` where `list` is the `.dial-labels` `<ol>`, `labels` the six `a[data-program]`, `onCommit(index)` asks the dial to select.
+
+**Rules (owner + critique answers, 2026-10-18):**
+- "ปล่อยนิ้วแล้วค่อยไป": a swipe commits only after the finger lifts and the rail settles (`scrollend` on the list, 160ms debounce fallback). Programmatic rail scrolls (`centre`) never commit. Tab focus never commits. Tap / Enter on a label commits (preventDefault the hash jump, call `onCommit`).
+- Keyboard: roving tabindex on the six labels while the tuner is active (active label `tabindex=0`, others `-1`); ArrowLeft/ArrowRight/Home/End on the list commit and move focus.
+- When the page scroll changes the active program (scroll spy), the rail re-centres on it (`onChange` → `centre`), unless the finger is on the rail.
+- At the end of the page the last program (Contact) is current, at every width: on window `scroll`/`scrollend`, `isAtPageEnd` → `dial.setActive('contact')`. Remove the desktop `.display` padding-bottom spacer in shell.css.
+- The tuner exists only while `matchMedia('(max-width: 900px)')` matches: create on match, `destroy()` on unmatch (restore tabindex, remove listeners). Desktop dial behaviour unchanged.
+- Reduced motion: `centre` uses `behavior: 'auto'`.
+- Look (≤900px, dial.css): sticky `.dial` full-bleed band on `var(--knob)`; `.dial-labels` one row, `overflow-x: auto`, `scroll-snap-type: x mandatory`, `padding-inline: calc(50% - 43px)`, no scrollbar, 12px edge fades via `mask-image`; each label 86px wide, min-height 60px, name above a tick row (two 1px minor ticks each side, one 2x14px major tick in the middle; minor ticks `#6a6a66`-ish, idle major `#8a8a84`, active major `var(--signal)`); idle text `var(--tuner-idle)` 600, active `var(--strip-text)` 800; fixed pointer = a 12x6px signal notch at the top centre and a 2x20px signal needle at the bottom centre, never across the text; focus ring `2px solid var(--strip-text)` with `outline-offset: -5px`. Hide knob, ticks svg, hint as today. Keep `--dial-bar-h` scroll-margin.
+
+**Browser check:**
+- Preconditions: `pnpm dev` on :5173. Mobile context 390x844 touch, then 320x568, then 1440x900 mouse.
+
+| # | Action | Expected |
+|---|---|---|
+| 1 | Open `/portfolio/` at 390x844 | One dark sticky row under the header; WORK centred under the orange notch/needle; about four names visible, the edge ones cut off |
+| 2 | Swipe the row left and lift the finger | The row snaps; the centred program becomes current; the page scrolls to that section; strip text matches |
+| 3 | Scroll the page down slowly through every section | The row re-centres on each section as it becomes current; no back-and-forth |
+| 4 | Tap CONTACT | Page scrolls to the end; CONTACT is current; strip reads "Contact · 6 of 6" and "Back to top" |
+| 5 | Keyboard: Tab into the row, press ArrowRight twice, End, Home | Each key changes the current program and page; Tab alone changes nothing |
+| 6 | 320x568: repeat step 4 | Contact becomes current; no horizontal page scroll |
+| 7 | 1440x900: scroll to the very end | Dial shows Contact; no large blank space under the Contact card; knob drag still works |
+
+### Task 19: Final-review carry-overs
+
+**Depends on:** Task 18 (shares no files with it except none; run after it to keep one dev-server check)
+
+**Files:** `src/styles/tokens.css` (`color-scheme: light` on `:root`), `src/work/work-panel.ts` + `src/work/work-panel.test.ts` (playback button starts as "Play" until a `play` event fires), `src/styles/article.css` (remove the redundant `--measure: 48ch` inside the 1200px query only if computed value is unchanged). Docs (`CLAUDE.md`, `PRODUCT.md`, `DESIGN.md`) are updated by the controller.
+
+---
+
 ## Demo flow
 
 - Role: a recruiter screening for a Software Engineer role.

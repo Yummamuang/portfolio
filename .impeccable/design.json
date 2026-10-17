@@ -214,6 +214,21 @@
           "#f3f3f2"
         ]
       },
+      "tuner-idle": {
+        "role": "neutral",
+        "displayName": "Tuner Idle",
+        "canonical": "#a3a39d",
+        "tonalRamp": [
+          "#282826",
+          "#47473f",
+          "#666660",
+          "#858580",
+          "#a3a39d",
+          "#bdbdb8",
+          "#d6d6d3",
+          "#f0f0ee"
+        ]
+      },
       "strip": {
         "role": "neutral",
         "displayName": "Status Strip",

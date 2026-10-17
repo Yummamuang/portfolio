@@ -42,15 +42,14 @@ Every project links to something real: a live demo, a recorded video walkthrough
 ## Operating Context
 
 - Readers usually come from a link in a CV or job application and view on desktop or phone.
-- Sections today: Home (intro), Lab (frontend and type experiments), Project (built work), About me (bio and contact).
+- Home is one page of six programs: Work, Loops, Agents, Stack, About, Contact. The old Home, Lab, Project and About pages stay online as archived older work, linked from About.
 - Several Lab and Project pieces are desktop-only and say so in their labels.
 
 ## Capabilities and Constraints
 
 - Must stay deployable as static files on GitHub Pages.
-- Existing pages: `index.html`, `pages/home.html`, `pages/lab.html`, `pages/project.html`, `pages/about.html`.
-- Bundled sub-sites that must keep working after any migration: `pages/project/WebDesign-SpaceCat/` (Cat Space shop design, many pages) and `pages/lab/lab5/`, `pages/lab/lab7/` (class lab pages).
-- `pages/about.html` still describes a KKU student and uses the old email. Rewrite it from About Facts above.
+- Pages: `index.html` (Home) and the write-ups in `writing/`. The old pages live in `public/pages/` (`home.html`, `lab.html`, `project.html`, `about.html`).
+- Archived sub-sites that must keep working: `public/pages/project/WebDesign-SpaceCat/` (Cat Space shop design, many pages) and `public/pages/lab/lab5/`, `public/pages/lab/lab7/` (class lab pages).
 - The AI-engineering work is published as write-up pages: `writing/loop-engineering.html` and `writing/agent-workflow.html`. Raw skill files are not published, because they mention workplace names and paths. A cleaned public repo may come later and would be linked from the write-ups.
 
 ## Brand Commitments
@@ -60,15 +59,15 @@ Every project links to something real: a live demo, a recorded video walkthrough
 
 ## Evidence on Hand
 
-Projects in `pages/project.html`:
-- Cat Space Shop website design, video `video/catspace.mp4`, full site in `pages/project/WebDesign-SpaceCat/`.
+Projects, shown in the Work program from `src/work/projects.ts` (the archived list is `public/pages/project.html`):
+- Cat Space Shop website design, video `video/catspace.mp4`, full site in `public/pages/project/WebDesign-SpaceCat/`.
 - Manga Recommendation website, live at https://manga-system.vercel.app/, image `img/manga-direct.png`.
 - Snake game in Python, https://github.com/Yummamuang/Snake-Game-Development, image `img/snakegame.jpg`.
 - Gym Management System in Laravel, https://github.com/Yummamuang/Gym-Management-System, image `img/gymmanagementsystem.png`.
 - Data engineering mini project comparing view counts of the top 15 games on YouTube, Twitch, and Facebook, https://github.com/Yummamuang/Data-Engineering-Mini-Project, image `img/dataengineering.jpg`.
 - Web app for detecting and assessing eruption potential of maxillary impacted canines in panoramic radiographs, https://github.com/Yummamuang/prediction-of-maxillary-impacted-canine, video `video/canine.mp4`.
 
-Lab pieces in `pages/lab.html`: WebDesign (`video/webdesign.mp4`) and FontDesign (`video/fontdesign-1.mp4`).
+Lab pieces in `public/pages/lab.html`: WebDesign (`video/webdesign.mp4`) and FontDesign (`video/fontdesign-1.mp4`).
 
 New work cleared to add, from Panatakorn's own Claude Code setup:
 - Skill `subagent-driven-development`: `~/.claude/skills/subagent-driven-development/`
