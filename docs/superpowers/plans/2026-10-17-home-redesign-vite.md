@@ -3466,9 +3466,580 @@ git commit -m "feat(writing): add agent workflow write-up"
 
 ---
 
+### Task 14: Detent ring cursor
+
+**Depends on:** Task 10
+
+**Files:**
+- Create: `src/cursor/detent-ring.ts`
+- Test: `src/cursor/detent-ring.test.ts`
+- Create: `src/styles/cursor.css`
+- Modify: `src/main.ts` (additions only)
+- Modify: `index.html` (one element before `</body>`)
+
+**Interfaces:**
+- Consumes: `indexForAngle`, `pointerAngle` from `src/dial/dial-model.ts`; dial labels `a[data-program]` inside `.dial-face` (Task 8).
+- Produces: `freeBox(x: number, y: number): RingBox`, `snapBox(rect: { left: number; top: number; width: number; height: number }, radius: number): RingBox`, `createDetentRing(options: { ring: HTMLElement; dialFace: HTMLElement | null }): () => void`, `interface RingBox { x: number; y: number; w: number; h: number; r: number }`.
+
+**Rules:**
+- Owner decision after the design critique: "ลดเหลือ 3 state + snap จริง" · example: away from controls the ring is 24px and centred on the pointer; over a control it wraps the control with a 4px outset; around the dial it snaps onto the nearest program label by pointer angle; no text labels, no overshoot easing.
+- Canvas board "Detent ring cursor": "The system cursor stays visible" and "Home page only, fine pointers only, hidden on touch" · example: no `cursor: none` anywhere; touch pointers are ignored; the ring has `aria-hidden="true"`.
+
+**Browser check:**
+- Preconditions: `pnpm dev` running, port 5173, a mouse (fine pointer). Window 1440×900.
+- Base URL: `http://localhost:5173/portfolio/`
+
+| # | Action | Expected |
+|---|---|---|
+| 1 | Move the mouse over an empty part of the faceplate | The system arrow stays visible and a thin 24px ink ring sits centred on it, moving with no lag |
+| 2 | Move over "View on GitHub" | The ring snaps around the pill button with a small gap and no bounce |
+| 3 | Move slowly around the dial knob | The ring hops between the six program labels, always on the label nearest the pointer's angle |
+| 4 | Move over "Next: Loops ↓" in the black strip | The ring turns light so it stays visible on the dark strip |
+| 5 | Press and hold the mouse button | The ring shrinks slightly; it returns on release |
+| 6 | Emulate a touch device (390×844, touch) | No ring appears |
+
+- [ ] **Step 1: Read the craft floor**
+
+Read `/Users/yummamuang/.claude/skills/impeccable/reference/craft-floor.md` first.
+
+- [ ] **Step 2: Write the failing test**
+
+`src/cursor/detent-ring.test.ts`:
+
+```ts
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { createDetentRing, freeBox, snapBox } from './detent-ring'
+
+function rect(left: number, top: number, width: number, height: number) {
+  return {
+    x: left,
+    y: top,
+    left,
+    top,
+    width,
+    height,
+    right: left + width,
+    bottom: top + height,
+    toJSON: () => ({}),
+  }
+}
+
+function move(target: Element, clientX: number, clientY: number, pointerType?: string) {
+  const event = new MouseEvent('pointermove', { clientX, clientY, bubbles: true })
+  if (pointerType) Object.defineProperty(event, 'pointerType', { value: pointerType })
+  target.dispatchEvent(event)
+}
+
+describe('freeBox', () => {
+  it('centres the free ring on the pointer', () => {
+    expect(freeBox(100, 50)).toEqual({ x: 88, y: 38, w: 24, h: 24, r: 12 })
+  })
+})
+
+describe('snapBox', () => {
+  it('wraps a control with a 4px outset', () => {
+    expect(snapBox(rect(10, 20, 100, 40), 999)).toEqual({ x: 6, y: 16, w: 108, h: 48, r: 24 })
+  })
+})
+
+describe('createDetentRing', () => {
+  let ring: HTMLElement
+  let stop: () => void
+
+  beforeEach(() => {
+    vi.stubGlobal('requestAnimationFrame', (callback: FrameRequestCallback) => {
+      callback(0)
+      return 1
+    })
+    document.body.innerHTML = `
+      <div class="dial-face">
+        <a href="#work" data-program="work">Work</a>
+        <a href="#loops" data-program="loops">Loops</a>
+        <a href="#agents" data-program="agents">Agents</a>
+        <a href="#stack" data-program="stack">Stack</a>
+        <a href="#about" data-program="about">About</a>
+        <a href="#contact" data-program="contact">Contact</a>
+      </div>
+      <p class="plain">Text</p>
+      <button type="button" class="control">Go</button>
+      <footer class="status-strip"><a href="#loops" class="strip-next">Next</a></footer>
+      <div data-detent-ring></div>`
+    const face = document.querySelector<HTMLElement>('.dial-face')
+    const found = document.querySelector<HTMLElement>('[data-detent-ring]')
+    if (!face || !found) throw new Error('fixture missing')
+    ring = found
+    face.getBoundingClientRect = () => rect(0, 0, 200, 200)
+    face.querySelectorAll<HTMLElement>('a').forEach((label, index) => {
+      label.getBoundingClientRect = () => rect(index * 60, 10, 50, 20)
+    })
+    stop = createDetentRing({ ring, dialFace: face })
+  })
+
+  afterEach(() => {
+    stop()
+    vi.unstubAllGlobals()
+  })
+
+  it('follows the pointer freely away from controls', () => {
+    const plain = document.querySelector('.plain')
+    if (!plain) throw new Error('fixture missing')
+    move(plain, 300, 300)
+
+    expect(ring.style.width).toBe('24px')
+    expect(ring.hasAttribute('data-snapped')).toBe(false)
+    expect(ring.hasAttribute('data-visible')).toBe(true)
+  })
+
+  it('snaps around a control under the pointer', () => {
+    const control = document.querySelector<HTMLElement>('.control')
+    if (!control) throw new Error('fixture missing')
+    control.getBoundingClientRect = () => rect(400, 100, 120, 48)
+    move(control, 410, 110)
+
+    expect(ring.style.width).toBe('128px')
+    expect(ring.style.height).toBe('56px')
+    expect(ring.hasAttribute('data-snapped')).toBe(true)
+  })
+
+  it('hops to the program label nearest the pointer angle around the dial', () => {
+    const face = document.querySelector('.dial-face')
+    if (!face) throw new Error('fixture missing')
+    move(face, 0, 60)
+
+    expect(ring.style.transform).toBe('translate(56px, 6px)')
+    expect(ring.style.width).toBe('58px')
+  })
+
+  it('turns light over the dark status strip', () => {
+    const link = document.querySelector<HTMLElement>('.strip-next')
+    if (!link) throw new Error('fixture missing')
+    link.getBoundingClientRect = () => rect(900, 860, 100, 44)
+    move(link, 910, 870)
+
+    expect(ring.hasAttribute('data-on-dark')).toBe(true)
+  })
+
+  it('shrinks while the button is pressed', () => {
+    document.dispatchEvent(new MouseEvent('pointerdown', { bubbles: true }))
+    expect(ring.hasAttribute('data-pressed')).toBe(true)
+
+    document.dispatchEvent(new MouseEvent('pointerup', { bubbles: true }))
+    expect(ring.hasAttribute('data-pressed')).toBe(false)
+  })
+
+  it('ignores touch pointers', () => {
+    const plain = document.querySelector('.plain')
+    if (!plain) throw new Error('fixture missing')
+    move(plain, 300, 300, 'touch')
+
+    expect(ring.hasAttribute('data-visible')).toBe(false)
+  })
+})
+```
+
+The dial test moves to (0, 60) against the face centre (100, 100), about -68°, nearest the Loops stop. The Loops label box is (60, 10, 50, 20), so the snapped ring is at (56, 6) and 58px wide.
+
+- [ ] **Step 3: Run it to see it fail**
+
+Run: `pnpm exec vitest run src/cursor/detent-ring.test.ts`
+Expected: FAIL, "Failed to resolve import './detent-ring'".
+
+- [ ] **Step 4: Write `src/cursor/detent-ring.ts`**
+
+```ts
+import { indexForAngle, pointerAngle } from '../dial/dial-model'
+
+export interface RingBox {
+  x: number
+  y: number
+  w: number
+  h: number
+  r: number
+}
+
+interface Box {
+  left: number
+  top: number
+  width: number
+  height: number
+}
+
+interface DetentRingOptions {
+  ring: HTMLElement
+  dialFace: HTMLElement | null
+}
+
+const FREE_SIZE = 24
+const OUTSET = 4
+const PILL_RADIUS = 999
+const CONTROL_SELECTOR = 'a[href], button, [role="slider"]'
+const DARK_SURFACE_SELECTOR = '.status-strip'
+
+export function freeBox(x: number, y: number): RingBox {
+  return { x: x - FREE_SIZE / 2, y: y - FREE_SIZE / 2, w: FREE_SIZE, h: FREE_SIZE, r: FREE_SIZE / 2 }
+}
+
+export function snapBox(rect: Box, radius: number): RingBox {
+  return {
+    x: rect.left - OUTSET,
+    y: rect.top - OUTSET,
+    w: rect.width + OUTSET * 2,
+    h: rect.height + OUTSET * 2,
+    r: Math.min(radius, rect.height / 2) + OUTSET,
+  }
+}
+
+function cornerRadius(element: Element): number {
+  const value = Number.parseFloat(getComputedStyle(element).borderTopLeftRadius)
+  return Number.isNaN(value) ? 0 : value
+}
+
+export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => void {
+  let frame = 0
+  let next: { box: RingBox; snapped: boolean } | null = null
+
+  function paint() {
+    frame = 0
+    if (!next) return
+    const { box, snapped } = next
+    ring.style.transform = `translate(${box.x}px, ${box.y}px)`
+    ring.style.width = `${box.w}px`
+    ring.style.height = `${box.h}px`
+    ring.style.borderRadius = `${box.r}px`
+    ring.toggleAttribute('data-snapped', snapped)
+    ring.setAttribute('data-visible', '')
+  }
+
+  function schedule(box: RingBox, snapped: boolean) {
+    next = { box, snapped }
+    if (!frame) frame = requestAnimationFrame(paint)
+  }
+
+  function dialStop(clientX: number, clientY: number): RingBox | null {
+    if (!dialFace) return null
+    const face = dialFace.getBoundingClientRect()
+    const center = { x: face.left + face.width / 2, y: face.top + face.height / 2 }
+    const index = indexForAngle(pointerAngle(center, { x: clientX, y: clientY }))
+    const label = dialFace.querySelectorAll('a[data-program]')[index]
+    return label ? snapBox(label.getBoundingClientRect(), PILL_RADIUS) : null
+  }
+
+  function onMove(event: MouseEvent) {
+    const pointerType = 'pointerType' in event ? event.pointerType : 'mouse'
+    if (pointerType !== 'mouse') return
+    const target = event.target instanceof Element ? event.target : null
+    ring.toggleAttribute('data-on-dark', Boolean(target?.closest(DARK_SURFACE_SELECTOR)))
+
+    if (dialFace && target && dialFace.contains(target)) {
+      const box = dialStop(event.clientX, event.clientY)
+      if (box) {
+        schedule(box, true)
+        return
+      }
+    }
+    const control = target?.closest(CONTROL_SELECTOR)
+    if (control) {
+      schedule(snapBox(control.getBoundingClientRect(), cornerRadius(control)), true)
+      return
+    }
+    schedule(freeBox(event.clientX, event.clientY), false)
+  }
+
+  function onDown() {
+    ring.setAttribute('data-pressed', '')
+  }
+
+  function onUp() {
+    ring.removeAttribute('data-pressed')
+  }
+
+  function onLeave(event: MouseEvent) {
+    if (event.relatedTarget === null) ring.removeAttribute('data-visible')
+  }
+
+  document.addEventListener('pointermove', onMove)
+  document.addEventListener('pointerdown', onDown)
+  document.addEventListener('pointerup', onUp)
+  document.addEventListener('pointerout', onLeave)
+
+  return () => {
+    document.removeEventListener('pointermove', onMove)
+    document.removeEventListener('pointerdown', onDown)
+    document.removeEventListener('pointerup', onUp)
+    document.removeEventListener('pointerout', onLeave)
+  }
+}
+```
+
+- [ ] **Step 5: Run it to see it pass**
+
+Run: `pnpm exec vitest run src/cursor`
+Expected: PASS, 8 tests.
+
+- [ ] **Step 6: Write `src/styles/cursor.css`**
+
+```css
+.detent-ring {
+  position: fixed;
+  left: 0;
+  top: 0;
+  z-index: 20;
+  pointer-events: none;
+  border: 1.5px solid var(--ink);
+  opacity: 0;
+  transition: opacity 120ms ease-out;
+}
+
+.detent-ring[data-visible] {
+  opacity: 1;
+}
+
+.detent-ring[data-snapped] {
+  transition:
+    opacity 120ms ease-out,
+    transform 120ms cubic-bezier(0.25, 1, 0.5, 1),
+    width 120ms cubic-bezier(0.25, 1, 0.5, 1),
+    height 120ms cubic-bezier(0.25, 1, 0.5, 1),
+    border-radius 120ms cubic-bezier(0.25, 1, 0.5, 1);
+}
+
+.detent-ring[data-on-dark] {
+  border-color: var(--strip-text);
+}
+
+.detent-ring[data-pressed] {
+  scale: 0.9;
+}
+
+@media (hover: none), (pointer: coarse) {
+  .detent-ring {
+    display: none;
+  }
+}
+```
+
+Reduced motion needs no rule here: the global rule in `base.css` already cuts every transition to 1ms.
+
+- [ ] **Step 7: Add the ring element and wire it**
+
+In `index.html`, add right before `</body>`:
+
+```html
+<div class="detent-ring" data-detent-ring aria-hidden="true"></div>
+```
+
+In `src/main.ts`, after the last style import add `import './styles/cursor.css'`; after the last module import add `import { createDetentRing } from './cursor/detent-ring'`; at the end of the file add:
+
+```ts
+
+const ring = document.querySelector<HTMLElement>('[data-detent-ring]')
+if (ring && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  createDetentRing({ ring, dialFace: document.querySelector<HTMLElement>('.dial-face') })
+}
+```
+
+`git diff src/main.ts` must show only additions.
+
+- [ ] **Step 8: Check and commit**
+
+```bash
+pnpm format && pnpm lint && pnpm format:check && pnpm test && pnpm build
+git commit -m "feat(home): add the detent ring cursor" -m "<trailer>" -- src/cursor/detent-ring.ts src/cursor/detent-ring.test.ts src/styles/cursor.css src/main.ts index.html
+```
+
+---
+
+### Task 15: Wider write-up layout
+
+**Depends on:** Task 12
+
+**Files:**
+- Modify: `src/styles/article.css`
+
+**Rules:**
+- Owner decision after the design critique: "B ปรับแล้ว" · example: body text runs at about 64ch, code blocks are as wide as their code (up to the article width, never narrower than the text), quotes are slightly wider than the text, phones look as before.
+- Craft floor: body measure 65–75 characters · example: measured at 1440×900 in the Browser check.
+
+**Browser check:**
+- Preconditions: `pnpm dev` running, port 5173.
+- Base URL: `http://localhost:5173/portfolio/`
+
+| # | Action | Expected |
+|---|---|---|
+| 1 | Open `/portfolio/writing/loop-engineering.html` at 1440×900 | Body text column is wider than before; full lines run about 65–75 characters |
+| 2 | Look at the `loop.md` code block | The dark block is wider than the text, about as wide as its longest line, centred; no wide empty dark area on the right |
+| 3 | Look at the quotes in Credits | Quote boxes are a little wider than the text column, quote text slightly larger |
+| 4 | Resize to 390×844 | Same as before this task: code blocks run edge to edge and scroll inside; no page-level horizontal scroll |
+| 5 | Open `/portfolio/writing/agent-workflow.html` at 1440×900 | Same column width as the loop page |
+
+- [ ] **Step 1: Read the craft floor**
+
+- [ ] **Step 2: Switch vertical margins to `margin-block`**
+
+So that a later `margin-inline: auto` can centre each block. In `src/styles/article.css` change:
+- `.article h1 { margin: 0 0 16px; …` → `margin-block: 0 16px;`
+- `.article .dek { margin: 0 0 48px; …` → `margin-block: 0 48px;`
+- `.article h2 { margin: 56px 0 12px; …` → `margin-block: 56px 12px;`
+- `.article p, .article ul, .article ol { margin: 0 0 18px; }` → `margin-block: 0 18px;`
+- `.article pre { margin: 0 0 24px; …` → `margin-block: 0 24px;`
+- `.article blockquote { margin: 0 0 24px; …` → `margin-block: 0 24px;`
+
+- [ ] **Step 3: Widen the article and centre its blocks**
+
+Change `.article`'s `width: min(100%, 58ch);` to `width: min(100%, 1040px);` and add after the `.article` rule:
+
+```css
+.article > * {
+  max-width: 64ch;
+  margin-inline: auto;
+}
+
+.article > pre {
+  width: fit-content;
+  min-width: min(100%, 64ch);
+  max-width: 100%;
+}
+
+.article > blockquote {
+  max-width: calc(64ch + 96px);
+}
+
+.article blockquote p {
+  font-size: 1.375rem;
+}
+```
+
+Remove the existing `font-size: 1.25rem;` from `.article blockquote p` if the old rule sets it, so there is one size.
+
+- [ ] **Step 4: Keep phones as they were**
+
+Inside the existing `@media (max-width: 640px)` block, replace the `.article pre { margin-inline: -16px; border-radius: 0; }` rule with:
+
+```css
+  .article > pre {
+    width: auto;
+    min-width: 0;
+    max-width: none;
+    margin-inline: -16px;
+    border-radius: 0;
+  }
+
+  .article blockquote p {
+    font-size: 1.1875rem;
+  }
+```
+
+- [ ] **Step 5: Measure, then commit**
+
+Render both pages at 1440×900 in headless Chromium (build to a scratch outDir and serve with `pnpm exec vite preview --outDir <dir> --port 4184`, stop it afterwards). Record the longest full line in characters of each body paragraph on the loop page; the target is 65–75. If it runs above 75, lower 64ch in steps of 2 everywhere it appears and re-measure. Then:
+
+```bash
+pnpm format && pnpm exec prettier --check src/styles/article.css && pnpm build
+git commit -m "feat(writing): widen the write-up layout" -m "<trailer>" -- src/styles/article.css
+```
+
+---
+
+### Task 16: Snippet and outcome on the agent write-up
+
+**Depends on:** Task 12
+
+**Files:**
+- Modify: `writing/agent-workflow.html`
+
+**Rules:**
+- PRODUCT.md: write-ups are "problem, approach, how it works with short code snippets, outcome, credits"; owner decision: "เพิ่ม" · example: the page gains one code block and a "What it changed" section.
+- PRODUCT.md "Raw skill files are not published" · example: the snippet is a task from this site's own plan, not a skill file.
+- Global constraint: no invented claims · example: every outcome bullet describes something that happened while building this site and is recorded in its review history.
+
+**Browser check:**
+- Preconditions: `pnpm dev` running, port 5173.
+- Base URL: `http://localhost:5173/portfolio/`
+
+| # | Action | Expected |
+|---|---|---|
+| 1 | Open `/portfolio/writing/agent-workflow.html` | Sections in order: The problem, 1. Write the plan, 2. One subagent per task, 3. Review every task, 4. Review the whole branch, What it looks like, What it changed, Why it works, Credits |
+| 2 | Tab to the code block | It takes focus with a visible ring and scrolls sideways on a phone width |
+
+- [ ] **Step 1: Insert two sections before `<h2>Why it works</h2>`**
+
+```html
+          <h2>What it looks like</h2>
+          <p>One task from the plan that built this site, trimmed:</p>
+          <pre tabindex="0" role="region" aria-label="Task excerpt from a plan"><code>### Task 9: Work program
+
+**Depends on:** Task 4, Task 8
+
+**Files:**
+- Create: `src/work/projects.ts`
+- Test: `src/work/projects.test.ts`
+- Create: `src/work/work-panel.ts`
+- Test: `src/work/work-panel.test.ts`
+
+**Rules:**
+- PRODUCT.md principle 1: "Proof over claims. Every project
+  points to a demo, video, or repo the reader can open."
+  · checked over the whole list: every project link starts
+  with https:// or the site base.</code></pre>
+
+          <h2>What it changed</h2>
+          <p>This site was built this way, and the reviews caught problems the tests could not see:</p>
+          <ul>
+            <li>The dial passed its unit tests, but a browser review found a layer of labels covering the knob, so it could not be dragged with a mouse.</li>
+            <li>Two tasks ran at the same time and one commit picked up the other task's files. A reviewer read the commit list, and the history was split before anything was pushed.</li>
+            <li>A sentence in the loop write-up said more than the hook actually does. The review compared it with the script, and the copy was corrected.</li>
+          </ul>
+```
+
+- [ ] **Step 2: Check and commit**
+
+```bash
+pnpm format && pnpm exec prettier --check writing/agent-workflow.html && pnpm build
+git commit -m "feat(writing): show a plan task and its outcomes in the agent write-up" -m "<trailer>" -- writing/agent-workflow.html
+```
+
+---
+
+### Task 17: Review carry-overs
+
+**Depends on:** Task 14
+
+**Files:**
+- Modify: `.gitignore`
+- Modify: `.prettierignore`
+- Modify: `src/dial/dial.ts`
+- Test: `src/dial/dial.test.ts`
+- Modify: `src/styles/shell.css`
+- Modify: `src/styles/tokens.css`
+- Modify: `index.html` (`id="top"` on `.housing`)
+
+**Rules:**
+- Browser test note on Task 8: "BACK TO TOP scrolls to the Work section, not to the very top … the header with the name is out of view" · example: on the last program the strip link points at `#top` and lands at the very top.
+
+- [ ] **Step 1: Ignore the browser tester's scratch folder**
+
+Add a line `.playwright-mcp` to both `.gitignore` and `.prettierignore`.
+
+- [ ] **Step 2: Back to top goes to the top (TDD)**
+
+CHANGED TEST (requested by this rule): in `dial.test.ts`, `turns the next link into back to top on the last program` now expects href `#top`. Run it red, then in `dial.ts` change the last-program href from `#work` to `#top`, and in `index.html` give the `.housing` div `id="top"`. Run `pnpm exec vitest run src/dial` green.
+
+- [ ] **Step 3: Strip polish**
+
+In `shell.css`: add `outline-offset: -3px;` to `.strip-next:focus-visible` (its ring was clipped top and bottom), and change `.strip-next:hover { color: #ffffff; … }` to `color: var(--plate);`. In `tokens.css` delete `--strip-muted` (no longer used; confirm with `grep -rn strip-muted src index.html writing`).
+
+- [ ] **Step 4: Check and commit**
+
+```bash
+pnpm format && pnpm lint && pnpm format:check && pnpm test && pnpm build
+git commit -m "fix(home): send back to top to the page top" -m "<trailer>" -- .gitignore .prettierignore src/dial/dial.ts src/dial/dial.test.ts src/styles/shell.css src/styles/tokens.css index.html
+```
+
+---
+
 ### Task 13: Finish review and design documentation
 
-**Depends on:** Task 3, Task 10, Task 12
+**Depends on:** Task 3, Task 10, Task 12, Task 14, Task 15, Task 16, Task 17
 
 **Files:**
 - Create: `.impeccable/review/desktop.png`, `.impeccable/review/mobile.png`
