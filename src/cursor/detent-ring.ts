@@ -63,6 +63,13 @@ function boxUnderPointer(control: Element, clientX: number, clientY: number): Bo
   return hit ?? control.getBoundingClientRect()
 }
 
+function insideDial(face: HTMLElement, clientX: number, clientY: number): boolean {
+  const rect = face.getBoundingClientRect()
+  const dx = clientX - (rect.left + rect.width / 2)
+  const dy = clientY - (rect.top + rect.height / 2)
+  return Math.hypot(dx, dy) <= rect.width / 2
+}
+
 export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => void {
   let pending = false
   let next: { box: RingBox; snapped: boolean } | null = null
@@ -72,7 +79,7 @@ export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => v
     pending = false
     if (!next) return
     const { box, snapped } = next
-    ring.style.transform = `translate(${box.x}px, ${box.y}px)`
+    ring.style.translate = `${box.x}px ${box.y}px`
     ring.style.width = `${box.w}px`
     ring.style.height = `${box.h}px`
     ring.style.borderRadius = `${box.r}px`
@@ -105,7 +112,7 @@ export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => v
     ring.toggleAttribute('data-on-dark', Boolean(target?.closest(DARK_SURFACE_SELECTOR)))
 
     // The knob follows the pointer angle while dragged, so hopping by angle shows where it lands.
-    if (dialFace && target && dialFace.contains(target)) {
+    if (dialFace && target && dialFace.contains(target) && insideDial(dialFace, clientX, clientY)) {
       const box = dialStop(clientX, clientY)
       if (box) {
         schedule(box, true)

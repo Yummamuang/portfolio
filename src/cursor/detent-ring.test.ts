@@ -72,7 +72,7 @@ describe('createDetentRing', () => {
     const found = document.querySelector<HTMLElement>('[data-detent-ring]')
     if (!face || !found) throw new Error('fixture missing')
     ring = found
-    face.getBoundingClientRect = () => rect(0, 0, 200, 200)
+    face.getBoundingClientRect = () => rect(-20, -20, 240, 240)
     face.querySelectorAll<HTMLElement>('a').forEach((label, index) => {
       label.getBoundingClientRect = () => rect(index * 60, 10, 50, 20)
     })
@@ -91,7 +91,7 @@ describe('createDetentRing', () => {
     move(plain, 300, 300)
 
     expect(ring.style.width).toBe('24px')
-    expect(ring.style.transform).toBe('translate(288px, 288px)')
+    expect(ring.style.translate).toBe('288px 288px')
     expect(ring.hasAttribute('data-snapped')).toBe(false)
     expect(ring.hasAttribute('data-visible')).toBe(true)
   })
@@ -112,8 +112,17 @@ describe('createDetentRing', () => {
     if (!face) throw new Error('fixture missing')
     move(face, 0, 60)
 
-    expect(ring.style.transform).toBe('translate(56px, 6px)')
+    expect(ring.style.translate).toBe('56px 6px')
     expect(ring.style.width).toBe('58px')
+  })
+
+  it('stays free in the empty corner of the dial face box', () => {
+    const face = document.querySelector('.dial-face')
+    if (!face) throw new Error('fixture missing')
+    move(face, 210, 210)
+
+    expect(ring.style.width).toBe('24px')
+    expect(ring.hasAttribute('data-snapped')).toBe(false)
   })
 
   it('turns light over the dark status strip', () => {
@@ -150,7 +159,7 @@ describe('createDetentRing', () => {
     stubElementAtPointer(control)
     window.dispatchEvent(new Event('scroll'))
 
-    expect(ring.style.transform).toBe('translate(396px, 36px)')
+    expect(ring.style.translate).toBe('396px 36px')
   })
 
   it('returns to the free ring when scrolling moves the control away', () => {
@@ -175,7 +184,7 @@ describe('createDetentRing', () => {
     stubElementAtPointer(control)
     window.dispatchEvent(new Event('resize'))
 
-    expect(ring.style.transform).toBe('translate(296px, 96px)')
+    expect(ring.style.translate).toBe('296px 96px')
   })
 
   it('does not show the ring on scroll before the pointer has moved', () => {
@@ -222,11 +231,19 @@ describe('createDetentRing', () => {
     const control = document.querySelector<HTMLElement>('.control')
     if (!control) throw new Error('fixture missing')
     control.getBoundingClientRect = () => rect(0, 100, 300, 60)
-    control.getClientRects = () =>
-      [rect(200, 100, 100, 20), rect(0, 140, 80, 20)] as unknown as DOMRectList
+    const first = rect(200, 100, 100, 20)
+    const second = rect(0, 140, 80, 20)
+    const lines = [first, second]
+    control.getClientRects = () => ({
+      length: lines.length,
+      item: (index: number) => lines[index] ?? null,
+      [Symbol.iterator]: () => lines[Symbol.iterator](),
+      0: first,
+      1: second,
+    })
     move(control, 20, 150)
 
-    expect(ring.style.transform).toBe('translate(-4px, 136px)')
+    expect(ring.style.translate).toBe('-4px 136px')
     expect(ring.style.width).toBe('88px')
   })
 
