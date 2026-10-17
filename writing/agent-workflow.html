@@ -79,6 +79,47 @@
           <h2>4. Review the whole branch</h2>
           <p>One broad review of the whole branch runs at the end, before anything ships.</p>
 
+          <h2>What it looks like</h2>
+          <p>One task from the plan that built this site, trimmed:</p>
+          <pre
+            tabindex="0"
+            role="region"
+            aria-label="Task excerpt from a plan"
+          ><code>### Task 9: Work program
+
+**Depends on:** Task 4, Task 8
+
+**Files:**
+- Create: `src/work/projects.ts`
+- Test: `src/work/projects.test.ts`
+- Create: `src/work/work-panel.ts`
+- Test: `src/work/work-panel.test.ts`
+
+**Rules:**
+- PRODUCT.md principle 1: "Proof over claims. Every project
+  points to a demo, video, or repo the reader can open."
+  · checked over the whole list: every project link starts
+  with https:// or the site base.</code></pre>
+
+          <h2>What it changed</h2>
+          <p>
+            This site was built this way, and the reviews caught problems the tests could not see:
+          </p>
+          <ul>
+            <li>
+              The dial passed its unit tests, but a browser review found a layer of labels covering
+              the knob, so it could not be dragged with a mouse.
+            </li>
+            <li>
+              Two tasks ran at the same time and one commit picked up the other task's files. A
+              reviewer read the commit list, and the history was split before anything was pushed.
+            </li>
+            <li>
+              A sentence in the loop write-up said more than the hook actually does. The review
+              compared it with the script, and the copy was corrected.
+            </li>
+          </ul>
+
           <h2>Why it works</h2>
           <p>
             The agent that writes the code is never the one that approves it. Each subagent starts
