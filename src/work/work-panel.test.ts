@@ -109,10 +109,6 @@ describe('createWorkPanel', () => {
     root.remove()
   })
 
-  it('labels each list entry with its tag only', () => {
-    expect(text(root, '[data-work-list] .work-stop-tag')).toBe('GitHub')
-  })
-
   it('autoplays without native controls when autoplay is on', () => {
     const video = root.querySelector('[data-work-featured] video')
 
@@ -120,13 +116,13 @@ describe('createWorkPanel', () => {
     expect(video?.hasAttribute('controls')).toBe(false)
   })
 
-  it('puts the stop tag after the stop title', () => {
+  it('shows only the title in each stop and no tag element', () => {
     const stop = root.querySelector('[data-work-list] .work-stop')
 
     expect(Array.from(stop?.children ?? []).map((child) => child.className)).toEqual([
       'work-stop-title',
-      'work-stop-tag',
     ])
+    expect(root.querySelector('.work-stop-tag')).toBeNull()
   })
 
   it('leaves the status region empty until the selection changes', () => {

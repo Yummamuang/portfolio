@@ -4,7 +4,6 @@ export type ProjectMedia =
 export interface Project {
   id: string
   title: string
-  tag: string
   summary: string
   link: { label: string; href: string }
   media: ProjectMedia
@@ -17,7 +16,6 @@ export const PROJECTS: readonly Project[] = [
   {
     id: 'canine',
     title: 'Impacted canine assessment',
-    tag: 'GitHub',
     summary:
       'Web application that detects maxillary impacted canines in panoramic radiographs and assesses their eruption potential.',
     link: {
@@ -34,7 +32,6 @@ export const PROJECTS: readonly Project[] = [
   {
     id: 'manga',
     title: 'Manga recommendation',
-    tag: 'Live',
     summary: 'Manga recommendation website.',
     link: { label: 'Open live site', href: 'https://manga-system.vercel.app/' },
     media: {
@@ -47,7 +44,6 @@ export const PROJECTS: readonly Project[] = [
   {
     id: 'catspace',
     title: 'Cat Space shop',
-    tag: 'Design',
     summary: 'Cat Space shop website design.',
     link: { label: 'Open the site', href: `${base}pages/project/WebDesign-SpaceCat/index.html` },
     media: {
@@ -60,7 +56,6 @@ export const PROJECTS: readonly Project[] = [
   {
     id: 'gym',
     title: 'Gym management system',
-    tag: 'Laravel',
     summary: 'Gym management system built with the Laravel framework.',
     link: { label: 'View on GitHub', href: 'https://github.com/Yummamuang/Gym-Management-System' },
     media: {
@@ -73,7 +68,6 @@ export const PROJECTS: readonly Project[] = [
   {
     id: 'data',
     title: 'Game view counts mini project',
-    tag: 'Data',
     summary:
       'Mini data engineering project comparing view counts for the top 15 popular games on YouTube, Twitch and Facebook.',
     link: {
@@ -90,7 +84,6 @@ export const PROJECTS: readonly Project[] = [
   {
     id: 'snake',
     title: 'Snake game',
-    tag: 'Python',
     summary: 'Snake game written in Python.',
     link: {
       label: 'View on GitHub',

@@ -84,10 +84,7 @@ export function createWorkPanel({ root, projects, autoplay }: WorkPanelOptions) 
   count.setAttribute('aria-hidden', 'true')
 
   const buttons = projects.map((project, index) => {
-    const button = el('button', 'work-stop', [
-      el('span', 'work-stop-title', [project.title]),
-      el('span', 'work-stop-tag', [project.tag]),
-    ])
+    const button = el('button', 'work-stop', [el('span', 'work-stop-title', [project.title])])
     button.type = 'button'
     button.addEventListener('click', () => select(index))
     return button
