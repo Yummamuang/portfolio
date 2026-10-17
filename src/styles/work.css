@@ -37,11 +37,11 @@
 
 .work-title {
   margin: 0;
-  font-size: clamp(1.75rem, 9cqi, 2.875rem);
+  font-size: clamp(1.5rem, 9cqi, 2.875rem);
   line-height: 1;
   font-weight: 800;
   letter-spacing: -0.03em;
-  min-height: 3em;
+  min-height: 2em;
   overflow-wrap: anywhere;
   text-wrap: balance;
 }
@@ -194,6 +194,16 @@ a.work-media {
   font-weight: 600;
   letter-spacing: 0.1em;
   text-transform: uppercase;
+}
+
+@container (max-width: 260px) {
+  .work-title {
+    min-height: 3em;
+  }
+
+  .work-summary {
+    min-height: 7.25em;
+  }
 }
 
 @media (max-width: 1280px) {
