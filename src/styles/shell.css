@@ -120,8 +120,14 @@
   min-width: 0;
 }
 
+/* Room below the last card so Contact can scroll up into the scroll spy band. */
+@media (min-width: 901px) {
+  .display {
+    padding-bottom: max(0px, calc(100svh - 600px));
+  }
+}
+
 .program {
-  min-height: calc(100svh - 220px);
   scroll-margin-top: 24px;
 }
 
@@ -148,6 +154,13 @@
   align-items: center;
   color: var(--strip-text);
   text-decoration: none;
+}
+
+.strip-next svg {
+  width: 0.9em;
+  height: 0.9em;
+  margin-left: 0.5em;
+  flex: none;
 }
 
 .strip-next:hover {
