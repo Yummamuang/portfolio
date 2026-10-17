@@ -195,4 +195,37 @@ describe('createDial', () => {
       vi.useRealTimers()
     }
   })
+
+  it('runs the choose path when a program is selected from outside', () => {
+    ctx.dial.select('agents')
+
+    expect(ctx.onSelect).toHaveBeenCalledWith('agents')
+    expect(ctx.knob.getAttribute('aria-valuetext')).toBe('Agents')
+  })
+
+  it('blocks a passing spy report after an outside selection', () => {
+    ctx.dial.select('agents')
+
+    ctx.dial.setActive('loops')
+
+    expect(ctx.knob.getAttribute('aria-valuetext')).toBe('Agents')
+  })
+
+  it('reports the index through onChange on the first render and on every change', () => {
+    const onChange = vi.fn()
+    const root = document.createElement('nav')
+    root.innerHTML = DIAL_MARKUP
+    const dial = createDial({
+      root,
+      status: null,
+      lamp: null,
+      next: null,
+      onSelect: vi.fn(),
+      onChange,
+    })
+
+    dial.setActive('stack')
+
+    expect(onChange.mock.calls).toEqual([[0], [3]])
+  })
 })

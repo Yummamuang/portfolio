@@ -9,7 +9,8 @@ import './styles/cursor.css'
 import { createDetentRing } from './cursor/detent-ring'
 import { createDial } from './dial/dial'
 import { PROGRAMS, isProgramId } from './dial/dial-model'
-import { observeSections } from './dial/scroll-spy'
+import { isAtPageEnd, observeSections } from './dial/scroll-spy'
+import { createTuner, type TunerHandle } from './dial/tuner'
 import { PROJECTS } from './work/projects'
 import { createWorkPanel } from './work/work-panel'
 
@@ -22,6 +23,7 @@ if (workRoot) {
 
 const dialRoot = document.getElementById('dial')
 if (dialRoot) {
+  let tuner: TunerHandle | null = null
   const dial = createDial({
     root: dialRoot,
     status: document.querySelector<HTMLElement>('[data-dial-status]'),
@@ -32,6 +34,7 @@ if (dialRoot) {
         .getElementById(id)
         ?.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' })
     },
+    onChange: (index) => tuner?.centre(index),
   })
   const sections = PROGRAMS.map((program) => document.getElementById(program.id)).filter(
     (section): section is HTMLElement => section !== null,
@@ -41,9 +44,40 @@ if (dialRoot) {
     document.documentElement.style.setProperty('--dial-bar-h', `${height}px`)
   }).observe(dialRoot)
   window.addEventListener('scrollend', () => dial.settle())
+  const atPageEnd = () =>
+    isAtPageEnd(window.scrollY, window.innerHeight, document.documentElement.scrollHeight)
+  const markContactAtPageEnd = () => {
+    if (atPageEnd()) dial.setActive('contact')
+  }
+  window.addEventListener('scroll', markContactAtPageEnd, { passive: true })
+  window.addEventListener('scrollend', markContactAtPageEnd)
   observeSections(sections, (id) => {
-    if (isProgramId(id)) dial.setActive(id)
+    if (isProgramId(id)) dial.setActive(atPageEnd() ? 'contact' : id)
   })
+
+  const labelList = dialRoot.querySelector<HTMLElement>('.dial-labels')
+  const labels = Array.from(dialRoot.querySelectorAll<HTMLAnchorElement>('a[data-program]'))
+  if (labelList) {
+    const phone = window.matchMedia('(max-width: 900px)')
+    const syncTuner = () => {
+      if (phone.matches && !tuner) {
+        tuner = createTuner({
+          list: labelList,
+          labels,
+          reducedMotion,
+          onCommit: (index) => {
+            const program = PROGRAMS[index]
+            if (program) dial.select(program.id)
+          },
+        })
+      } else if (!phone.matches && tuner) {
+        tuner.destroy()
+        tuner = null
+      }
+    }
+    phone.addEventListener('change', syncTuner)
+    syncTuner()
+  }
 }
 
 const ring = document.querySelector<HTMLElement>('[data-detent-ring]')

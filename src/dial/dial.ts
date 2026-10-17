@@ -14,10 +14,12 @@ export interface DialOptions {
   lamp: HTMLElement | null
   next: HTMLAnchorElement | null
   onSelect: (id: ProgramId) => void
+  onChange?: (index: number) => void
 }
 
 export interface DialHandle {
   setActive(id: ProgramId): void
+  select(id: ProgramId): void
   settle(): void
 }
 
@@ -50,7 +52,14 @@ function arrowIcon(direction: keyof typeof ARROW_PATHS): SVGSVGElement {
   return svg
 }
 
-export function createDial({ root, status, lamp, next, onSelect }: DialOptions): DialHandle {
+export function createDial({
+  root,
+  status,
+  lamp,
+  next,
+  onSelect,
+  onChange,
+}: DialOptions): DialHandle {
   const knob = root.querySelector('[data-dial-knob]')
   if (!(knob instanceof HTMLElement)) throw new Error('Dial markup is missing [data-dial-knob]')
   const dialKnob = knob
@@ -73,6 +82,7 @@ export function createDial({ root, status, lamp, next, onSelect }: DialOptions):
     }
     if (status) status.textContent = `${program.title} · ${index + 1} of ${PROGRAMS.length}`
     if (next) renderNext(index)
+    onChange?.(index)
   }
 
   function renderNext(index: number) {
@@ -198,6 +208,9 @@ export function createDial({ root, status, lamp, next, onSelect }: DialOptions):
       if (pendingIndex !== null && index !== pendingIndex) return
       settle()
       activate(index)
+    },
+    select(id) {
+      choose(indexForProgram(id))
     },
     settle,
   }

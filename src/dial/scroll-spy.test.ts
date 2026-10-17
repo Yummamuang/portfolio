@@ -1,5 +1,5 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
-import { observeSections } from './scroll-spy'
+import { isAtPageEnd, observeSections } from './scroll-spy'
 
 type Entry = { target: Element; isIntersecting: boolean }
 
@@ -76,5 +76,23 @@ describe('observeSections', () => {
     stop()
 
     expect(FakeObserver.last?.disconnected).toBe(true)
+  })
+})
+
+describe('isAtPageEnd', () => {
+  it('is true when the viewport bottom touches the page bottom', () => {
+    expect(isAtPageEnd(1000, 800, 1800)).toBe(true)
+  })
+
+  it('is true within 2px of the page bottom', () => {
+    expect(isAtPageEnd(998, 800, 1800)).toBe(true)
+  })
+
+  it('is false 3px short of the page bottom', () => {
+    expect(isAtPageEnd(997, 800, 1800)).toBe(false)
+  })
+
+  it('is false at the top of a long page', () => {
+    expect(isAtPageEnd(0, 800, 1800)).toBe(false)
   })
 })

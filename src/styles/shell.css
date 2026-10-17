@@ -120,13 +120,6 @@
   min-width: 0;
 }
 
-/* Room below the last card so Contact can scroll up into the scroll spy band. */
-@media (min-width: 901px) {
-  .display {
-    padding-bottom: max(0px, calc(100svh - 600px));
-  }
-}
-
 .program {
   scroll-margin-top: 24px;
 }

@@ -125,9 +125,33 @@
     top: 0;
     z-index: 2;
     margin-inline: -16px;
-    padding: 8px 16px;
-    background: var(--plate);
-    border-bottom: 1px solid var(--rule);
+    padding: 0;
+    background: var(--knob);
+  }
+
+  .dial::before,
+  .dial::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    z-index: 1;
+    background: var(--signal);
+    pointer-events: none;
+  }
+
+  .dial::before {
+    top: 0;
+    width: 12px;
+    height: 6px;
+    margin-left: -6px;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  .dial::after {
+    bottom: 0;
+    width: 2px;
+    height: 20px;
+    margin-left: -1px;
   }
 
   .dial-face {
@@ -147,26 +171,60 @@
   }
 
   .dial-labels {
-    position: static;
+    position: relative;
     display: flex;
-    flex-wrap: wrap;
-    gap: 8px;
+    padding-inline: calc(50% - 43px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    pointer-events: auto;
+    mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+  }
+
+  .dial-labels::-webkit-scrollbar {
+    display: none;
   }
 
   .dial-labels li {
     position: static;
+    flex: 0 0 86px;
     transform: none;
+    scroll-snap-align: center;
+    scroll-snap-stop: always;
   }
 
   .dial-labels a {
-    border: 2px dashed var(--stop-idle);
-    border-radius: var(--radius-stop);
-    padding: 0 12px;
-    white-space: nowrap;
+    --tick-minor: #6a6a66;
+    --tick-major: #8a8a84;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 60px;
+    padding: 10px 0 8px;
+    font-size: 0.8125rem;
+    color: var(--tuner-idle);
+  }
+
+  .dial-labels a::after {
+    content: '';
+    width: 40px;
+    height: 14px;
+    background:
+      linear-gradient(var(--tick-major), var(--tick-major)) 50% 0 / 2px 14px no-repeat,
+      linear-gradient(var(--tick-minor), var(--tick-minor)) 4px 50% / 1px 8px no-repeat,
+      linear-gradient(var(--tick-minor), var(--tick-minor)) 12px 50% / 1px 8px no-repeat,
+      linear-gradient(var(--tick-minor), var(--tick-minor)) 27px 50% / 1px 8px no-repeat,
+      linear-gradient(var(--tick-minor), var(--tick-minor)) 35px 50% / 1px 8px no-repeat;
   }
 
   .dial-labels a[aria-current='true'] {
-    border-style: solid;
-    border-color: var(--ink);
+    --tick-major: var(--signal);
+    color: var(--strip-text);
+  }
+
+  .dial-labels a:focus-visible {
+    outline: 2px solid var(--strip-text);
+    outline-offset: -5px;
   }
 }
