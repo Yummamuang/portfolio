@@ -15,6 +15,7 @@
 }
 
 .work-media {
+  position: relative;
   aspect-ratio: 16 / 10;
   overflow: hidden;
   border-radius: var(--radius-stop);
@@ -90,6 +91,29 @@
   font-variant-numeric: tabular-nums;
 }
 
+.work-playback {
+  position: absolute;
+  right: 12px;
+  bottom: 12px;
+  min-width: 96px;
+  min-height: 44px;
+  padding: 0 20px;
+  background: var(--plate);
+  color: var(--ink);
+  border: 1px solid var(--ink);
+  border-radius: var(--radius-pill);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.work-playback:hover {
+  background: var(--ink);
+  color: var(--plate);
+  border-color: var(--plate);
+}
+
 a.work-media {
   display: block;
 }
@@ -150,15 +174,8 @@ a.work-media {
 }
 
 .work-stop-tag {
-  font-size: 0.75rem;
-  font-weight: 800;
-  letter-spacing: 0.08em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-
-.work-stop[aria-pressed='true'] .work-stop-tag {
-  color: var(--signal-text);
+  font-size: 0.8125rem;
+  color: var(--ink-muted);
 }
 
 .work-stop-title {

@@ -17,6 +17,23 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node
 }
 
+function renderPlaybackButton(video: HTMLVideoElement, playing: boolean): HTMLButtonElement {
+  const button = el('button', 'work-playback')
+  button.type = 'button'
+  const sync = () => {
+    button.textContent = playing ? 'Pause' : 'Play'
+    button.setAttribute('aria-label', playing ? 'Pause video' : 'Play video')
+  }
+  sync()
+  button.addEventListener('click', () => {
+    playing = !playing
+    if (playing) void video.play()
+    else video.pause()
+    sync()
+  })
+  return button
+}
+
 function renderMedia(project: Project, autoplay: boolean): HTMLElement {
   if (project.media.kind === 'image') {
     const frameLink = el('a', 'work-media')
@@ -39,9 +56,8 @@ function renderMedia(project: Project, autoplay: boolean): HTMLElement {
   video.muted = true
   video.setAttribute('muted', '')
   video.setAttribute('aria-label', `Video of ${project.title}`)
-  video.setAttribute('controls', '')
   if (autoplay) video.setAttribute('autoplay', '')
-  frame.append(video)
+  frame.append(video, renderPlaybackButton(video, autoplay))
   return frame
 }
 
@@ -65,8 +81,8 @@ export function createWorkPanel({ root, projects, autoplay }: WorkPanelOptions) 
 
   const buttons = projects.map((project, index) => {
     const button = el('button', 'work-stop', [
-      el('span', 'work-stop-tag', [project.tag]),
       el('span', 'work-stop-title', [project.title]),
+      el('span', 'work-stop-tag', [project.tag]),
     ])
     button.type = 'button'
     button.addEventListener('click', () => select(index))

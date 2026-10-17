@@ -1,4 +1,4 @@
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { PROJECTS } from './projects'
 import { createWorkPanel } from './work-panel'
 
@@ -89,12 +89,12 @@ describe('createWorkPanel', () => {
     expect(root.querySelector('[data-work-featured] .work-desktop-only')).toBeNull()
   })
 
-  it('shows controls instead of autoplay when autoplay is off', () => {
+  it('leaves autoplay off and native controls out when autoplay is off', () => {
     const still = setup(false)
     const video = still.querySelector('[data-work-featured] video')
 
     expect(video?.hasAttribute('autoplay')).toBe(false)
-    expect(video?.hasAttribute('controls')).toBe(true)
+    expect(video?.hasAttribute('controls')).toBe(false)
   })
 
   it('keeps focus on Next project after it is pressed', () => {
@@ -113,11 +113,20 @@ describe('createWorkPanel', () => {
     expect(text(root, '[data-work-list] .work-stop-tag')).toBe('GitHub')
   })
 
-  it('offers playback controls when autoplay is on', () => {
+  it('autoplays without native controls when autoplay is on', () => {
     const video = root.querySelector('[data-work-featured] video')
 
     expect(video?.hasAttribute('autoplay')).toBe(true)
-    expect(video?.hasAttribute('controls')).toBe(true)
+    expect(video?.hasAttribute('controls')).toBe(false)
+  })
+
+  it('puts the stop tag after the stop title', () => {
+    const stop = root.querySelector('[data-work-list] .work-stop')
+
+    expect(Array.from(stop?.children ?? []).map((child) => child.className)).toEqual([
+      'work-stop-title',
+      'work-stop-tag',
+    ])
   })
 
   it('leaves the status region empty until the selection changes', () => {
@@ -128,5 +137,59 @@ describe('createWorkPanel', () => {
     click(root, '[data-work-next]')
 
     expect(text(root, '[data-work-status]')).toBe('Project 2 of 6: Manga recommendation')
+  })
+
+  describe('playback button', () => {
+    const PLAY_BUTTON = '[data-work-featured] .work-media button'
+    let play: ReturnType<typeof vi.fn>
+    let pause: ReturnType<typeof vi.fn>
+
+    beforeEach(() => {
+      play = vi.fn(() => Promise.resolve())
+      pause = vi.fn()
+      vi.spyOn(HTMLMediaElement.prototype, 'play').mockImplementation(play)
+      vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(pause)
+    })
+
+    afterEach(() => {
+      vi.restoreAllMocks()
+    })
+
+    it('offers a pause button on a video project', () => {
+      const button = root.querySelector(PLAY_BUTTON)
+
+      expect(button?.tagName).toBe('BUTTON')
+      expect(button?.getAttribute('aria-label')).toBe('Pause video')
+    })
+
+    it('leaves the button off an image project', () => {
+      click(root, '[data-work-next]')
+
+      expect(root.querySelector('[data-work-featured] .work-media button')).toBeNull()
+    })
+
+    it('pauses the video and relabels the button on click', () => {
+      click(root, PLAY_BUTTON)
+
+      expect(pause).toHaveBeenCalledTimes(1)
+      expect(root.querySelector(PLAY_BUTTON)?.getAttribute('aria-label')).toBe('Play video')
+    })
+
+    it('plays the video again on a second click', () => {
+      click(root, PLAY_BUTTON)
+      click(root, PLAY_BUTTON)
+
+      expect(play).toHaveBeenCalledTimes(1)
+      expect(root.querySelector(PLAY_BUTTON)?.getAttribute('aria-label')).toBe('Pause video')
+    })
+
+    it('starts as a play button when autoplay is off', () => {
+      const still = setup(false)
+      const button = still.querySelector(PLAY_BUTTON)
+
+      expect(button?.getAttribute('aria-label')).toBe('Play video')
+      click(still, PLAY_BUTTON)
+      expect(play).toHaveBeenCalledTimes(1)
+    })
   })
 })
