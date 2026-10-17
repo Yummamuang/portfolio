@@ -141,14 +141,39 @@ describe('createWorkPanel', () => {
 
   describe('playback button', () => {
     const PLAY_BUTTON = '[data-work-featured] .work-media button'
+    let paused: boolean
     let play: ReturnType<typeof vi.fn>
     let pause: ReturnType<typeof vi.fn>
 
-    beforeEach(() => {
-      play = vi.fn(() => Promise.resolve())
-      pause = vi.fn()
+    function stubPlayback(startPaused: boolean, playResult: () => Promise<void>) {
+      paused = startPaused
+      vi.spyOn(HTMLMediaElement.prototype, 'paused', 'get').mockImplementation(() => paused)
+      play = vi.fn(function (this: HTMLMediaElement) {
+        const result = playResult()
+        result.then(
+          () => {
+            paused = false
+            this.dispatchEvent(new Event('play'))
+          },
+          () => undefined,
+        )
+        return result
+      })
+      pause = vi.fn(function (this: HTMLMediaElement) {
+        paused = true
+        this.dispatchEvent(new Event('pause'))
+      })
       vi.spyOn(HTMLMediaElement.prototype, 'play').mockImplementation(play)
       vi.spyOn(HTMLMediaElement.prototype, 'pause').mockImplementation(pause)
+    }
+
+    const label = (target: HTMLElement) =>
+      target.querySelector(PLAY_BUTTON)?.getAttribute('aria-label')
+    const settle = () => new Promise((resolve) => setTimeout(resolve))
+
+    beforeEach(() => {
+      stubPlayback(false, () => Promise.resolve())
+      root = setup()
     })
 
     afterEach(() => {
@@ -156,10 +181,8 @@ describe('createWorkPanel', () => {
     })
 
     it('offers a pause button on a video project', () => {
-      const button = root.querySelector(PLAY_BUTTON)
-
-      expect(button?.tagName).toBe('BUTTON')
-      expect(button?.getAttribute('aria-label')).toBe('Pause video')
+      expect(root.querySelector(PLAY_BUTTON)?.tagName).toBe('BUTTON')
+      expect(label(root)).toBe('Pause video')
     })
 
     it('leaves the button off an image project', () => {
@@ -172,24 +195,37 @@ describe('createWorkPanel', () => {
       click(root, PLAY_BUTTON)
 
       expect(pause).toHaveBeenCalledTimes(1)
-      expect(root.querySelector(PLAY_BUTTON)?.getAttribute('aria-label')).toBe('Play video')
+      expect(label(root)).toBe('Play video')
     })
 
-    it('plays the video again on a second click', () => {
+    it('plays the video again on a second click', async () => {
       click(root, PLAY_BUTTON)
       click(root, PLAY_BUTTON)
+      await settle()
 
       expect(play).toHaveBeenCalledTimes(1)
-      expect(root.querySelector(PLAY_BUTTON)?.getAttribute('aria-label')).toBe('Pause video')
+      expect(label(root)).toBe('Pause video')
     })
 
-    it('starts as a play button when autoplay is off', () => {
+    it('starts as a play button when autoplay is off', async () => {
+      stubPlayback(true, () => Promise.resolve())
       const still = setup(false)
-      const button = still.querySelector(PLAY_BUTTON)
 
-      expect(button?.getAttribute('aria-label')).toBe('Play video')
+      expect(label(still)).toBe('Play video')
       click(still, PLAY_BUTTON)
+      await settle()
       expect(play).toHaveBeenCalledTimes(1)
+      expect(label(still)).toBe('Pause video')
+    })
+
+    it('keeps the Play label when play is rejected', async () => {
+      stubPlayback(true, () => Promise.reject(new Error('blocked')))
+      const still = setup(false)
+      click(still, PLAY_BUTTON)
+      await settle()
+
+      expect(play).toHaveBeenCalledTimes(1)
+      expect(label(still)).toBe('Play video')
     })
   })
 })

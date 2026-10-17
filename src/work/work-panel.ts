@@ -17,19 +17,23 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node
 }
 
-function renderPlaybackButton(video: HTMLVideoElement, playing: boolean): HTMLButtonElement {
+function renderPlaybackButton(video: HTMLVideoElement, autoplay: boolean): HTMLButtonElement {
   const button = el('button', 'work-playback')
   button.type = 'button'
-  const sync = () => {
+  const sync = (playing: boolean) => {
     button.textContent = playing ? 'Pause' : 'Play'
     button.setAttribute('aria-label', playing ? 'Pause video' : 'Play video')
   }
-  sync()
+  sync(autoplay)
+  video.addEventListener('play', () => sync(true))
+  video.addEventListener('pause', () => sync(false))
   button.addEventListener('click', () => {
-    playing = !playing
-    if (playing) void video.play()
-    else video.pause()
-    sync()
+    if (!video.paused) {
+      video.pause()
+      return
+    }
+    // A blocked play() fires no event, so put the label back from the video itself.
+    video.play().catch(() => sync(!video.paused))
   })
   return button
 }
