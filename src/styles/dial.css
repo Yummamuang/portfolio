@@ -137,7 +137,7 @@
   }
 
   .program {
-    scroll-margin-top: 136px;
+    scroll-margin-top: calc(var(--dial-bar-h, 112px) + 24px);
   }
 
   .dial-ticks,

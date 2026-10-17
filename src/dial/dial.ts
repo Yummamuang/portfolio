@@ -12,6 +12,7 @@ export interface DialOptions {
   root: HTMLElement
   status: HTMLElement | null
   lamp: HTMLElement | null
+  next: HTMLAnchorElement | null
   onSelect: (id: ProgramId) => void
 }
 
@@ -30,7 +31,7 @@ const KEY_STEPS: Readonly<Record<string, number>> = {
 const ARC_LIMIT = 120
 const PENDING_TIMEOUT_MS = 1200
 
-export function createDial({ root, status, lamp, onSelect }: DialOptions): DialHandle {
+export function createDial({ root, status, lamp, next, onSelect }: DialOptions): DialHandle {
   const knob = root.querySelector('[data-dial-knob]')
   if (!(knob instanceof HTMLElement)) throw new Error('Dial markup is missing [data-dial-knob]')
   const dialKnob = knob
@@ -51,7 +52,15 @@ export function createDial({ root, status, lamp, onSelect }: DialOptions): DialH
       if (label.dataset.program === program.id) label.setAttribute('aria-current', 'true')
       else label.removeAttribute('aria-current')
     }
-    if (status) status.textContent = `Program ${index + 1} / ${PROGRAMS.length} · ${program.title}`
+    if (status) status.textContent = `${program.title} · ${index + 1} of ${PROGRAMS.length}`
+    if (next) renderNext(index)
+  }
+
+  function renderNext(index: number) {
+    if (!next) return
+    const following = PROGRAMS[index + 1]
+    next.setAttribute('href', following ? `#${following.id}` : '#work')
+    next.textContent = following ? `Next: ${following.title} ↓` : 'Back to top ↑'
   }
 
   function blinkLamp() {
