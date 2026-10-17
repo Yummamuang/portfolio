@@ -11,6 +11,7 @@
     <script type="module" src="/src/article.ts"></script>
   </head>
   <body>
+    <a class="skip-link" href="#article">Skip to article</a>
     <div class="housing">
       <div class="plate">
         <header class="plate-header">
@@ -24,7 +25,7 @@
             <a href="https://github.com/Yummamuang">GitHub</a>
           </div>
         </header>
-        <main class="article">
+        <main class="article" id="article">
           <h1>Loop engineering</h1>
           <p class="dek">
             Designing the system that prompts a coding agent, instead of prompting it turn by turn.
@@ -63,7 +64,11 @@
             <strong>One item per pass.</strong> A bare <code>/loop</code> in Claude Code reads this
             prompt. It picks exactly one thing and has rules that close the usual escape hatches.
           </p>
-          <pre><code>Work the current branch. Pick exactly ONE thing, in this order:
+          <pre
+            tabindex="0"
+            role="region"
+            aria-label="loop.md prompt"
+          ><code>Work the current branch. Pick exactly ONE thing, in this order:
 
 1. If `work-memory/STATE.md` exists and has an item marked `next`, do that item.
 2. If the gate is red (`.claude/gate.sh`, or lint/format on changed files), fix it.
@@ -82,40 +87,42 @@ Rules:
             <code>STATE.md</code> file, not in the conversation. Every session reads it first and
             updates it last.
           </p>
-          <pre><code># STATE
-Goal: &lt;the goal for this round&gt;
-
-## Done
-- [x] ...
+          <pre tabindex="0" role="region" aria-label="STATE.md template"><code># STATE
+Updated: YYYY-MM-DD
+Goal: &lt;the goal for this round, something you can measure&gt;
 
 ## Next
 - [ ] `next` &lt;the one item to do next&gt;
+- [ ] &lt;after that&gt;
+
+## Done
+- [x] &lt;done, with the commit or PR&gt;
 
 ## Blocked
 - &lt;what is stuck and what it needs from a person&gt;
 
 ## Learned
-- &lt;an error already hit, and its fix&gt;</code></pre>
+- &lt;an error already hit and its fix, or an approach that failed and why&gt;</code></pre>
           <p>
-            <strong>A gate the agent cannot talk past.</strong> A Stop hook runs whenever the agent
-            tries to end a turn with code changes. It skips turns that touched only docs or config.
-            Otherwise it runs the repository's own gate script, or a default one scoped to the files
-            the turn touched: ESLint, Prettier, and <code>vitest run</code> on each changed file's
-            colocated test. When a task finishes, a fuller pass also runs the matching .NET test
-            class. If the gate is red, the hook blocks the turn and hands back the last lines of
-            output, so the agent has to fix the cause before it can stop.
+            <strong>A gate before the agent stops.</strong> A Stop hook runs whenever the agent
+            tries to end a turn while files have uncommitted changes. It skips the check when every
+            changed file is docs or config. Otherwise it runs the repository's own gate script, or a
+            default one scoped to the changed files: ESLint, Prettier, and
+            <code>vitest run</code> on each changed file's colocated test. If the gate is red, the
+            hook blocks the stop once and hands back the last 60 lines of output, so the agent's
+            next pass starts from the failure. My task workflow also runs a fuller pass at the end
+            of each task, including the matching .NET test class.
           </p>
           <p>
             <strong>Stop rules.</strong> A loop without a stop is an open invoice. Mine stops when
             nothing is pending, takes one change per pass, and stops to report when the same item
             fails twice in a row. I also built a fully unattended outer loop with an iteration cap,
-            a no-progress check and a spend cap, then set it aside: I keep a person at the start of
-            every loop.
+            a no-progress check and a spend cap, and later set it aside.
           </p>
 
           <h2>What it changed</h2>
           <p>
-            An agent no longer ends a turn on a red gate: the hook sends it back with the failing
+            An agent that tries to end a turn on a red gate is sent back once with the failing
             output. Work that spans several sessions picks up from <code>STATE.md</code> instead of
             from whatever I remember. Each pass is one reviewable change.
           </p>
