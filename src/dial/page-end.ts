@@ -1,14 +1,31 @@
 import type { DialHandle } from './dial'
-import { isAtPageEnd } from './scroll-spy'
+import { isProgramId } from './dial-model'
+import { isAtPageEnd, sectionInMiddleBand } from './scroll-spy'
 
-export function watchPageEnd(dial: Pick<DialHandle, 'setActive' | 'settle'>) {
+export function watchPageEnd(
+  dial: Pick<DialHandle, 'setActive' | 'settle'>,
+  sections: HTMLElement[],
+) {
   // A chosen program can sit at the page end. Until its scroll finishes or the
   // user takes over, reaching the end must not turn the choice into Contact.
   let choiceScrolling = false
   const atPageEnd = () =>
     isAtPageEnd(window.scrollY, window.innerHeight, document.documentElement.scrollHeight)
+  let wasAtPageEnd = false
+  // At the end both About and Contact sit in the band. Scrolling back up the
+  // observer only reports Contact leaving, so the section left behind is restored here.
   const markContact = () => {
-    if (!choiceScrolling && atPageEnd()) dial.setActive('contact')
+    const atEnd = atPageEnd()
+    const leftTheEnd = wasAtPageEnd && !atEnd
+    wasAtPageEnd = atEnd
+    if (choiceScrolling) return
+    if (atEnd) {
+      dial.setActive('contact')
+      return
+    }
+    if (!leftTheEnd) return
+    const id = sectionInMiddleBand(sections, window.innerHeight)?.id
+    if (id !== undefined && isProgramId(id)) dial.setActive(id)
   }
   // Check before settling so a choice that scrolled to the page end keeps its guard.
   const onScrollEnd = () => {

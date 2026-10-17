@@ -49,6 +49,12 @@ function press(target: HTMLElement, key: string) {
   return event
 }
 
+function labelAt(ctx: { labels: HTMLAnchorElement[] }, index: number) {
+  const label = ctx.labels[index]
+  if (!label) throw new Error(`label ${index} missing from fixture`)
+  return label
+}
+
 describe('createTuner', () => {
   let ctx: ReturnType<typeof setup>
 
@@ -168,7 +174,7 @@ describe('createTuner', () => {
 
   it('commits the next label on ArrowRight and moves focus to it', () => {
     ctx.tuner.centre(1)
-    press(ctx.labels[1] as HTMLElement, 'ArrowRight')
+    press(labelAt(ctx, 1), 'ArrowRight')
 
     expect(ctx.onCommit).toHaveBeenCalledExactlyOnceWith(2)
     expect(document.activeElement).toBe(ctx.labels[2])
@@ -176,22 +182,22 @@ describe('createTuner', () => {
 
   it('commits the previous label on ArrowLeft', () => {
     ctx.tuner.centre(3)
-    press(ctx.labels[3] as HTMLElement, 'ArrowLeft')
+    press(labelAt(ctx, 3), 'ArrowLeft')
 
     expect(ctx.onCommit).toHaveBeenCalledExactlyOnceWith(2)
   })
 
   it('commits the first and last labels on Home and End', () => {
     ctx.tuner.centre(2)
-    press(ctx.labels[2] as HTMLElement, 'End')
-    press(ctx.labels[5] as HTMLElement, 'Home')
+    press(labelAt(ctx, 2), 'End')
+    press(labelAt(ctx, 5), 'Home')
 
     expect(ctx.onCommit.mock.calls).toEqual([[5], [0]])
   })
 
   it('stays on the last label when ArrowRight passes the end', () => {
     ctx.tuner.centre(5)
-    press(ctx.labels[5] as HTMLElement, 'ArrowRight')
+    press(labelAt(ctx, 5), 'ArrowRight')
 
     expect(ctx.onCommit).not.toHaveBeenCalled()
   })
@@ -208,7 +214,7 @@ describe('createTuner', () => {
     ctx.tuner.destroy()
     const tap = new MouseEvent('click', { bubbles: true, cancelable: true })
     ctx.labels[1]?.dispatchEvent(tap)
-    press(ctx.labels[0] as HTMLElement, 'End')
+    press(labelAt(ctx, 0), 'End')
 
     expect(ctx.onCommit).not.toHaveBeenCalled()
     expect(tap.defaultPrevented).toBe(false)

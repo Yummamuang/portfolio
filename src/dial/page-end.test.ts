@@ -26,13 +26,23 @@ describe('watchPageEnd', () => {
   let root: HTMLElement
   let dial: DialHandle
   let stop: () => void
+  let sections: HTMLElement[]
   let watcher: ReturnType<typeof watchPageEnd>
 
   beforeEach(() => {
     root = document.createElement('nav')
     root.innerHTML = MARKUP
     dial = createDial({ root, status: null, lamp: null, next: null, onSelect: vi.fn() })
-    watcher = watchPageEnd(dial)
+    sections = [
+      { id: 'about', top: 300, bottom: 900 },
+      { id: 'contact', top: 700, bottom: 1300 },
+    ].map(({ id, top, bottom }) => {
+      const section = document.createElement('section')
+      section.id = id
+      section.getBoundingClientRect = () => new DOMRect(0, top, 100, bottom - top)
+      return section
+    })
+    watcher = watchPageEnd(dial, sections)
     stop = watcher.stop
   })
 
@@ -75,7 +85,7 @@ describe('watchPageEnd', () => {
   })
 
   it('reports whether the page is at its end', () => {
-    const { atPageEnd, stop: stopWatching } = watchPageEnd(dial)
+    const { atPageEnd, stop: stopWatching } = watchPageEnd(dial, sections)
     setPageScroll(1000)
 
     expect(atPageEnd()).toBe(true)
@@ -109,6 +119,23 @@ describe('watchPageEnd', () => {
     dial.setActive('about')
     window.dispatchEvent(new Event('wheel'))
     setPageScroll(1000)
+    window.dispatchEvent(new Event('scroll'))
+
+    expect(activeProgram(root)).toBe('contact')
+  })
+
+  it('lights the section in the band after scrolling up from the page end', () => {
+    setPageScroll(1000)
+    window.dispatchEvent(new Event('scroll'))
+    setPageScroll(900)
+    window.dispatchEvent(new Event('scroll'))
+
+    expect(activeProgram(root)).toBe('about')
+  })
+
+  it('keeps contact while the page stays at its end', () => {
+    setPageScroll(1000)
+    window.dispatchEvent(new Event('scroll'))
     window.dispatchEvent(new Event('scroll'))
 
     expect(activeProgram(root)).toBe('contact')

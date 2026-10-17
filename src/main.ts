@@ -42,11 +42,11 @@ if (dialRoot) {
   const sections = PROGRAMS.map((program) => document.getElementById(program.id)).filter(
     (section): section is HTMLElement => section !== null,
   )
+  pageEnd = watchPageEnd(dial, sections)
   new ResizeObserver(() => {
     const height = Math.ceil(dialRoot.getBoundingClientRect().height)
     document.documentElement.style.setProperty('--dial-bar-h', `${height}px`)
   }).observe(dialRoot)
-  pageEnd = watchPageEnd(dial)
   observeSections(sections, (id) => {
     if (isProgramId(id) && !pageEnd?.atPageEnd()) dial.setActive(id)
   })

@@ -1,5 +1,14 @@
 // A section counts as current once it crosses a thin band around the middle of the viewport.
+const BAND_TOP = 0.45
+const BAND_BOTTOM = 0.5
 const MIDDLE_BAND = '-45% 0px -50% 0px'
+
+export function sectionInMiddleBand(sections: HTMLElement[], viewportHeight: number) {
+  return sections.find((section) => {
+    const { top, bottom } = section.getBoundingClientRect()
+    return top < viewportHeight * BAND_BOTTOM && bottom > viewportHeight * BAND_TOP
+  })
+}
 
 const PAGE_END_TOLERANCE_PX = 2
 
