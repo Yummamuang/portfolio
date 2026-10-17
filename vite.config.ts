@@ -7,6 +7,7 @@ export default defineConfig({
     rollupOptions: {
       input: {
         main: resolve(import.meta.dirname, 'index.html'),
+        loops: resolve(import.meta.dirname, 'writing/loop-engineering.html'),
       },
     },
   },
