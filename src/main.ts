@@ -5,6 +5,8 @@ import './styles/shell.css'
 import './styles/dial.css'
 import './styles/work.css'
 import './styles/sections.css'
+import './styles/cursor.css'
+import { createDetentRing } from './cursor/detent-ring'
 import { createDial } from './dial/dial'
 import { PROGRAMS, isProgramId } from './dial/dial-model'
 import { observeSections } from './dial/scroll-spy'
@@ -42,4 +44,9 @@ if (dialRoot) {
   observeSections(sections, (id) => {
     if (isProgramId(id)) dial.setActive(id)
   })
+}
+
+const ring = document.querySelector<HTMLElement>('[data-detent-ring]')
+if (ring && window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  createDetentRing({ ring, dialFace: document.querySelector<HTMLElement>('.dial-face') })
 }
