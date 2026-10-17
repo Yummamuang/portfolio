@@ -17,7 +17,7 @@ OWN-WORLD: Light grey plastic housing (#d6d6d1) around a faceplate (#eeeeea), ne
 
 STORY: A recruiter sees Panatakorn's face, role and one real project at a glance, turns or scrolls through the six programs, and opens a repo, demo or write-up, or sends an email.
 
-FIRST VIEWPORT: Header plate with YM., name, role, lamp, email and GitHub. Left, a 560px dial with six program labels, Work selected. Right, the featured project: media left; kicker, title, summary, "View on GitHub" and "Next project" right. Below it, the six-project list in two columns beside the portrait cut-out standing on a rule, tagged "About me". Black status strip at the bottom.
+FIRST VIEWPORT: Header plate with YM., name, role, lamp, email and GitHub. Left, a 560px dial with six program labels, Work selected. Right, a one-line role statement linking to the agent workflow write-up, then the featured project: media left; title, summary, "View on GitHub", "Next project" and a 1 / 6 counter right. No kicker labels anywhere. Below it, the six-project list in two columns beside the portrait cut-out standing on a rule, tagged "About me". Black status strip at the bottom.
 
 FORM: Program Dial, candidate 4 of 7, seed:3b55bd4398fb39dd. Signature interaction: the pointer rotates and detents onto the active program on drag, arrow keys or page scroll, and the lamp blinks once.
 

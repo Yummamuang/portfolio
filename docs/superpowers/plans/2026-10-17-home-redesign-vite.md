@@ -1154,6 +1154,8 @@ git commit -m "feat(home): add dial stop math"
 - Create: `src/styles/dial.css`
 - Modify: `index.html` (replace `<nav class="dial" id="dial" aria-label="Programs"></nav>`)
 - Modify: `src/main.ts` (full rewrite below)
+- Modify: `src/styles/tokens.css` (`--stop-idle` value, Step 9b)
+- Modify: `src/styles/shell.css` (status strip on phones, Step 9b)
 
 **Interfaces:**
 - Consumes: everything listed under Task 7 Produces. `[data-dial-status]` and `[data-lamp]` from Task 6.
@@ -1166,7 +1168,7 @@ git commit -m "feat(home): add dial stop math"
 
 **Rules:**
 - Shape brief §6: "ชื่อโปรแกรมทุกอันเป็นลิงก์จริงไป `#section`" · example: the six labels are `<a href="#work">` … `<a href="#contact">`, checked in the Browser check.
-- Shape brief §6: "เปลี่ยนโปรแกรมได้ 4 ทาง: หมุนด้วยการลาก, scroll, คีย์ลูกศร, หรือกดชื่อโปรแกรม" · example: ArrowRight on Work selects Loops; ArrowLeft on Work keeps Work and does not call `onSelect`; a drag released at the Loops side snaps to Loops; the scroll spy reports the section that enters the middle band.
+- Shape brief §6: "เปลี่ยนโปรแกรมได้ 4 ทาง: หมุนด้วยการลาก, scroll, คีย์ลูกศร, หรือกดชื่อโปรแกรม" · example: ArrowRight on Work selects Loops; ArrowLeft on Work keeps Work and does not call `onSelect`; a drag released at the Loops side snaps to Loops; a drag carried past Contact into the bottom gap stays on Contact; the scroll spy reports the section that enters the middle band.
 - Global constraint: "`prefers-reduced-motion: reduce` turns off transitions, animation" · example: covered by `base.css`, checked in the Browser check with reduced motion emulated.
 
 **Browser check:**
@@ -1180,7 +1182,8 @@ git commit -m "feat(home): add dial stop math"
 | 3 | Tab to the knob and press ArrowRight twice | Pointer moves to STACK; page scrolls to the "Stack" heading |
 | 4 | Drag the knob clockwise to the right side and release | Pointer settles exactly on the nearest label; page scrolls to that section |
 | 5 | Scroll the page back to the top with the mouse wheel | Pointer returns to WORK; strip reads "Program 1 / 6 · Work" |
-| 6 | Resize to 390×844 | Knob is hidden; a horizontal row of six outlined stops sits at the top; the current one has a solid border and the rest dashed |
+| 6 | Resize to 390×844 | Knob is hidden; six outlined stops sit at the top, wrapping onto a second line with no sideways scrolling; the current one has a solid border and the rest dashed; the black strip sits at the end of the page instead of staying pinned |
+| 7 | Back at 1440×900, drag the knob clockwise past CONTACT into the gap at the bottom and release | Pointer stays on CONTACT; it does not jump to WORK |
 
 - [ ] **Step 1: Write the failing scroll spy test**
 
@@ -1414,8 +1417,20 @@ describe('createDial', () => {
     expect(ctx.onSelect).toHaveBeenCalledWith('loops')
     expect(ctx.knob.hasAttribute('data-dragging')).toBe(false)
   })
+
+  it('keeps contact when a drag continues past it into the gap at the bottom', () => {
+    pointer(ctx.knob, 'pointerdown', 100, 100)
+    pointer(ctx.knob, 'pointermove', 190, 150)
+    pointer(ctx.knob, 'pointermove', 95, 199)
+    pointer(ctx.knob, 'pointerup', 95, 199)
+
+    expect(ctx.onSelect).toHaveBeenCalledWith('contact')
+    expect(ctx.onSelect).not.toHaveBeenCalledWith('work')
+  })
 })
 ```
+
+The gap test moves to (190, 150), about 119° and on the Contact stop, then to (95, 199), about -177° and inside the bottom gap. Without the gap rule that release would snap to Work.
 
 The drag point (0, 60) against the center (100, 100) is at about -68°, nearest to the Loops stop at -72°.
 
@@ -1527,9 +1542,20 @@ export function createDial({ root, status, lamp, onSelect }: DialOptions): DialH
   }
 
   let dragging = false
+  let dragAngle = angleForIndex(activeIndex)
+
+  // The arc has a gap at the bottom where the pointer angle jumps from +180 to -180.
+  // Inside the gap the knob holds the last angle it had on the arc, so a drag past
+  // Contact never flips over to Work.
+  function trackDrag(event: MouseEvent) {
+    const angle = angleFromEvent(event)
+    if (Math.abs(angle) <= ARC_LIMIT) dragAngle = angle
+    dialKnob.style.setProperty('--dial-angle', `${dragAngle}deg`)
+  }
 
   dialKnob.addEventListener('pointerdown', (event) => {
     dragging = true
+    dragAngle = angleForIndex(activeIndex)
     dialKnob.setAttribute('data-dragging', '')
     if (typeof PointerEvent !== 'undefined' && event instanceof PointerEvent) {
       dialKnob.setPointerCapture(event.pointerId)
@@ -1538,15 +1564,15 @@ export function createDial({ root, status, lamp, onSelect }: DialOptions): DialH
 
   dialKnob.addEventListener('pointermove', (event) => {
     if (!dragging) return
-    const angle = Math.max(-ARC_LIMIT, Math.min(ARC_LIMIT, angleFromEvent(event)))
-    dialKnob.style.setProperty('--dial-angle', `${angle}deg`)
+    trackDrag(event)
   })
 
   dialKnob.addEventListener('pointerup', (event) => {
     if (!dragging) return
     dragging = false
+    trackDrag(event)
     dialKnob.removeAttribute('data-dragging')
-    const index = indexForAngle(angleFromEvent(event))
+    const index = indexForAngle(dragAngle)
     render(index)
     choose(index)
   })
@@ -1718,9 +1744,8 @@ Read `/Users/yummamuang/.claude/skills/impeccable/reference/craft-floor.md` firs
   .dial-labels {
     position: static;
     display: flex;
+    flex-wrap: wrap;
     gap: 8px;
-    overflow-x: auto;
-    scrollbar-width: none;
   }
 
   .dial-labels li {
@@ -1740,6 +1765,16 @@ Read `/Users/yummamuang/.claude/skills/impeccable/reference/craft-floor.md` firs
     border-color: var(--ink);
   }
 }
+```
+
+- [ ] **Step 9b: Make unselected stops and the phone strip pass review**
+
+The design critique found the dashed outline of unselected stops at about 2.2:1 against the plate, under the 3:1 minimum for UI component borders, and two sticky bars stacked on a 390px phone. In `src/styles/tokens.css` change `--stop-idle: #a3a39d;` to `--stop-idle: #7d7d77;`. In `src/styles/shell.css`, inside the existing `@media (max-width: 900px)` block, add:
+
+```css
+  .status-strip {
+    position: static;
+  }
 ```
 
 - [ ] **Step 10: Replace the dial placeholder in `index.html`**
@@ -1864,6 +1899,8 @@ git commit -m "feat(home): add program dial navigation"
 - Shape brief §5: "ป้าย 'Desktop only' ของงานที่ใช้ได้แค่บนจอคอม" · example: the Manga project renders a "Desktop only" tag; Canine does not.
 - Global constraint: "`prefers-reduced-motion: reduce` turns off ... video autoplay" · example: with `autoplay: false` the video has `controls` and no `autoplay` attribute.
 - User answer: "Canine นำ ตาม canvas" · example: order is Canine, Manga, Cat Space, Gym, Data, Snake.
+- User answer after the design critique: "คง Canine นำ + เพิ่มบรรทัดตำแหน่ง" · example: the Work section opens with the role line linking to the agent workflow write-up, checked in the Browser check.
+- User answer after the design critique: kickers removed ("เอาออก") · example: the featured panel has no `.kicker`; the position shows as `1 / 6` beside the buttons.
 
 **Browser check:**
 - Preconditions: `pnpm dev` running, port 5173. Window 1440×900.
@@ -1871,9 +1908,9 @@ git commit -m "feat(home): add program dial navigation"
 
 | # | Action | Expected |
 |---|---|---|
-| 1 | Open the base URL | Right side shows a card with the canine video (playing, muted), kicker "Program 01 · Work · 1 / 6", heading "Impacted canine assessment", an orange "View on GitHub" button and a "Next project" button |
+| 1 | Open the base URL | Right side opens with the line "Software Engineer working with .NET and Next.js. I also design agent workflows for Claude Code. See how", then a card with the canine video (playing, muted), heading "Impacted canine assessment", an orange "View on GitHub" button, a "Next project" button and "1 / 6" at the end of that row; no small label above the heading |
 | 2 | Below the card, without scrolling | Two-column list of six projects, the first with a solid border and the rest dashed; the portrait stands at the right of the list with an "About me" tag, and the face is fully visible inside the 900px-tall window |
-| 3 | Click "Next project" | Card shows "Manga recommendation", kicker "… 2 / 6", a "Desktop only" tag, and "Open live site"; the second list entry is now solid |
+| 3 | Click "Next project" | Card shows "Manga recommendation", "2 / 6", a "Desktop only" tag, and "Open live site"; the second list entry is now solid; clicking the screenshot opens the live site |
 | 4 | Click "Snake game" in the list | Card shows "Snake game" with its screenshot and "View on GitHub" |
 | 5 | Click "Next project" on Snake game | Card wraps to "Impacted canine assessment" |
 | 6 | Click "View on GitHub" | Opens `https://github.com/Yummamuang/prediction-of-maxillary-impacted-canine` |
@@ -2093,7 +2130,15 @@ describe('createWorkPanel', () => {
     expect(root.querySelector('[data-work-featured] a.button-primary')?.getAttribute('href')).toBe(
       'https://github.com/Yummamuang/prediction-of-maxillary-impacted-canine',
     )
-    expect(text(root, '[data-work-featured] .kicker')).toBe('Program 01 · Work · 1 / 6')
+    expect(text(root, '[data-work-featured] .work-count')).toBe('1 / 6')
+  })
+
+  it('links an image project media frame to the project', () => {
+    click(root, '[data-work-next]')
+
+    expect(root.querySelector('[data-work-featured] a.work-media')?.getAttribute('href')).toBe(
+      'https://manga-system.vercel.app/',
+    )
   })
 
   it('lists every project as a button', () => {
@@ -2173,14 +2218,16 @@ function el<K extends keyof HTMLElementTagNameMap>(
 }
 
 function renderMedia(project: Project, autoplay: boolean): HTMLElement {
-  const frame = el('div', 'work-media')
   if (project.media.kind === 'image') {
+    const frameLink = el('a', 'work-media')
+    frameLink.href = project.link.href
     const image = el('img', '')
     image.src = project.media.src
     image.alt = project.media.alt
-    frame.append(image)
-    return frame
+    frameLink.append(image)
+    return frameLink
   }
+  const frame = el('div', 'work-media')
   const video = el('video', '')
   video.setAttribute('src', project.media.src)
   video.setAttribute('poster', project.media.poster)
@@ -2232,13 +2279,15 @@ export function createWorkPanel({ root, projects, autoplay }: WorkPanelOptions) 
     next.dataset.workNext = ''
     next.addEventListener('click', () => select((current + 1) % projects.length))
 
+    const count = el('span', 'work-count', [`${index + 1} / ${projects.length}`])
+    count.setAttribute('aria-label', `Project ${index + 1} of ${projects.length}`)
+
     const body = el('div', 'work-body', [
-      el('p', 'kicker', [`Program 01 · Work · ${index + 1} / ${projects.length}`]),
       el('h3', 'work-title', [project.title]),
       el('p', 'work-summary', [project.summary]),
     ])
     if (project.desktopOnly) body.append(el('p', 'work-desktop-only', ['Desktop only']))
-    body.append(el('div', 'work-actions', [link, next]))
+    body.append(el('div', 'work-actions', [link, next, count]))
 
     featuredRoot.replaceChildren(renderMedia(project, autoplay), body)
     buttons.forEach((button, buttonIndex) =>
@@ -2254,7 +2303,7 @@ export function createWorkPanel({ root, projects, autoplay }: WorkPanelOptions) 
 - [ ] **Step 8: Run it to see it pass**
 
 Run: `pnpm exec vitest run src/work`
-Expected: PASS, 12 tests.
+Expected: PASS, 13 tests.
 
 - [ ] **Step 9: Read the craft floor, then write `src/styles/work.css`**
 
@@ -2326,8 +2375,34 @@ Read `/Users/yummamuang/.claude/skills/impeccable/reference/craft-floor.md` firs
 .work-actions {
   display: flex;
   flex-wrap: wrap;
+  align-items: center;
   gap: 12px;
   margin-top: auto;
+}
+
+.work-count {
+  margin-left: auto;
+  font-size: 0.875rem;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  color: var(--ink-muted);
+  font-variant-numeric: tabular-nums;
+}
+
+a.work-media {
+  display: block;
+}
+
+.work-intro {
+  margin: 0;
+  max-width: 60ch;
+  font-size: 1.25rem;
+  line-height: 1.4;
+  font-weight: 600;
+}
+
+.work-intro a {
+  color: var(--signal-text);
 }
 
 .work-lower {
@@ -2457,6 +2532,10 @@ with:
 ```html
 <section id="work" class="program program-work" aria-labelledby="work-title" data-work>
   <h2 id="work-title" class="visually-hidden">Work</h2>
+  <p class="work-intro">
+    Software Engineer working with .NET and Next.js. I also design agent workflows for Claude
+    Code. <a href="./writing/agent-workflow.html">See how</a>
+  </p>
   <div class="work-featured" data-work-featured aria-live="polite"></div>
   <div class="work-lower">
     <ol class="work-list" data-work-list aria-label="All projects"></ol>
@@ -2547,13 +2626,16 @@ git commit -m "feat(home): add projects-first work program"
 - Create: `src/styles/sections.css`
 - Modify: `index.html` (replace the five placeholder sections `#loops`, `#agents`, `#stack`, `#about`, `#contact`)
 - Modify: `src/main.ts` (add one import line)
+- Modify: `src/styles/base.css` (remove the unused `.kicker` rule)
 
 **Interfaces:**
-- Consumes: `.kicker`, `.button-primary`, `.button-secondary` from Task 6. Links to `./writing/loop-engineering.html` and `./writing/agent-workflow.html`, created in Tasks 11 and 12.
+- Consumes: `.button-primary`, `.button-secondary` from Task 6. Links to `./writing/loop-engineering.html` and `./writing/agent-workflow.html`, created in Tasks 11 and 12.
 
 **Rules:**
 - PRODUCT.md "Absent, do not fabricate: employer name, workplace projects, client names, testimonials, metrics, awards, a CV file, LinkedIn." · example: the copy below names no employer and states no numbers.
 - PRODUCT.md "Present them as customized versions and credit superpowers." · example: the Agents section carries the credit line.
+- User answer after the design critique: "คงชื่อ เพิ่มประโยคเปิดที่เข้าใจง่าย" · example: the Loops and Agents ledes open with a plain sentence a recruiter understands; the dial labels stay "Loops" and "Agents".
+- User answer after the design critique: kickers removed ("เอาออก") · example: `grep kicker` finds nothing in `index.html` or `src`.
 - User answer: "เก็บไว้ ลิงก์จาก Home" (old Lab, Project, About pages) · example: About links to `./pages/lab.html`, `./pages/project.html`, `./pages/about.html`.
 
 **Browser check:**
@@ -2562,12 +2644,13 @@ git commit -m "feat(home): add projects-first work program"
 
 | # | Action | Expected |
 |---|---|---|
-| 1 | Click "LOOPS" on the dial | Section shows kicker "Program 02 · Loops", heading "Loop engineering", four stage boxes with the first solid and three dashed, and a "Read the write-up" button |
+| 1 | Click "LOOPS" on the dial | Section starts with the heading "Loop engineering" (no small label above it), a lede that opens "A coding agent can work in a loop", four numbered stage boxes that all look the same, and a "Read the write-up" button |
 | 2 | Click "AGENTS" | Heading "Agent workflow", four steps, and the line "Customized from the open-source superpowers skills." |
 | 3 | Click "STACK" | Six groups: Frontend, Backend, Observability, Testing, Infra and delivery, AI-assisted engineering |
 | 4 | Click "ABOUT" | Full-body photo, the bio paragraph, and links "Lab", "Projects", "About" under "Older work" |
 | 5 | Click "Projects" under Older work | Old Project page opens at `/portfolio/pages/project.html` |
-| 6 | Back, click "CONTACT" | Large "oak.ptkn@gmail.com" link and a "GitHub" link; the email link opens a mail draft |
+| 6 | Back, click "CONTACT" | Large "oak.ptkn@gmail.com" link, an orange "Email me" button and a "GitHub" link; the email link and the button open a mail draft |
+| 7 | Look at the black strip at the bottom | Middle text reads "Software Engineer" |
 
 - [ ] **Step 1: Read the craft floor**
 
@@ -2579,14 +2662,14 @@ Replace the `#loops`, `#agents`, `#stack`, `#about` and `#contact` placeholder s
 
 ```html
 <section id="loops" class="program program-panel" aria-labelledby="loops-title">
-  <p class="kicker">Program 02 · Loops</p>
   <h2 id="loops-title" class="panel-title">Loop engineering</h2>
   <p class="panel-lede">
-    I design loops that prompt coding agents: one change per pass, a gate that has to pass, and a
-    rule for when to stop.
+    A coding agent can work in a loop: pick one task, check its own result, and stop when the
+    checks pass. I design those loops: one change per pass, a gate that has to pass, and a rule for
+    when to stop.
   </p>
   <ol class="stage-row" aria-label="One pass of the loop">
-    <li class="stage stage-current"><span class="stage-no">01</span>Next item in STATE.md</li>
+    <li class="stage"><span class="stage-no">01</span>Next item in STATE.md</li>
     <li class="stage"><span class="stage-no">02</span>Fix a red gate</li>
     <li class="stage"><span class="stage-no">03</span>Oldest PR comment</li>
     <li class="stage"><span class="stage-no">04</span>Nothing pending: stop</li>
@@ -2602,14 +2685,13 @@ Replace the `#loops`, `#agents`, `#stack`, `#about` and `#contact` placeholder s
 </section>
 
 <section id="agents" class="program program-panel" aria-labelledby="agents-title">
-  <p class="kicker">Program 03 · Agents</p>
   <h2 id="agents-title" class="panel-title">Agent workflow</h2>
   <p class="panel-lede">
-    A written plan, one fresh subagent per task, a review after every task, and one broad review of
-    the whole branch.
+    How I split work for coding agents: a written plan, one fresh agent for each task, a review
+    after every task, and one broad review of the whole branch at the end.
   </p>
   <ol class="stage-row" aria-label="Agent workflow steps">
-    <li class="stage stage-current"><span class="stage-no">01</span>Write the plan</li>
+    <li class="stage"><span class="stage-no">01</span>Write the plan</li>
     <li class="stage"><span class="stage-no">02</span>One subagent per task</li>
     <li class="stage"><span class="stage-no">03</span>Review every task</li>
     <li class="stage"><span class="stage-no">04</span>Review the whole branch</li>
@@ -2621,7 +2703,6 @@ Replace the `#loops`, `#agents`, `#stack`, `#about` and `#contact` placeholder s
 </section>
 
 <section id="stack" class="program program-panel" aria-labelledby="stack-title">
-  <p class="kicker">Program 04 · Stack</p>
   <h2 id="stack-title" class="panel-title">Stack</h2>
   <dl class="stack-grid">
     <div class="stack-group">
@@ -2663,7 +2744,6 @@ Replace the `#loops`, `#agents`, `#stack`, `#about` and `#contact` placeholder s
     />
   </div>
   <div class="about-body">
-    <p class="kicker">Program 05 · About</p>
     <h2 id="about-title" class="panel-title">About</h2>
     <p class="panel-lede">
       I'm Panatakorn Supak, a Software Engineer. I studied Computer Science at Khon Kaen
@@ -2679,10 +2759,10 @@ Replace the `#loops`, `#agents`, `#stack`, `#about` and `#contact` placeholder s
 </section>
 
 <section id="contact" class="program program-panel" aria-labelledby="contact-title">
-  <p class="kicker">Program 06 · Contact</p>
   <h2 id="contact-title" class="panel-title">Contact</h2>
   <p class="contact-mail"><a href="mailto:oak.ptkn@gmail.com">oak.ptkn@gmail.com</a></p>
   <div class="panel-actions">
+    <a class="button-primary" href="mailto:oak.ptkn@gmail.com">Email me</a>
     <a class="button-secondary" href="https://github.com/Yummamuang">GitHub</a>
   </div>
 </section>
@@ -2730,28 +2810,17 @@ Replace the `#loops`, `#agents`, `#stack`, `#about` and `#contact` placeholder s
   flex-direction: column;
   gap: 6px;
   padding: 14px;
-  border: 2px dashed var(--stop-idle);
+  border: 1px solid var(--rule);
   border-radius: var(--radius-stop);
   font-size: 0.9375rem;
-  font-weight: 500;
-  line-height: 1.3;
-  color: var(--ink-muted);
-}
-
-.stage-current {
-  border-style: solid;
-  border-color: var(--ink);
   font-weight: 600;
+  line-height: 1.3;
   color: var(--ink);
 }
 
 .stage-no {
   font-size: 0.75rem;
   font-weight: 800;
-  color: var(--ink-faint);
-}
-
-.stage-current .stage-no {
   color: var(--signal-text);
 }
 
@@ -2882,6 +2951,18 @@ In `src/main.ts`, add after `import './styles/work.css'`:
 import './styles/sections.css'
 ```
 
+- [ ] **Step 4b: Remove the kicker style and plain-language strip**
+
+The owner removed kickers after the design critique (the craft floor bans an eyebrow label above a heading). Delete the whole `.kicker { ... }` rule from `src/styles/base.css`; nothing uses it any more. Then confirm no markup still uses it:
+
+```bash
+grep -rn 'kicker' index.html src || echo NO_KICKER
+```
+
+Expected: `NO_KICKER`.
+
+In `index.html`, change the strip's middle span from `<span class="status-cycle">Pick · Gate · Review · Stop</span>` to `<span class="status-cycle">Software Engineer</span>`.
+
 - [ ] **Step 5: Check everything**
 
 ```bash
@@ -2956,7 +3037,8 @@ import './styles/article.css'
 }
 
 .article h1 {
-  margin: 12px 0 16px;
+  margin: 0 0 16px;
+  overflow-wrap: anywhere;
   font-size: clamp(2.5rem, 6vw, 4.5rem);
   line-height: 0.95;
   font-weight: 800;
@@ -3006,8 +3088,10 @@ import './styles/article.css'
 
 .article blockquote {
   margin: 0 0 24px;
-  padding: 4px 0 4px 20px;
-  border-left: 4px solid var(--signal);
+  padding: 16px 20px;
+  background: var(--display);
+  border: 1px solid var(--rule);
+  border-radius: var(--radius-stop);
 }
 
 .article blockquote p {
@@ -3020,6 +3104,18 @@ import './styles/article.css'
   font-size: 0.9375rem;
   font-style: normal;
   color: var(--ink-muted);
+}
+
+@media (max-width: 640px) {
+  .article {
+    padding: 40px 16px 72px;
+    font-size: 1.0625rem;
+  }
+
+  .article pre {
+    margin-inline: -16px;
+    border-radius: 0;
+  }
 }
 
 .article-strip a {
@@ -3060,7 +3156,6 @@ import './styles/article.css'
           </div>
         </header>
         <main class="article">
-          <p class="kicker">Write-up · Loops</p>
           <h1>Loop engineering</h1>
           <p class="dek">
             Designing the system that prompts a coding agent, instead of prompting it turn by turn.
@@ -3286,7 +3381,6 @@ Expected: `https://github.com/obra/superpowers`. If the call fails or prints ano
           </div>
         </header>
         <main class="article">
-          <p class="kicker">Write-up · Agents</p>
           <h1>Plan first, then one subagent per task</h1>
           <p class="dek">
             How I ship with coding agents: a written plan, a fresh subagent for each task, and a
