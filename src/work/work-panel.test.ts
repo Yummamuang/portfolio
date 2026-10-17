@@ -1,4 +1,4 @@
-import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi, type Mock } from 'vitest'
 import { PROJECTS } from './projects'
 import { createWorkPanel } from './work-panel'
 
@@ -142,8 +142,8 @@ describe('createWorkPanel', () => {
   describe('playback button', () => {
     const PLAY_BUTTON = '[data-work-featured] .work-media button'
     let paused: boolean
-    let play: ReturnType<typeof vi.fn>
-    let pause: ReturnType<typeof vi.fn>
+    let play: Mock<(this: HTMLMediaElement) => Promise<void>>
+    let pause: Mock<(this: HTMLMediaElement) => void>
 
     function stubPlayback(startPaused: boolean, playResult: () => Promise<void>) {
       paused = startPaused
