@@ -106,12 +106,12 @@ Goal: &lt;the goal for this round, something you can measure&gt;
           <p>
             <strong>A gate before the agent stops.</strong> A Stop hook runs whenever the agent
             tries to end a turn while files have uncommitted changes. It skips the check when every
-            changed file is docs or config. Otherwise it runs the repository's own gate script, or a
-            default one scoped to the changed files: ESLint, Prettier, and
-            <code>vitest run</code> on each changed file's colocated test. If the gate is red, the
-            hook blocks the stop once and hands back the last 60 lines of output, so the agent's
-            next pass starts from the failure. My task workflow also runs a fuller pass at the end
-            of each task, including the matching .NET test class.
+            changed file is Markdown, plain text, JSON, YAML or a lockfile. Otherwise it runs the
+            repository's own gate script, or a default one scoped to the changed files: ESLint,
+            Prettier, and <code>vitest run</code> on each changed file's colocated test. If the gate
+            is red, the hook blocks the stop once and hands back the last 60 lines of output, so the
+            agent's next pass starts from the failure. My task workflow also runs a fuller pass at
+            the end of each task, including the matching .NET test class.
           </p>
           <p>
             <strong>Stop rules.</strong> A loop without a stop is an open invoice. Mine stops when

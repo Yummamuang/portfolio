@@ -1,5 +1,5 @@
 .article {
-  width: min(100%, 72ch);
+  width: min(100%, 58ch);
   margin: 0 auto;
   padding: clamp(32px, 6vw, 72px) 20px 96px;
   font-size: 1.125rem;
@@ -34,11 +34,6 @@
 .article ul,
 .article ol {
   margin: 0 0 18px;
-}
-
-.article p,
-.article li {
-  max-width: 66ch;
 }
 
 .article li + li {
@@ -102,4 +97,8 @@
 
 .article-strip a:focus-visible {
   outline-color: var(--strip-text);
+}
+
+.article pre:focus-visible {
+  outline-offset: -3px;
 }
