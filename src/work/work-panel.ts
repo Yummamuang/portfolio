@@ -24,7 +24,7 @@ function renderPlaybackButton(video: HTMLVideoElement): HTMLButtonElement {
     button.textContent = playing ? 'Pause' : 'Play'
     button.setAttribute('aria-label', playing ? 'Pause video' : 'Play video')
   }
-  // Autoplay can be blocked (iOS Low Power Mode), so wait for the play event.
+  // Browsers can block autoplay, for example in iOS Low Power Mode, so wait for the play event.
   sync(false)
   video.addEventListener('play', () => sync(true))
   video.addEventListener('pause', () => sync(false))
