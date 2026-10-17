@@ -164,11 +164,11 @@
             <section id="loops" class="program program-panel" aria-labelledby="loops-title">
               <h2 id="loops-title" class="panel-title">Loop engineering</h2>
               <p class="panel-lede">
-                A coding agent can work in a loop: pick one task, check its own result, and stop
-                when the checks pass. I design those loops: one change per pass, a gate that has to
-                pass, and a rule for when to stop.
+                A coding agent can work in a loop: it picks one task, automatic checks judge the
+                result, and it stops when nothing is left to do. I design those loops: one change
+                per pass, a gate that has to pass, and a rule for when to stop.
               </p>
-              <ol class="stage-row" aria-label="One pass of the loop">
+              <ol class="stage-row" aria-label="Each pass picks one of these, in this order">
                 <li class="stage"><span class="stage-no">01</span>Next item in STATE.md</li>
                 <li class="stage"><span class="stage-no">02</span>Fix a red gate</li>
                 <li class="stage"><span class="stage-no">03</span>Oldest PR comment</li>
@@ -218,7 +218,7 @@
                   <dt>Backend</dt>
                   <dd>
                     C# and .NET 8, ASP.NET Core, Entity Framework Core, PostgreSQL, MassTransit,
-                    Quartz, OpenIddict, Clean Architecture
+                    Quartz, OpenIddict, Clean Architecture on legacy services
                   </dd>
                 </div>
                 <div class="stack-group">
