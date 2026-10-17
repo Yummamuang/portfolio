@@ -1178,10 +1178,10 @@ git commit -m "feat(home): add dial stop math"
 | # | Action | Expected |
 |---|---|---|
 | 1 | Open the base URL | Dial on the left with labels WORK, LOOPS, AGENTS, STACK, ABOUT, CONTACT around a dark knob; WORK is dark orange and bold; the pointer points at WORK |
-| 2 | Click "LOOPS" | Page scrolls to the "Loop engineering" heading; pointer turns to LOOPS; strip reads "Program 2 / 6 · Loops"; the orange dot blinks once |
+| 2 | Click "LOOPS" | Page scrolls to the "Loop engineering" heading; pointer turns to LOOPS; strip reads "Loops · 2 of 6" on the left and "Next: Agents ↓" on the right; the orange dot blinks once |
 | 3 | Tab to the knob and press ArrowRight twice | Pointer moves to AGENTS without flicking back through other labels; page scrolls to the "Agent workflow" heading |
 | 4 | Drag the knob clockwise to the right side and release | Pointer settles exactly on the nearest label; page scrolls to that section |
-| 5 | Scroll the page back to the top with the mouse wheel | Pointer returns to WORK; strip reads "Program 1 / 6 · Work" |
+| 5 | Scroll the page back to the top with the mouse wheel | Pointer returns to WORK; strip reads "Work · 1 of 6" and "Next: Loops ↓" |
 | 6 | Resize to 390×844 | Knob is hidden; six outlined stops sit at the top, wrapping onto a second line with no sideways scrolling; the current one has a solid border and the rest dashed; the black strip sits at the end of the page instead of staying pinned |
 | 7 | Back at 1440×900, drag the knob clockwise past CONTACT into the gap at the bottom and release | Pointer stays on CONTACT; it does not jump to WORK |
 
@@ -2650,7 +2650,6 @@ git commit -m "feat(home): add projects-first work program"
 | 4 | Click "ABOUT" | Full-body photo, the bio paragraph, and links "Lab", "Projects", "About" under "Older work" |
 | 5 | Click "Projects" under Older work | Old Project page opens at `/portfolio/pages/project.html` |
 | 6 | Back, click "CONTACT" | Large "oak.ptkn@gmail.com" link, an orange "Email me" button and a "GitHub" link; the email link and the button open a mail draft |
-| 7 | Look at the black strip at the bottom | Middle text reads "Software Engineer" |
 
 - [ ] **Step 1: Read the craft floor**
 
@@ -2951,7 +2950,7 @@ In `src/main.ts`, add after `import './styles/work.css'`:
 import './styles/sections.css'
 ```
 
-- [ ] **Step 4b: Remove the kicker style and plain-language strip**
+- [ ] **Step 4b: Remove the kicker style**
 
 The owner removed kickers after the design critique (the craft floor bans an eyebrow label above a heading). Delete the whole `.kicker { ... }` rule from `src/styles/base.css`; nothing uses it any more. Then confirm no markup still uses it:
 
@@ -2960,8 +2959,6 @@ grep -rn 'kicker' index.html src || echo NO_KICKER
 ```
 
 Expected: `NO_KICKER`.
-
-In `index.html`, change the strip's middle span from `<span class="status-cycle">Pick · Gate · Review · Stop</span>` to `<span class="status-cycle">Software Engineer</span>`.
 
 - [ ] **Step 5: Check everything**
 
@@ -3603,7 +3600,7 @@ If the reviewer's fixes changed source files, commit them separately first with 
 
 | # | Action | Expected |
 |---|---|---|
-| 1 | Back on Home, drag the knob to the STACK label and release | Pointer settles on STACK; the page shows the Stack groups; the strip reads "Program 4 / 6 · Stack" |
+| 1 | Back on Home, drag the knob to the STACK label and release | Pointer settles on STACK; the page shows the Stack groups; the strip reads "Stack · 4 of 6" and "Next: About ↓" |
 | 2 | Press ArrowLeft twice on the knob | Pointer on LOOPS; page at "Loop engineering" |
 
 ### 3. Read how the work gets done
