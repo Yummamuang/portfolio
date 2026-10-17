@@ -190,7 +190,6 @@
     flex: 0 0 86px;
     transform: none;
     scroll-snap-align: center;
-    scroll-snap-stop: always;
   }
 
   .dial-labels a {

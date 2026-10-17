@@ -3,6 +3,7 @@ import {
   angleForIndex,
   indexForAngle,
   indexForProgram,
+  isProgramId,
   pointerAngle,
   stepIndex,
   type ProgramId,
@@ -130,6 +131,15 @@ export function createDial({
 
   if (lamp) {
     lamp.addEventListener('animationend', () => lamp.removeAttribute('data-blink'))
+  }
+
+  for (const label of labels) {
+    label.addEventListener('click', (event) => {
+      const id = label.dataset.program
+      if (id === undefined || !isProgramId(id)) return
+      event.preventDefault()
+      choose(indexForProgram(id))
+    })
   }
 
   dialKnob.addEventListener('keydown', (event) => {

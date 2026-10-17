@@ -205,4 +205,24 @@ describe('createTuner', () => {
     expect(ctx.onCommit).not.toHaveBeenCalled()
     expect(tap.defaultPrevented).toBe(false)
   })
+
+  it('does not commit when the finger lifts without moving the rail', () => {
+    ctx.tuner.centre(1)
+    ctx.list.dispatchEvent(new Event('pointerdown'))
+    ctx.list.dispatchEvent(new Event('touchend'))
+    ctx.list.dispatchEvent(new Event('scrollend'))
+    vi.advanceTimersByTime(500)
+
+    expect(ctx.onCommit).not.toHaveBeenCalled()
+  })
+
+  it('re-centres on the current program after a lift without a swipe', () => {
+    ctx.tuner.centre(1)
+    ctx.list.dispatchEvent(new Event('pointerdown'))
+    ctx.tuner.centre(4)
+    ctx.scrollTo.mockClear()
+    ctx.list.dispatchEvent(new Event('touchend'))
+
+    expect(ctx.scrollTo).toHaveBeenCalledWith({ left: 4 * ITEM_WIDTH, behavior: 'smooth' })
+  })
 })

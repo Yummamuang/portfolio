@@ -228,4 +228,13 @@ describe('createDial', () => {
 
     expect(onChange.mock.calls).toEqual([[0], [3]])
   })
+
+  it('chooses a program and stops the hash jump when its label is clicked', () => {
+    const label = ctx.root.querySelector('a[data-program="stack"]')
+    const click = new MouseEvent('click', { bubbles: true, cancelable: true })
+    label?.dispatchEvent(click)
+
+    expect(ctx.onSelect).toHaveBeenCalledWith('stack')
+    expect(click.defaultPrevented).toBe(true)
+  })
 })

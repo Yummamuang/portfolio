@@ -9,7 +9,8 @@ import './styles/cursor.css'
 import { createDetentRing } from './cursor/detent-ring'
 import { createDial } from './dial/dial'
 import { PROGRAMS, isProgramId } from './dial/dial-model'
-import { isAtPageEnd, observeSections } from './dial/scroll-spy'
+import { watchPageEnd } from './dial/page-end'
+import { observeSections } from './dial/scroll-spy'
 import { createTuner, type TunerHandle } from './dial/tuner'
 import { PROJECTS } from './work/projects'
 import { createWorkPanel } from './work/work-panel'
@@ -24,12 +25,14 @@ if (workRoot) {
 const dialRoot = document.getElementById('dial')
 if (dialRoot) {
   let tuner: TunerHandle | null = null
+  let pageEnd: ReturnType<typeof watchPageEnd> | null = null
   const dial = createDial({
     root: dialRoot,
     status: document.querySelector<HTMLElement>('[data-dial-status]'),
     lamp: document.querySelector<HTMLElement>('[data-lamp]'),
     next: document.querySelector<HTMLAnchorElement>('[data-dial-next]'),
     onSelect: (id) => {
+      pageEnd?.choiceStarted()
       document
         .getElementById(id)
         ?.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' })
@@ -43,16 +46,9 @@ if (dialRoot) {
     const height = Math.ceil(dialRoot.getBoundingClientRect().height)
     document.documentElement.style.setProperty('--dial-bar-h', `${height}px`)
   }).observe(dialRoot)
-  window.addEventListener('scrollend', () => dial.settle())
-  const atPageEnd = () =>
-    isAtPageEnd(window.scrollY, window.innerHeight, document.documentElement.scrollHeight)
-  const markContactAtPageEnd = () => {
-    if (atPageEnd()) dial.setActive('contact')
-  }
-  window.addEventListener('scroll', markContactAtPageEnd, { passive: true })
-  window.addEventListener('scrollend', markContactAtPageEnd)
+  pageEnd = watchPageEnd(dial)
   observeSections(sections, (id) => {
-    if (isProgramId(id)) dial.setActive(atPageEnd() ? 'contact' : id)
+    if (isProgramId(id) && !pageEnd?.atPageEnd()) dial.setActive(id)
   })
 
   const labelList = dialRoot.querySelector<HTMLElement>('.dial-labels')

@@ -69,12 +69,25 @@ export function createTuner({ list, labels, onCommit, reducedMotion }: TunerOpti
 
   function press() {
     fingerDown = true
-    swiped = true
   }
 
+  // A vertical page scroll can start on the rail without moving it. Only a lift
+  // after the rail moved under the finger commits, otherwise the rail snaps back.
   function release() {
     fingerDown = false
-    scheduleSettle()
+    if (swiped) scheduleSettle()
+    else scrollToCentre(rovingIndex)
+  }
+
+  function scrollToCentre(index: number) {
+    const left = scrollTargetFor(index)
+    if (left === null) return
+    list.scrollTo({ left, behavior: reducedMotion.matches ? 'auto' : 'smooth' })
+  }
+
+  function onRailScroll() {
+    if (fingerDown) swiped = true
+    else if (swiped) scheduleSettle()
   }
 
   function keyTarget(key: string) {
@@ -100,7 +113,7 @@ export function createTuner({ list, labels, onCommit, reducedMotion }: TunerOpti
   list.addEventListener('pointerup', release, { signal })
   list.addEventListener('touchend', release, { signal })
   list.addEventListener('touchcancel', release, { signal })
-  list.addEventListener('scroll', () => swiped && !fingerDown && scheduleSettle(), { signal })
+  list.addEventListener('scroll', onRailScroll, { signal })
   list.addEventListener('scrollend', settleSwipe, { signal })
 
   list.addEventListener(
@@ -132,12 +145,11 @@ export function createTuner({ list, labels, onCommit, reducedMotion }: TunerOpti
 
   return {
     centre(index) {
-      if (fingerDown) return
-      const left = scrollTargetFor(index)
-      if (left === null) return
-      swiped = false
+      if (!labels[index]) return
       setRoving(index)
-      list.scrollTo({ left, behavior: reducedMotion.matches ? 'auto' : 'smooth' })
+      if (fingerDown) return
+      swiped = false
+      scrollToCentre(index)
     },
     destroy() {
       listeners.abort()
