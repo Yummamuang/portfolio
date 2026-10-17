@@ -1882,7 +1882,7 @@ git commit -m "feat(home): add program dial navigation"
 - Test: `src/work/work-panel.test.ts`
 - Create: `src/styles/work.css`
 - Modify: `index.html` (replace the `#work` placeholder section)
-- Modify: `src/main.ts` (full rewrite below)
+- Modify: `src/main.ts` (three additions, Step 11)
 
 **Interfaces:**
 - Consumes: `/img/portrait.webp`, `/img/posters/canine.jpg`, `/img/posters/catspace.jpg` from Task 4. `reducedMotion` pattern from Task 8's `main.ts`.
@@ -2557,48 +2557,34 @@ with:
 </section>
 ```
 
-- [ ] **Step 11: Rewrite `src/main.ts`**
+- [ ] **Step 11: Add the Work panel to `src/main.ts`**
+
+Do not rewrite the file: Task 8's fix rounds added `next`, the `scrollend` listener and a ResizeObserver that must stay. Make exactly three additions.
+
+After `import './styles/dial.css'` add:
 
 ```ts
-import '@fontsource-variable/archivo'
-import './styles/tokens.css'
-import './styles/base.css'
-import './styles/shell.css'
-import './styles/dial.css'
 import './styles/work.css'
-import { createDial } from './dial/dial'
-import { PROGRAMS, isProgramId } from './dial/dial-model'
-import { observeSections } from './dial/scroll-spy'
+```
+
+After `import { observeSections } from './dial/scroll-spy'` add:
+
+```ts
 import { PROJECTS } from './work/projects'
 import { createWorkPanel } from './work/work-panel'
+```
 
-const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+Right after the line `const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')` add:
+
+```ts
 
 const workRoot = document.querySelector<HTMLElement>('[data-work]')
 if (workRoot) {
   createWorkPanel({ root: workRoot, projects: PROJECTS, autoplay: !reducedMotion.matches })
 }
-
-const dialRoot = document.getElementById('dial')
-if (dialRoot) {
-  const dial = createDial({
-    root: dialRoot,
-    status: document.querySelector<HTMLElement>('[data-dial-status]'),
-    lamp: document.querySelector<HTMLElement>('[data-lamp]'),
-    onSelect: (id) => {
-      document
-        .getElementById(id)
-        ?.scrollIntoView({ behavior: reducedMotion.matches ? 'auto' : 'smooth', block: 'start' })
-    },
-  })
-  const sections = PROGRAMS.map((program) => document.getElementById(program.id)).filter(
-    (section): section is HTMLElement => section !== null,
-  )
-  observeSections(sections, (id) => {
-    if (isProgramId(id)) dial.setActive(id)
-  })
-}
 ```
+
+Then `git diff src/main.ts` must show only additions.
 
 - [ ] **Step 12: Check everything, including the portrait URL in the build**
 
