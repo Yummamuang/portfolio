@@ -1,0 +1,104 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Agent workflow · Panatakorn Supak</title>
+    <meta
+      name="description"
+      content="How Panatakorn Supak ships with coding agents: a written plan, one subagent per task, and a review after every step."
+    />
+    <script type="module" src="/src/article.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article">Skip to article</a>
+    <div class="housing">
+      <div class="plate">
+        <header class="plate-header">
+          <p class="maker">
+            <a class="maker-mark" href="../">YM.</a>
+            <span class="maker-name">Panatakorn Supak</span>
+            <span class="maker-role">Software Engineer</span>
+          </p>
+          <div class="plate-links">
+            <a href="mailto:oak.ptkn@gmail.com">oak.ptkn@gmail.com</a>
+            <a href="https://github.com/Yummamuang">GitHub</a>
+          </div>
+        </header>
+        <main class="article" id="article">
+          <h1>Plan first, then one subagent per task</h1>
+          <p class="dek">
+            How I ship with coding agents: a written plan, a fresh subagent for each task, and a
+            review after every step.
+          </p>
+
+          <h2>The problem</h2>
+          <p>
+            One long agent session piles up context. It drifts from the plan, forgets early
+            decisions, and ends up grading its own work.
+          </p>
+
+          <h2>1. Write the plan</h2>
+          <p>
+            The plan is written for an engineer who knows nothing about the codebase. Every task
+            lists:
+          </p>
+          <ul>
+            <li>
+              the files it creates or changes, shared files included, so tasks that would collide
+              never run together;
+            </li>
+            <li>the names and types it uses from earlier tasks and hands to later ones;</li>
+            <li>
+              the business rules it must keep, quoted word for word from the ticket, each marked as
+              a property that must hold for every input or as boundary examples;
+            </li>
+            <li>its test file, next to the file it covers;</li>
+            <li>for anything a user can see, browser steps with an observable result for each.</li>
+          </ul>
+          <p>
+            The plan ends with a short summary and an end-to-end demo flow. The rules are approved
+            before any code is written.
+          </p>
+
+          <h2>2. One subagent per task</h2>
+          <p>
+            Each task goes to a fresh subagent that sees only its own brief, not the whole
+            conversation. Tasks that do not depend on each other and touch no shared file run at the
+            same time, in waves worked out from the plan's dependencies.
+          </p>
+
+          <h2>3. Review every task</h2>
+          <p>
+            After each task a separate reviewer checks it against the spec and for code quality.
+            When the task changed something a user can see, a browser test follows the plan's steps
+            in a real browser.
+          </p>
+
+          <h2>4. Review the whole branch</h2>
+          <p>One broad review of the whole branch runs at the end, before anything ships.</p>
+
+          <h2>Why it works</h2>
+          <p>
+            The agent that writes the code is never the one that approves it. Each subagent starts
+            clean, so context from one task cannot leak into the next. And the rules a test must
+            prove are agreed with a person before the first line of code.
+          </p>
+
+          <h2>Credits</h2>
+          <p>
+            Both skills, <code>writing-plans</code> and <code>subagent-driven-development</code>,
+            started from the open-source
+            <a href="https://github.com/obra/superpowers">superpowers</a> plugin. I customized them
+            with dependency-based parallel waves, rules quoted from the ticket, test gates scoped to
+            the files a task touches, browser checks and a demo flow.
+          </p>
+        </main>
+        <footer class="status-strip article-strip">
+          <span>Write-up · Agent workflow</span>
+          <a href="../">Back to the dial</a>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>
