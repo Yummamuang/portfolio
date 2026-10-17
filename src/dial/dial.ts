@@ -59,7 +59,7 @@ export function createDial({ root, status, lamp, next, onSelect }: DialOptions):
   function renderNext(index: number) {
     if (!next) return
     const following = PROGRAMS[index + 1]
-    next.setAttribute('href', following ? `#${following.id}` : '#work')
+    next.setAttribute('href', following ? `#${following.id}` : '#top')
     next.textContent = following ? `Next: ${following.title} ↓` : 'Back to top ↑'
   }
 

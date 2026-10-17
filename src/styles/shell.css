@@ -151,13 +151,14 @@
 }
 
 .strip-next:hover {
-  color: #ffffff;
+  color: var(--plate);
   text-decoration: underline;
   text-underline-offset: 4px;
 }
 
 .strip-next:focus-visible {
   outline-color: var(--strip-text);
+  outline-offset: -3px;
 }
 
 @media (max-width: 900px) {

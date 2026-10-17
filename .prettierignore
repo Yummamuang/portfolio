@@ -3,3 +3,4 @@ public
 pnpm-lock.yaml
 *.md
 .impeccable
+.playwright-mcp

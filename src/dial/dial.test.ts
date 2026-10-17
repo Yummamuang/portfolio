@@ -155,7 +155,7 @@ describe('createDial', () => {
   it('turns the next link into back to top on the last program', () => {
     ctx.dial.setActive('contact')
 
-    expect(ctx.next.getAttribute('href')).toBe('#work')
+    expect(ctx.next.getAttribute('href')).toBe('#top')
     expect(ctx.next.textContent).toBe('Back to top ↑')
   })
 
