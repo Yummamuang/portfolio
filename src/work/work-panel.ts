@@ -17,14 +17,15 @@ function el<K extends keyof HTMLElementTagNameMap>(
   return node
 }
 
-function renderPlaybackButton(video: HTMLVideoElement, autoplay: boolean): HTMLButtonElement {
+function renderPlaybackButton(video: HTMLVideoElement): HTMLButtonElement {
   const button = el('button', 'work-playback')
   button.type = 'button'
   const sync = (playing: boolean) => {
     button.textContent = playing ? 'Pause' : 'Play'
     button.setAttribute('aria-label', playing ? 'Pause video' : 'Play video')
   }
-  sync(autoplay)
+  // Autoplay can be blocked (iOS Low Power Mode), so wait for the play event.
+  sync(false)
   video.addEventListener('play', () => sync(true))
   video.addEventListener('pause', () => sync(false))
   button.addEventListener('click', () => {
@@ -61,7 +62,7 @@ function renderMedia(project: Project, autoplay: boolean): HTMLElement {
   video.setAttribute('muted', '')
   video.setAttribute('aria-label', `Video of ${project.title}`)
   if (autoplay) video.setAttribute('autoplay', '')
-  frame.append(video, renderPlaybackButton(video, autoplay))
+  frame.append(video, renderPlaybackButton(video))
   return frame
 }
 

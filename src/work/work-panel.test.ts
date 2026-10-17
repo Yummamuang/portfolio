@@ -167,13 +167,28 @@ describe('createWorkPanel', () => {
       target.querySelector(PLAY_BUTTON)?.getAttribute('aria-label')
     const settle = () => new Promise((resolve) => setTimeout(resolve))
 
+    function startAutoplay(target: HTMLElement) {
+      paused = false
+      target.querySelector('video')?.dispatchEvent(new Event('play'))
+    }
+
     beforeEach(() => {
-      stubPlayback(false, () => Promise.resolve())
+      stubPlayback(true, () => Promise.resolve())
       root = setup()
+      startAutoplay(root)
     })
 
     afterEach(() => {
       vi.restoreAllMocks()
+    })
+
+    it('starts as a play button until the video reports it is playing', () => {
+      stubPlayback(true, () => Promise.resolve())
+      const blocked = setup()
+
+      expect(label(blocked)).toBe('Play video')
+      startAutoplay(blocked)
+      expect(label(blocked)).toBe('Pause video')
     })
 
     it('offers a pause button on a video project', () => {
