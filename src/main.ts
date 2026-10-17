@@ -3,11 +3,19 @@ import './styles/tokens.css'
 import './styles/base.css'
 import './styles/shell.css'
 import './styles/dial.css'
+import './styles/work.css'
 import { createDial } from './dial/dial'
 import { PROGRAMS, isProgramId } from './dial/dial-model'
 import { observeSections } from './dial/scroll-spy'
+import { PROJECTS } from './work/projects'
+import { createWorkPanel } from './work/work-panel'
 
 const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)')
+
+const workRoot = document.querySelector<HTMLElement>('[data-work]')
+if (workRoot) {
+  createWorkPanel({ root: workRoot, projects: PROJECTS, autoplay: !reducedMotion.matches })
+}
 
 const dialRoot = document.getElementById('dial')
 if (dialRoot) {
