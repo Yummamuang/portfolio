@@ -1,0 +1,229 @@
+.dial {
+  position: sticky;
+  top: 16px;
+  align-self: start;
+  padding-block: 16px;
+}
+
+.dial-face {
+  position: relative;
+  width: min(100%, 560px);
+  aspect-ratio: 1;
+  margin-inline: auto;
+  container-type: inline-size;
+}
+
+.dial-ticks {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+.dial-ring {
+  fill: none;
+  stroke: var(--rule-strong);
+}
+
+.tick {
+  stroke: var(--ink-faint);
+  stroke-width: 2;
+  stroke-dasharray: 4 4;
+}
+
+.dial[data-active='work'] .tick[data-stop='work'],
+.dial[data-active='loops'] .tick[data-stop='loops'],
+.dial[data-active='agents'] .tick[data-stop='agents'],
+.dial[data-active='stack'] .tick[data-stop='stack'],
+.dial[data-active='about'] .tick[data-stop='about'],
+.dial[data-active='contact'] .tick[data-stop='contact'] {
+  stroke: var(--signal);
+  stroke-width: 4;
+  stroke-dasharray: none;
+}
+
+.dial-knob {
+  position: absolute;
+  inset: 26.8%;
+  border-radius: 50%;
+  background: var(--knob);
+  box-shadow:
+    inset 0 0 0 12px var(--knob-ring),
+    inset 0 0 0 13px var(--knob-edge);
+  transform: rotate(var(--dial-angle, -120deg));
+  transition: transform var(--dur-detent) var(--ease-detent);
+  cursor: grab;
+  touch-action: none;
+}
+
+.dial-knob[data-dragging] {
+  transition: none;
+  cursor: grabbing;
+}
+
+.dial-knob:focus-visible {
+  outline-offset: 6px;
+}
+
+.dial-pointer {
+  position: absolute;
+  left: calc(50% - 4px);
+  top: 7%;
+  width: 8px;
+  height: 24%;
+  border-radius: 4px;
+  background: var(--signal);
+}
+
+.dial-labels {
+  position: absolute;
+  inset: 0;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  pointer-events: none;
+}
+
+.dial-labels li {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%) rotate(var(--stop-angle)) translateY(-42.5cqi)
+    rotate(calc(-1 * var(--stop-angle)));
+}
+
+.dial-labels a {
+  pointer-events: auto;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding: 0 8px;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  text-decoration: none;
+  color: var(--ink-muted);
+}
+
+.dial-labels a[aria-current='true'] {
+  font-weight: 800;
+  color: var(--signal-text);
+}
+
+.dial-hint {
+  margin: 8px 0 0;
+  text-align: center;
+  font-size: 0.875rem;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--ink-faint);
+}
+
+@media (max-width: 900px) {
+  .dial {
+    top: 0;
+    z-index: 2;
+    margin-inline: -16px;
+    padding: 0;
+    background: var(--knob);
+  }
+
+  .dial::before,
+  .dial::after {
+    content: '';
+    position: absolute;
+    left: 50%;
+    z-index: 1;
+    background: var(--signal);
+    pointer-events: none;
+  }
+
+  .dial::before {
+    top: 0;
+    width: 12px;
+    height: 6px;
+    margin-left: -6px;
+    clip-path: polygon(0 0, 100% 0, 50% 100%);
+  }
+
+  .dial::after {
+    bottom: 0;
+    width: 2px;
+    height: 20px;
+    margin-left: -1px;
+  }
+
+  .dial-face {
+    width: 100%;
+    aspect-ratio: auto;
+    container-type: normal;
+  }
+
+  .program {
+    scroll-margin-top: calc(var(--dial-bar-h, 112px) + 24px);
+  }
+
+  .dial-ticks,
+  .dial-knob,
+  .dial-hint {
+    display: none;
+  }
+
+  .dial-labels {
+    position: relative;
+    display: flex;
+    padding-inline: calc(50% - 43px);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+    pointer-events: auto;
+    mask-image: linear-gradient(90deg, transparent, #000 12px, #000 calc(100% - 12px), transparent);
+  }
+
+  .dial-labels::-webkit-scrollbar {
+    display: none;
+  }
+
+  .dial-labels li {
+    position: static;
+    flex: 0 0 86px;
+    transform: none;
+    scroll-snap-align: center;
+  }
+
+  .dial-labels a {
+    --tick-minor: #6a6a66;
+    --tick-major: #8a8a84;
+    flex-direction: column;
+    justify-content: center;
+    gap: 8px;
+    width: 100%;
+    min-height: 60px;
+    padding: 10px 0 8px;
+    font-size: 0.8125rem;
+    color: var(--tuner-idle);
+  }
+
+  .dial-labels a::after {
+    content: '';
+    width: 40px;
+    height: 14px;
+    background:
+      linear-gradient(var(--tick-major), var(--tick-major)) 50% 0 / 2px 14px no-repeat,
+      linear-gradient(var(--tick-minor), var(--tick-minor)) 4px 50% / 1px 8px no-repeat,
+      linear-gradient(var(--tick-minor), var(--tick-minor)) 12px 50% / 1px 8px no-repeat,
+      linear-gradient(var(--tick-minor), var(--tick-minor)) 27px 50% / 1px 8px no-repeat,
+      linear-gradient(var(--tick-minor), var(--tick-minor)) 35px 50% / 1px 8px no-repeat;
+  }
+
+  .dial-labels a[aria-current='true'] {
+    --tick-major: var(--signal);
+    color: var(--strip-text);
+  }
+
+  .dial-labels a:focus-visible {
+    outline: 2px solid var(--strip-text);
+    outline-offset: -5px;
+  }
+}

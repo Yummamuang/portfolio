@@ -1,0 +1,168 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Loop engineering · Panatakorn Supak</title>
+    <meta
+      name="description"
+      content="How Panatakorn Supak designs loops that prompt coding agents: a gate, a stop rule and state outside the chat."
+    />
+    <script type="module" src="/src/article.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#article">Skip to article</a>
+    <div class="housing">
+      <div class="plate">
+        <header class="plate-header">
+          <p class="maker">
+            <a class="maker-mark" href="../">YM.</a>
+            <span class="maker-name">Panatakorn Supak</span>
+            <span class="maker-role">Software Engineer</span>
+          </p>
+          <div class="plate-links">
+            <a href="mailto:oak.ptkn@gmail.com">oak.ptkn@gmail.com</a>
+            <a href="https://github.com/Yummamuang">GitHub</a>
+          </div>
+        </header>
+        <main class="article" id="article">
+          <h1>Loop engineering</h1>
+          <p class="dek">
+            Designing the system that prompts a coding agent, instead of prompting it turn by turn.
+          </p>
+
+          <h2>The problem</h2>
+          <p>
+            Prompting an agent one turn at a time makes me the loop. I decide what comes next, I
+            check every result, and I decide when the work is done. The agent is fast; the loop
+            around it is me, and my checking gets sloppy long before the agent gets tired.
+          </p>
+
+          <h2>The idea</h2>
+          <p>A loop has four parts:</p>
+          <ol>
+            <li>
+              <strong>Goal</strong>, checked on every pass, with a stop condition you can prove.
+            </li>
+            <li><strong>Action</strong>, the agent works toward the goal from where it is now.</li>
+            <li>
+              <strong>Observation</strong>, the system measures the result: tests, lint, build,
+              diff.
+            </li>
+            <li><strong>Adjustment</strong>, the feedback shapes the next pass.</li>
+          </ol>
+          <p>
+            The verifier sets the quality of the loop, not the model. A weak verifier lets a loop
+            converge on a wrong answer with full confidence. So I order verifiers by how far I can
+            trust them: deterministic checks first (exit codes, tests, lint, typecheck, a clean
+            build), then a separate agent judging against a rubric, and a human for anything that
+            cannot be undone. The agent that wrote the code never grades it.
+          </p>
+
+          <h2>How mine works</h2>
+          <p>
+            <strong>One item per pass.</strong> A bare <code>/loop</code> in Claude Code reads this
+            prompt. It picks exactly one thing and has rules that close the usual escape hatches.
+          </p>
+          <pre
+            tabindex="0"
+            role="region"
+            aria-label="loop.md prompt"
+          ><code>Work the current branch. Pick exactly ONE thing, in this order:
+
+1. If `work-memory/STATE.md` exists and has an item marked `next`, do that item.
+2. If the gate is red (`.claude/gate.sh`, or lint/format on changed files), fix it.
+3. If the branch has a PR with failing CI or unresolved review comments,
+   address the oldest one.
+4. Otherwise say "nothing pending" in one line and stop the loop.
+
+Rules:
+- One logical change per iteration. Never batch unrelated fixes.
+- Never modify a test to make it pass. Fix the code.
+- Do not commit or push unless STATE.md or the user explicitly asked for it.
+- If the same item fails twice in a row, stop and report what is blocking.
+- Update STATE.md before you finish the iteration.</code></pre>
+          <p>
+            <strong>State outside the chat.</strong> Work that spans sessions lives in a
+            <code>STATE.md</code> file, not in the conversation. Every session reads it first and
+            updates it last.
+          </p>
+          <pre tabindex="0" role="region" aria-label="STATE.md template"><code># STATE
+Updated: YYYY-MM-DD
+Goal: &lt;the goal for this round, something you can measure&gt;
+
+## Next
+- [ ] `next` &lt;the one item to do next&gt;
+- [ ] &lt;after that&gt;
+
+## Done
+- [x] &lt;done, with the commit or PR&gt;
+
+## Blocked
+- &lt;what is stuck and what it needs from a person&gt;
+
+## Learned
+- &lt;an error already hit and its fix, or an approach that failed and why&gt;</code></pre>
+          <p>
+            <strong>A gate before the agent stops.</strong> A Stop hook runs whenever the agent
+            tries to end a turn while files have uncommitted changes. It skips the check when every
+            changed file is Markdown, plain text, JSON, YAML or a lockfile. Otherwise it runs the
+            repository's own gate script, or a default one scoped to the changed files: ESLint,
+            Prettier, and <code>vitest run</code> on each changed file's colocated test. If the gate
+            is red, the hook blocks the stop once and hands back the last 60 lines of output, so the
+            agent's next pass starts from the failure. My task workflow also runs a fuller pass at
+            the end of each task, including the matching .NET test class.
+          </p>
+          <p>
+            <strong>Stop rules.</strong> A loop without a stop is an open invoice. Mine stops when
+            nothing is pending, takes one change per pass, and stops to report when the same item
+            fails twice in a row. I also built a fully unattended outer loop with an iteration cap,
+            a no-progress check and a spend cap, and later set it aside.
+          </p>
+
+          <h2>What it changed</h2>
+          <p>
+            An agent that tries to end a turn on a red gate is sent back once with the failing
+            output. Work that spans several sessions picks up from <code>STATE.md</code> instead of
+            from whatever I remember. Each pass is one reviewable change.
+          </p>
+
+          <h2>What stays with me</h2>
+          <p>
+            The inner loop, investigate, implement, verify, repeat, is delegated. The outer loop,
+            deciding to ship or block and owning the result, is not.
+          </p>
+          <blockquote>
+            <p>Delegating the inner loop is leverage; delegating the outer loop is abdication.</p>
+            <cite>Addy Osmani</cite>
+          </blockquote>
+
+          <h2>Credits</h2>
+          <blockquote>
+            <p>
+              You shouldn't be prompting coding agents anymore. You should be designing loops that
+              prompt your agents.
+            </p>
+            <cite>Peter Steinberger</cite>
+          </blockquote>
+          <blockquote>
+            <p>
+              I don't prompt Claude anymore. I have loops that are running. They're the ones that
+              are prompting Claude... My job is to write loops.
+            </p>
+            <cite>Boris Cherny, creator of Claude Code</cite>
+          </blockquote>
+          <p>
+            The goal, action, observation and adjustment framing comes from IBM. Reading state from
+            disk between passes, instead of from a long chat history, comes from Geoff Huntley's
+            "Ralph" loop.
+          </p>
+        </main>
+        <footer class="status-strip article-strip">
+          <span>Write-up · Loop engineering</span>
+          <a href="../">Back to the dial</a>
+        </footer>
+      </div>
+    </div>
+  </body>
+</html>

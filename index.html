@@ -1,93 +1,305 @@
-<!DOCTYPE html>
+<!doctype html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Home</title>
-    <link rel="stylesheet" href="./css/main.css">
-    <link rel="stylesheet" href="./css/font.css">
-    <link rel="stylesheet" href="./css/animate.css">
-    <link rel="stylesheet" href="./css/responsive.css">
-</head>
-<body class="height100vh">
-
-    <div id="preloader">
-        <div class="ym_logo" id="inner_preloader">
-            <h2>Y</h2>
-            <h2>M</h2>
-            <h2>.</h2>
-        </div>
-    </div>
-
-    <div class="nav" id="nav">
-        <h1 class="logo"><a href="./pages/home.html" class="position_fixed top_0">YM.</a></h1>
-        <div id="hamgurger_menu" onclick="toggleMenuMobile()">
-            <div class="position_fixed hamburger_line_wrap">
-                <div class="relative">
-                    <span id="l1"></span>
-                    <span id="l2"></span>
-                    <span id="l3"></span>
-                </div>
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Panatakorn Supak · Software Engineer</title>
+    <meta
+      name="description"
+      content="Panatakorn Supak, Software Engineer. Projects, loop engineering and agent workflows."
+    />
+    <script type="module" src="/src/main.ts"></script>
+  </head>
+  <body>
+    <a class="skip-link" href="#work">Skip to projects</a>
+    <div class="housing" id="top">
+      <div class="plate">
+        <header class="plate-header">
+          <div class="maker">
+            <a class="maker-mark" href="./">YM.</a>
+            <h1 class="maker-name">Panatakorn Supak</h1>
+            <span class="maker-role">Software Engineer</span>
+          </div>
+          <div class="plate-links">
+            <span class="lamp" data-lamp aria-hidden="true"></span>
+            <a href="mailto:oak.ptkn@gmail.com">oak.ptkn@gmail.com</a>
+            <a href="https://github.com/Yummamuang">GitHub</a>
+          </div>
+        </header>
+        <div class="plate-body">
+          <nav class="dial" id="dial" aria-label="Programs" data-active="work">
+            <div class="dial-face">
+              <svg class="dial-ticks" viewBox="0 0 560 560" aria-hidden="true">
+                <circle class="dial-ring" cx="280" cy="280" r="186"></circle>
+                <line
+                  class="tick"
+                  data-stop="work"
+                  x1="280"
+                  y1="104"
+                  x2="280"
+                  y2="132"
+                  transform="rotate(-120 280 280)"
+                ></line>
+                <line
+                  class="tick"
+                  data-stop="loops"
+                  x1="280"
+                  y1="104"
+                  x2="280"
+                  y2="132"
+                  transform="rotate(-72 280 280)"
+                ></line>
+                <line
+                  class="tick"
+                  data-stop="agents"
+                  x1="280"
+                  y1="104"
+                  x2="280"
+                  y2="132"
+                  transform="rotate(-24 280 280)"
+                ></line>
+                <line
+                  class="tick"
+                  data-stop="stack"
+                  x1="280"
+                  y1="104"
+                  x2="280"
+                  y2="132"
+                  transform="rotate(24 280 280)"
+                ></line>
+                <line
+                  class="tick"
+                  data-stop="about"
+                  x1="280"
+                  y1="104"
+                  x2="280"
+                  y2="132"
+                  transform="rotate(72 280 280)"
+                ></line>
+                <line
+                  class="tick"
+                  data-stop="contact"
+                  x1="280"
+                  y1="104"
+                  x2="280"
+                  y2="132"
+                  transform="rotate(120 280 280)"
+                ></line>
+              </svg>
+              <div
+                class="dial-knob"
+                data-dial-knob
+                role="slider"
+                tabindex="0"
+                aria-label="Program"
+                aria-valuemin="1"
+                aria-valuemax="6"
+                aria-valuenow="1"
+                aria-valuetext="Work"
+              >
+                <span class="dial-pointer"></span>
+              </div>
+              <ol class="dial-labels">
+                <li style="--stop-angle: -120deg">
+                  <a href="#work" data-program="work" aria-current="true">Work</a>
+                </li>
+                <li style="--stop-angle: -72deg">
+                  <a href="#loops" data-program="loops">Loops</a>
+                </li>
+                <li style="--stop-angle: -24deg">
+                  <a href="#agents" data-program="agents">Agents</a>
+                </li>
+                <li style="--stop-angle: 24deg"><a href="#stack" data-program="stack">Stack</a></li>
+                <li style="--stop-angle: 72deg"><a href="#about" data-program="about">About</a></li>
+                <li style="--stop-angle: 120deg">
+                  <a href="#contact" data-program="contact">Contact</a>
+                </li>
+              </ol>
             </div>
-        </div>
-        <ul class="menu">
-            <li><a href="./pages/home.html">Home</a></li>
-            <li><a href="./pages/lab.html">Lab</a></li>
-            <li><a href="./pages/project.html">Project</a></li>
-            <li><a href="./pages/about.html">About me</a></li>
-        </ul>
-    </div>
-    
-    <div class="relative overflow-hid ">
-        <div id="menu_mobile" class="height100vh">
-            <div><a href="./pages/home.html">Home</a></div>
-            <div><a href="./pages/lab.html">Lab</a></div>
-            <div><a href="./pages/project.html">Project</a></div>
-            <div><a href="./pages/about.html">About me</a></div>
-        </div>
-    </div>
-    
+            <p class="dial-hint">Drag the dial or scroll</p>
+          </nav>
+          <main class="display">
+            <section id="work" class="program program-work" aria-labelledby="work-title" data-work>
+              <h2 id="work-title" class="visually-hidden">Work</h2>
+              <p class="work-intro">
+                Software Engineer working with .NET and Next.js. I also design agent workflows for
+                Claude Code. <a href="./writing/agent-workflow.html">See how</a>
+              </p>
+              <div class="work-featured" data-work-featured></div>
+              <p class="visually-hidden" data-work-status aria-live="polite"></p>
+              <div class="work-lower">
+                <ol class="work-list" data-work-list aria-label="All projects"></ol>
+                <a class="portrait-link" href="#about">
+                  <img src="/img/portrait.webp" alt="Panatakorn Supak" width="1050" height="1400" />
+                  <span class="portrait-tag">About me</span>
+                </a>
+              </div>
+              <noscript>
+                <ul>
+                  <li>
+                    <a href="https://github.com/Yummamuang/prediction-of-maxillary-impacted-canine"
+                      >Impacted canine assessment</a
+                    >
+                  </li>
+                  <li><a href="https://manga-system.vercel.app/">Manga recommendation</a></li>
+                  <li>
+                    <a href="./pages/project/WebDesign-SpaceCat/index.html">Cat Space shop</a>
+                  </li>
+                  <li>
+                    <a href="https://github.com/Yummamuang/Gym-Management-System"
+                      >Gym management system</a
+                    >
+                  </li>
+                  <li>
+                    <a href="https://github.com/Yummamuang/Data-Engineering-Mini-Project"
+                      >Game view counts mini project</a
+                    >
+                  </li>
+                  <li>
+                    <a href="https://github.com/Yummamuang/Snake-Game-Development">Snake game</a>
+                  </li>
+                </ul>
+              </noscript>
+            </section>
+            <section id="loops" class="program program-panel" aria-labelledby="loops-title">
+              <h2 id="loops-title" class="panel-title">Loop engineering</h2>
+              <p class="panel-lede">
+                A coding agent can work in a loop: it picks one task, automatic checks judge the
+                result, and it stops when nothing is left to do. I design those loops: one change
+                per pass, a gate that has to pass, and a rule for when to stop.
+              </p>
+              <ol class="stage-row" aria-label="Each pass picks one of these, in this order">
+                <li class="stage"><span class="stage-no">01</span>Next item in STATE.md</li>
+                <li class="stage"><span class="stage-no">02</span>Fix a red gate</li>
+                <li class="stage"><span class="stage-no">03</span>Oldest PR comment</li>
+                <li class="stage"><span class="stage-no">04</span>Nothing pending: stop</li>
+              </ol>
+              <ul class="rule-list">
+                <li>One logical change per pass</li>
+                <li>Never edit a test to make it pass</li>
+                <li>Same item fails twice: stop and report</li>
+              </ul>
+              <div class="panel-actions">
+                <a class="button-primary" href="./writing/loop-engineering.html"
+                  >Read the write-up</a
+                >
+              </div>
+            </section>
 
-    <div id="content" class="relative">
-        <div class="cover-text">
-            <div class="text">
-                <div class="text-1 overflow-hid">
-                    <p>Hi there!</p>
+            <section id="agents" class="program program-panel" aria-labelledby="agents-title">
+              <h2 id="agents-title" class="panel-title">Agent workflow</h2>
+              <p class="panel-lede">
+                How I split work for coding agents: a written plan, one fresh agent for each task, a
+                review after every task, and one broad review of the whole branch at the end.
+              </p>
+              <ol class="stage-row" aria-label="Agent workflow steps">
+                <li class="stage"><span class="stage-no">01</span>Write the plan</li>
+                <li class="stage"><span class="stage-no">02</span>One subagent per task</li>
+                <li class="stage"><span class="stage-no">03</span>Review every task</li>
+                <li class="stage"><span class="stage-no">04</span>Review the whole branch</li>
+              </ol>
+              <p class="panel-credit">Customized from the open-source superpowers skills.</p>
+              <div class="panel-actions">
+                <a class="button-primary" href="./writing/agent-workflow.html">Read the write-up</a>
+              </div>
+            </section>
+
+            <section id="stack" class="program program-panel" aria-labelledby="stack-title">
+              <h2 id="stack-title" class="panel-title">Stack</h2>
+              <dl class="stack-grid">
+                <div class="stack-group">
+                  <dt>Frontend</dt>
+                  <dd>
+                    TypeScript, React, Next.js, Nx with pnpm, Mantine, Tailwind CSS, TanStack Query,
+                    React Hook Form with Zod, OpenAPI clients, OIDC, SignalR
+                  </dd>
                 </div>
-                <div class="text-2">
-                    <div class="text_2_wrap overflow-hid">
-                        <p>Hi there!</p><h1>I'm</h1>
-                    </div>
-                    <h1><span class="iam">I'm </span> Panatakorn</h1>
+                <div class="stack-group">
+                  <dt>Backend</dt>
+                  <dd>
+                    C# and .NET 8, ASP.NET Core, Entity Framework Core, PostgreSQL, MassTransit,
+                    Quartz, OpenIddict, Clean Architecture on legacy services
+                  </dd>
                 </div>
-                <div class="text-3"><p>this is my portfolio</p></div>
-            </div>
+                <div class="stack-group">
+                  <dt>Observability</dt>
+                  <dd>Serilog, OpenTelemetry</dd>
+                </div>
+                <div class="stack-group">
+                  <dt>Testing</dt>
+                  <dd>
+                    xUnit, FluentAssertions, Moq, property-based tests with CsCheck, Vitest, Testing
+                    Library, Playwright
+                  </dd>
+                </div>
+                <div class="stack-group">
+                  <dt>Infra and delivery</dt>
+                  <dd>Docker, Kubernetes, GitHub Actions</dd>
+                </div>
+                <div class="stack-group">
+                  <dt>AI-assisted engineering</dt>
+                  <dd>Claude Code agent workflows, loop engineering</dd>
+                </div>
+              </dl>
+              <p class="panel-credit">Earlier projects also used Node.js, Laravel and Python.</p>
+            </section>
+
+            <section
+              id="about"
+              class="program program-panel program-about"
+              aria-labelledby="about-title"
+            >
+              <div class="about-photo">
+                <img
+                  src="/img/about.webp"
+                  alt="Panatakorn Supak standing in front of a white wall"
+                  width="600"
+                  height="800"
+                  loading="lazy"
+                />
+              </div>
+              <div class="about-body">
+                <h2 id="about-title" class="panel-title">About</h2>
+                <p class="panel-lede">
+                  I'm Panatakorn Supak, a Software Engineer. I studied Computer Science at Khon Kaen
+                  University. I also design loops and agent workflows for Claude Code.
+                </p>
+                <p class="older-work">
+                  Older work:
+                  <a href="./pages/lab.html">Lab</a>
+                  <a href="./pages/project.html">Projects</a>
+                  <a href="./pages/about.html">About</a>
+                </p>
+              </div>
+            </section>
+
+            <section id="contact" class="program program-panel" aria-labelledby="contact-title">
+              <h2 id="contact-title" class="panel-title">Contact</h2>
+              <p class="contact-mail">
+                <a href="mailto:oak.ptkn@gmail.com">oak.ptkn@<wbr />gmail.com</a>
+              </p>
+              <div class="panel-actions">
+                <a class="button-primary" href="mailto:oak.ptkn@gmail.com">Email me</a>
+                <a class="button-secondary" href="https://github.com/Yummamuang">GitHub</a>
+              </div>
+            </section>
+          </main>
         </div>
-        <div class="profile_pic overflow-hid">
-            <img src="./img/bg.png" alt="My Profile Image">
-        </div>
-        
+        <footer class="status-strip">
+          <span data-dial-status>Work · 1 of 6</span>
+          <a class="strip-next" href="#loops" data-dial-next
+            >Next: Loops<svg
+              viewBox="0 0 16 16"
+              aria-hidden="true"
+              fill="none"
+              stroke="currentColor"
+              stroke-width="1.5"
+            >
+              <path d="M8 2.5v11M3.5 9 8 13.5 12.5 9" /></svg
+          ></a>
+        </footer>
+      </div>
     </div>
-    <div id="cursor"></div>
-
-    <script>
-        const nav = document.getElementById('nav')
-        const navHeight = nav.clientHeight
-
-        contentChangeHeight = () => {
-            if (window.innerWidth >= 1024) {
-                content.style.height = `calc(100vh - ${navHeight}px)`
-            } else {
-                content.style.height = '100vh'
-            }
-        }
-        
-        setInterval(() => {
-            contentChangeHeight()
-        }, 50);
-    </script>
-    <script src="./js/cursor.js"></script>
-    <script src="./js/load.js"></script>
-    <script src="./js/menu_mobile.js"></script>
-</body>
+    <div class="detent-ring" data-detent-ring aria-hidden="true"></div>
+  </body>
 </html>

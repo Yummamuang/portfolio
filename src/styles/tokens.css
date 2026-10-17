@@ -1,0 +1,34 @@
+:root {
+  color-scheme: light;
+
+  --housing: #d6d6d1;
+  --plate: #eeeeea;
+  --display: #fafaf8;
+  --ink: #1c1c1c;
+  --ink-muted: #5c5c57;
+  --ink-faint: #64645e;
+  --rule: #c8c8c2;
+  --rule-strong: #c4c4be;
+  --stop-idle: #7d7d77;
+  --signal: #f2600c;
+  --signal-text: #b23d06;
+  --knob: #2a2a28;
+  --knob-ring: #333331;
+  --knob-edge: #444441;
+  --strip: #1c1c1c;
+  --strip-text: #e6e6e1;
+  --tuner-idle: #a3a39d;
+
+  --font: 'Archivo Variable', 'Archivo', system-ui, sans-serif;
+
+  --radius-plate: 28px;
+  --radius-display: 18px;
+  --radius-stop: 12px;
+  --radius-pill: 999px;
+
+  --gutter: clamp(16px, 3vw, 40px);
+  --housing-pad: clamp(8px, 1.6vw, 24px);
+
+  --ease-detent: cubic-bezier(0.3, 1.4, 0.5, 1);
+  --dur-detent: 280ms;
+}
