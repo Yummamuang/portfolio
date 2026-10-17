@@ -20,7 +20,7 @@ Personal portfolio of Panatakorn Supak (GitHub: Yummamuang). Product context, au
 - `index.html` is the Home page: header plate, the program dial (`#dial`), six program sections (`#work`, `#loops`, `#agents`, `#stack`, `#about`, `#contact`) and the status strip.
 - `writing/*.html` are the write-up pages. Each new HTML page must be added to `build.rollupOptions.input` in `vite.config.ts`, or it is not built.
 - `src/main.ts` wires the Home page; `src/article.ts` loads the write-up styles.
-- `src/dial/`: `dial-model.ts` pure stop math, `dial.ts` knob and labels, `scroll-spy.ts` current section. `src/work/`: project data and the Work panel. `src/cursor/`: the detent ring cursor. Tests sit next to the file they cover.
+- `src/dial/`: `dial-model.ts` pure stop math, `dial.ts` knob and labels, `scroll-spy.ts` current section, `page-end.ts` Contact at the end of the page, `tuner.ts` the swipe row that replaces the dial at 900px and below. `src/work/`: project data and the Work panel. `src/cursor/`: the detent ring cursor. Tests sit next to the file they cover.
 - `src/styles/`: `tokens.css` design tokens, then one stylesheet per area.
 - `public/` holds the old site: `pages/` (old Home, Lab, Project, About and the archived sub-sites), `css/`, `js/`, `img/`, `video/`, `font/`. Reference public files as `/img/...` in HTML and as `` `${import.meta.env.BASE_URL}img/...` `` in TypeScript.
 - `public/pages/project/WebDesign-SpaceCat/` and `public/pages/lab/lab5/`, `lab7/` are archived work. Do not edit them.
