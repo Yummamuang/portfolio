@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 2,
+  "generatedAt": "2026-10-17T12:44:37Z",
+  "title": "Design System: YM. Portfolio",
+  "extensions": {
+    "colorMeta": {
+      "ink-black": { "role": "primary", "displayName": "Ink Black", "canonical": "#000000", "tonalRamp": ["#000000", "#151515", "#2b2b2b", "#474747", "#6b6b6b", "#999999", "#cccccc", "#f2f2f2"] },
+      "paper-white": { "role": "neutral", "displayName": "Paper White", "canonical": "#ffffff", "tonalRamp": ["#262626", "#474747", "#6b6b6b", "#949494", "#bdbdbd", "#dedede", "#f2f2f2", "#ffffff"] },
+      "stage-black": { "role": "neutral", "displayName": "Stage Black", "canonical": "#151515", "tonalRamp": ["#151515", "#262626", "#3b3b3b", "#555555", "#777777", "#a0a0a0", "#cfcfcf", "#f0f0f0"] }
+    },
+    "typographyMeta": {
+      "display": { "displayName": "Display", "purpose": "Hero name on Home only." },
+      "headline": { "displayName": "Headline", "purpose": "One-word centred page titles." },
+      "title": { "displayName": "Title", "purpose": "Captions under project and lab frames." },
+      "body": { "displayName": "Body", "purpose": "About paragraph, set in Prompt." },
+      "label": { "displayName": "Label", "purpose": "Desktop nav links, set in Product Sans." },
+      "logo": { "displayName": "Logo", "purpose": "The fixed YM. monogram." }
+    },
+    "shadows": [],
+    "motion": [
+      { "name": "ease-stage", "value": "cubic-bezier(.615, .19, .305, .91)", "purpose": "Headline rise, preloader, mobile menu slide, hamburger." },
+      { "name": "ease-frame", "value": "cubic-bezier(0.645, 0.045, 0.355, 1)", "purpose": "Media zoom, button inversion, link underline, portrait entrance." },
+      { "name": "ease-cursor", "value": "cubic-bezier(0.165, 0.84, 0.44, 1)", "purpose": "Cursor trailing the pointer over 0.4s." },
+      { "name": "duration-rise", "value": "0.4s", "purpose": "Headline line reveal, staggered about 0.2s per line." },
+      { "name": "duration-invert", "value": "0.25s", "purpose": "Button hover fill." }
+    ],
+    "breakpoints": [
+      { "name": "xs", "value": "375px" },
+      { "name": "md", "value": "768px" },
+      { "name": "lg", "value": "1024px" },
+      { "name": "xl", "value": "1280px" },
+      { "name": "2xl", "value": "1536px" },
+      { "name": "3xl", "value": "1800px" },
+      { "name": "max", "value": "1980px" }
+    ]
+  },
+  "components": [
+    {
+      "name": "Outline Button",
+      "kind": "button",
+      "refersTo": "button-outline",
+      "description": "Square outlined button that floods black on hover.",
+      "html": "<button class=\"ds-btn-outline\">View Lab</button>",
+      "css": ".ds-btn-outline { font: 400 1.2em 'Poppins', sans-serif; color: #000; background: transparent; border: 1px solid #000; border-radius: 0; padding: 1em; cursor: pointer; transition: background 0.25s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.25s cubic-bezier(0.645, 0.045, 0.355, 1); } .ds-btn-outline:hover { background: #000; color: #fff; } .ds-btn-outline:focus-visible { outline: 2px solid #000; outline-offset: 3px; }"
+    },
+    {
+      "name": "Media Frame",
+      "kind": "card",
+      "refersTo": "media-frame",
+      "description": "Project or lab tile: clipped 1px frame whose media zooms on hover, caption below.",
+      "html": "<a class=\"ds-frame-link\" href=\"#\"><div class=\"ds-frame\"><div class=\"ds-frame-media\"></div></div><p class=\"ds-frame-caption\">Cat Space Shop Website Design</p></a>",
+      "css": ".ds-frame-link { display: block; width: 320px; color: #000; text-decoration: none; } .ds-frame { border: 1px solid #000; height: 220px; overflow: hidden; background: #000; } .ds-frame-media { width: 100%; height: 100%; background: repeating-linear-gradient(135deg, #151515 0 12px, #2b2b2b 12px 24px); transition: transform 0.4s cubic-bezier(0.645, 0.045, 0.355, 1); } .ds-frame-link:hover .ds-frame-media, .ds-frame-link:focus-visible .ds-frame-media { transform: scale(1.125); } .ds-frame-link:focus-visible { outline: 2px solid #000; outline-offset: 4px; } .ds-frame-caption { font: 500 1.25rem 'Poppins', sans-serif; text-align: center; margin: 20px 0 0; }"
+    },
+    {
+      "name": "Nav Link",
+      "kind": "nav",
+      "refersTo": "nav-link",
+      "description": "Desktop nav with an underline that draws left to right on hover.",
+      "html": "<nav class=\"ds-nav\"><a href=\"#\">Home</a><a href=\"#\">Lab</a><a href=\"#\">Project</a><a href=\"#\">About me</a></nav>",
+      "css": ".ds-nav { display: flex; gap: 2em; } .ds-nav a { color: #000; text-decoration: none; font: larger productsans, 'Product Sans', sans-serif; padding-bottom: 4px; background: linear-gradient(currentColor 0 0) bottom left / var(--u, 0%) 0.1em no-repeat; transition: background-size 0.4s cubic-bezier(0.645, 0.045, 0.355, 1); } .ds-nav a:hover, .ds-nav a:focus-visible { --u: 100%; background-size: 100% 0.1em; outline: none; }"
+    },
+    {
+      "name": "Rising Headline",
+      "kind": "custom",
+      "refersTo": "headline",
+      "description": "One-word page title that slides up out of an overflow mask.",
+      "html": "<div class=\"ds-rise\"><h1>Project</h1></div>",
+      "css": ".ds-rise { overflow: hidden; text-align: center; } .ds-rise h1 { font: 700 72px/1.2 'Poppins', sans-serif; color: #000; margin: 0; transform: translateY(100%); animation: ds-moveup 0.4s cubic-bezier(.615, .19, .305, .91) forwards 0.3s; } @keyframes ds-moveup { to { transform: translateY(0); } } @media (prefers-reduced-motion: reduce) { .ds-rise h1 { animation: none; transform: none; } }"
+    },
+    {
+      "name": "Preloader Curtain",
+      "kind": "custom",
+      "refersTo": "preloader",
+      "description": "Black curtain with the YM. monogram sweeping across before the page reveals.",
+      "html": "<div class=\"ds-preloader\"><span>Y</span><span>M</span><span>.</span></div>",
+      "css": ".ds-preloader { display: flex; align-items: center; justify-content: center; width: 320px; height: 160px; background: #000; overflow: hidden; } .ds-preloader span { color: #fff; font: 700 48px 'Poppins', sans-serif; animation: ds-preload 5s cubic-bezier(.615, .19, .305, .91) infinite; } .ds-preloader span:nth-child(1) { animation-delay: 0.4s; } .ds-preloader span:nth-child(2) { animation-delay: 0.2s; } @keyframes ds-preload { 0% { transform: translateX(-1000%); } 40% { transform: translateX(0); } 80% { transform: translateX(200%); } 100% { transform: translateX(1000%); } }"
+    },
+    {
+      "name": "Difference Cursor",
+      "kind": "custom",
+      "refersTo": "cursor",
+      "description": "Hollow ring that inverts whatever it passes over. Desktop only.",
+      "html": "<div class=\"ds-cursor-stage\"><span class=\"ds-cursor-word\">Panatakorn</span><span class=\"ds-cursor\"></span></div>",
+      "css": ".ds-cursor-stage { position: relative; width: 320px; height: 120px; background: #fff; display: flex; align-items: center; justify-content: center; } .ds-cursor-word { font: 700 44px 'Poppins', sans-serif; color: #000; } .ds-cursor { position: absolute; left: 58%; top: 50%; width: 50px; height: 50px; border-radius: 50%; border: 2px solid #fff; mix-blend-mode: difference; transform: translate(-50%, -50%); pointer-events: none; transition: left 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); } .ds-cursor-stage:hover .ds-cursor { left: 40%; }"
+    }
+  ],
+  "narrative": {
+    "northStar": "The Monochrome Stage",
+    "overview": "The site is a bare white stage lit in black. Every page opens the same way: a black curtain carrying the \"YM.\" monogram lifts away, and then oversized Poppins headlines rise into view from behind a mask, one line after another, like actors stepping up through a trap door. Nothing on the stage is coloured. The work itself, shown as looping videos and screenshots inside thin black frames, supplies the only colour on the page.\n\nThe mood is clean, editorial, and confident. Type is huge and set tight, sections are announced with a single centred word, and there is a lot of empty white around everything. Personality comes from motion rather than ornament: a hollow ring cursor that inverts whatever it passes over, frames that zoom their media on hover, and outlined controls that flood solid black when touched.\n\nThis record captures the system as it stands before the planned Vite migration and redesign. Treat it as the incumbent reference, not a mandate for the next world.",
+    "keyCharacteristics": [
+      "Pure black and white. Colour only enters through project media.",
+      "Oversized bold type that animates up from an overflow mask.",
+      "Square corners and 1px black outlines. No shadows anywhere.",
+      "Hover means inversion: outline becomes fill, white becomes black.",
+      "`mix-blend-mode: difference` on the logo, hamburger, and cursor so they read over any background."
+    ],
+    "rules": [
+      { "name": "The Two Inks Rule", "body": "Interface chrome uses only Ink Black and Paper White. A third colour in UI is a defect. Colour belongs to the work being shown.", "section": "colors" },
+      { "name": "The Difference Rule", "body": "Elements that float above content, the logo, hamburger lines, and cursor, use `mix-blend-mode: difference` so they invert against whatever is beneath instead of carrying their own background.", "section": "colors" },
+      { "name": "The Rising Line Rule", "body": "Headlines never fade or pop in. Each line sits inside an `overflow: hidden` wrapper and slides up from `translateY(100%)` to 0 over 0.4s, staggered by about 0.2s per line.", "section": "typography" },
+      { "name": "The One Word Rule", "body": "A page title is a single short word or phrase at headline size, centred. Explanatory copy never sits at headline scale.", "section": "typography" },
+      { "name": "The No Shadow Rule", "body": "Do not add `box-shadow` or `drop-shadow`. If something needs to stand out, invert it or frame it with a 1px line.", "section": "elevation" }
+    ],
+    "dos": [
+      "Do keep interface colour to Ink Black and Paper White, and let project media carry all colour.",
+      "Do reveal headlines line by line from an overflow mask with `cubic-bezier(.615, .19, .305, .91)` over 0.4s.",
+      "Do frame every piece of work in a square, 1px black outlined, clipped frame with a centred caption beneath.",
+      "Do express hover as inversion or as a 1.125 media zoom.",
+      "Do use `mix-blend-mode: difference` for chrome that floats over content."
+    ],
+    "donts": [
+      "Don't add rounded corners to frames or buttons.",
+      "Don't add shadows, tinted surfaces, or decorative gradients to the interface.",
+      "Don't introduce a fourth typeface. Poppins, Prompt, and Product Sans already cover display, body, and nav.",
+      "Don't fade headlines in. They rise."
+    ]
+  }
+}
