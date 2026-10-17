@@ -13,18 +13,18 @@
 }
 
 .article > * {
-  max-width: 44ch;
+  max-width: 48ch;
   margin-inline: auto;
 }
 
 .article > pre {
   width: fit-content;
-  min-width: min(100%, 44ch);
+  min-width: min(100%, 48ch);
   max-width: 100%;
 }
 
 .article > blockquote {
-  max-width: calc(44ch + 96px);
+  max-width: calc(48ch + 96px);
 }
 
 .article blockquote p {
