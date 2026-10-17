@@ -4,13 +4,16 @@ Personal portfolio of Panatakorn Supak (GitHub: Yummamuang). Product context, au
 
 ## Stack and deploy
 
-- Plain static HTML/CSS/JS today. No package.json, no build step, no tests.
-- Deployed to GitHub Pages from this repo.
-- Planned: migrate to Vite and deploy the build output to GitHub Pages through GitHub Actions. Until that lands, keep everything working as plain static files.
+- Vite with vanilla TypeScript, no UI framework. pnpm, Node 22 or newer.
+- `base` is `/portfolio/` because GitHub Pages serves the site at `https://yummamuang.github.io/portfolio/`.
+- `.github/workflows/deploy.yml` builds and deploys `dist/` to GitHub Pages on every push to `main`.
+- The old static site lives unchanged in `public/` and is copied into `dist/` as-is.
 
 ## Running locally
 
-Open the files through any static server from the repo root, for example `python3 -m http.server 8000`, or the VS Code Live Preview extension (`.vscode/settings.json` points it at `/pages/project.html`). Check the port is free first.
+- `pnpm install`, then `pnpm dev` and open `http://localhost:5173/portfolio/`. Check the port is free first.
+- `pnpm test` runs Vitest once. Never call bare `vitest`, it starts watch mode.
+- `pnpm lint`, `pnpm format:check`, `pnpm build`, then `pnpm preview` at `http://localhost:4173/portfolio/` to check the production build.
 
 ## Layout
 
