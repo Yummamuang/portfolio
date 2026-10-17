@@ -34,8 +34,8 @@
 
           <h2>The problem</h2>
           <p>
-            One long agent session piles up context. It drifts from the plan, forgets early
-            decisions, and ends up grading its own work.
+            One long agent session piles up context from every step, and the agent ends up checking
+            its own work.
           </p>
 
           <h2>1. Write the plan</h2>
@@ -50,15 +50,16 @@
             </li>
             <li>the names and types it uses from earlier tasks and hands to later ones;</li>
             <li>
-              the business rules it must keep, quoted word for word from the ticket, each marked as
-              a property that must hold for every input or as boundary examples;
+              for a task that implements a business rule, the rule quoted word for word from the
+              ticket, marked as a property that must hold for every input or as boundary examples;
             </li>
-            <li>its test file, next to the file it covers;</li>
+            <li>for a code task, its test file, named after the file it covers;</li>
             <li>for anything a user can see, browser steps with an observable result for each.</li>
           </ul>
           <p>
-            The plan ends with a short summary and an end-to-end demo flow. The rules are approved
-            before any code is written.
+            When a task changes something a user can see, the plan ends with an end-to-end demo
+            flow, and a short plain-language summary comes with it. The rules are approved before
+            any code is written.
           </p>
 
           <h2>2. One subagent per task</h2>
