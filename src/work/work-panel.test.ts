@@ -120,6 +120,10 @@ describe('createWorkPanel', () => {
     expect(video?.hasAttribute('controls')).toBe(true)
   })
 
+  it('leaves the status region empty until the selection changes', () => {
+    expect(text(root, '[data-work-status]')).toBe('')
+  })
+
   it('announces the selected project in the status region', () => {
     click(root, '[data-work-next]')
 

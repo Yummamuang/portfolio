@@ -74,6 +74,8 @@ export function createWorkPanel({ root, projects, autoplay }: WorkPanelOptions) 
   })
   list.replaceChildren(...buttons.map((button) => el('li', '', [button])))
 
+  let started = false
+
   function select(index: number) {
     const project = projects[index]
     if (!project) return
@@ -84,13 +86,16 @@ export function createWorkPanel({ root, projects, autoplay }: WorkPanelOptions) 
     const link = el('a', 'button-primary', [project.link.label])
     link.href = project.link.href
     count.textContent = `${index + 1} / ${projects.length}`
-    if (status) status.textContent = `Project ${index + 1} of ${projects.length}: ${project.title}`
+    if (status && started)
+      status.textContent = `Project ${index + 1} of ${projects.length}: ${project.title}`
 
     const body = el('div', 'work-body', [
       el('h3', 'work-title', [project.title]),
       el('p', 'work-summary', [project.summary]),
     ])
-    if (project.desktopOnly) body.append(el('p', 'work-desktop-only', ['Desktop only']))
+    const badgeSlot = el('div', 'work-badge-slot')
+    if (project.desktopOnly) badgeSlot.append(el('p', 'work-desktop-only', ['Desktop only']))
+    body.append(badgeSlot)
     body.append(el('div', 'work-actions', [link, next, count]))
 
     featuredRoot.replaceChildren(renderMedia(project, autoplay), body)
@@ -101,5 +106,6 @@ export function createWorkPanel({ root, projects, autoplay }: WorkPanelOptions) 
   }
 
   select(0)
+  started = true
   return { select }
 }
