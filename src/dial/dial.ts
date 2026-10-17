@@ -137,8 +137,12 @@ export function createDial({
     label.addEventListener('click', (event) => {
       const id = label.dataset.program
       if (id === undefined || !isProgramId(id)) return
+      if (event.button !== 0 || event.metaKey || event.ctrlKey || event.shiftKey || event.altKey) {
+        return
+      }
       event.preventDefault()
       choose(indexForProgram(id), true)
+      jumpToSection(id)
     })
   }
 
@@ -159,6 +163,16 @@ export function createDial({
       choose(PROGRAMS.length - 1)
     }
   })
+
+  // Stands in for the fragment jump the click replaced: focus follows the scroll
+  // and the address bar keeps the section without growing the history.
+  function jumpToSection(id: ProgramId) {
+    const section = document.getElementById(id)
+    if (!section) return
+    section.setAttribute('tabindex', '-1')
+    section.focus({ preventScroll: true })
+    history.replaceState(null, '', `#${id}`)
+  }
 
   function angleFromEvent(event: MouseEvent) {
     const box = face.getBoundingClientRect()

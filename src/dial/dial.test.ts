@@ -1,5 +1,6 @@
 import { beforeEach, describe, expect, it, vi } from 'vitest'
 import { createDial } from './dial'
+import { createTuner } from './tuner'
 
 const DIAL_MARKUP = `
   <div class="dial-face">
@@ -14,6 +15,8 @@ const DIAL_MARKUP = `
       <li><a href="#contact" data-program="contact">Contact</a></li>
     </ol>
   </div>`
+
+const PROGRAM_IDS = ['work', 'loops', 'agents', 'stack', 'about', 'contact'] as const
 
 function setup() {
   const root = document.createElement('nav')
@@ -253,5 +256,57 @@ describe('createDial', () => {
     ctx.dial.setActive('loops')
 
     expect(ctx.knob.getAttribute('aria-valuetext')).toBe('Work')
+  })
+
+  it('leaves a modified click to the browser', () => {
+    const label = ctx.root.querySelector('a[data-program="stack"]')
+    const click = new MouseEvent('click', { bubbles: true, cancelable: true, ctrlKey: true })
+    label?.dispatchEvent(click)
+
+    expect(ctx.onSelect).not.toHaveBeenCalled()
+    expect(click.defaultPrevented).toBe(false)
+  })
+
+  it('leaves a non-primary button click to the browser', () => {
+    const label = ctx.root.querySelector('a[data-program="stack"]')
+    const click = new MouseEvent('click', { bubbles: true, cancelable: true, button: 1 })
+    label?.dispatchEvent(click)
+
+    expect(ctx.onSelect).not.toHaveBeenCalled()
+  })
+
+  it('moves focus to the section and replaces the hash when a label is clicked', () => {
+    const section = document.createElement('section')
+    section.id = 'stack'
+    document.body.append(section)
+    const focus = vi.spyOn(section, 'focus')
+    const replaceState = vi.spyOn(history, 'replaceState')
+
+    ctx.root
+      .querySelector('a[data-program="stack"]')
+      ?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+    expect(section.getAttribute('tabindex')).toBe('-1')
+    expect(focus).toHaveBeenCalledWith({ preventScroll: true })
+    expect(replaceState).toHaveBeenCalledWith(null, '', '#stack')
+    section.remove()
+    replaceState.mockRestore()
+  })
+
+  it('selects once when a label is tapped with the tuner active', () => {
+    const list = ctx.root.querySelector<HTMLElement>('.dial-labels')
+    if (!list) throw new Error('list missing from fixture')
+    list.scrollTo = vi.fn()
+    const labels = Array.from(ctx.root.querySelectorAll<HTMLAnchorElement>('a[data-program]'))
+    createTuner({
+      list,
+      labels,
+      reducedMotion: { matches: false },
+      onCommit: (index) => ctx.dial.select(PROGRAM_IDS[index] ?? 'work'),
+    })
+
+    labels[3]?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
+
+    expect(ctx.onSelect).toHaveBeenCalledTimes(1)
   })
 })

@@ -137,12 +137,20 @@ describe('createTuner', () => {
     expect(ctx.onCommit).not.toHaveBeenCalled()
   })
 
-  it('commits and stops the hash jump when a label is tapped', () => {
-    const event = new MouseEvent('click', { bubbles: true, cancelable: true })
-    ctx.labels[5]?.dispatchEvent(event)
+  it('leaves choosing to the dial when a label is tapped', () => {
+    ctx.labels[5]?.dispatchEvent(new MouseEvent('click', { bubbles: true, cancelable: true }))
 
-    expect(ctx.onCommit).toHaveBeenCalledExactlyOnceWith(5)
-    expect(event.defaultPrevented).toBe(true)
+    expect(ctx.onCommit).not.toHaveBeenCalled()
+  })
+
+  it('does not commit a rail nudge that snaps back to the current program', () => {
+    ctx.tuner.centre(3)
+    ctx.list.dispatchEvent(new Event('pointerdown'))
+    ctx.scrollToIndex(3)
+    ctx.list.dispatchEvent(new Event('pointerup'))
+    ctx.list.dispatchEvent(new Event('scrollend'))
+
+    expect(ctx.onCommit).not.toHaveBeenCalled()
   })
 
   it('makes only the centred label tabbable', () => {

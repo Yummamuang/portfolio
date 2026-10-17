@@ -58,6 +58,7 @@ export function createTuner({ list, labels, onCommit, reducedMotion }: TunerOpti
     if (!swiped || fingerDown) return
     swiped = false
     const index = centredIndex()
+    if (index === rovingIndex) return
     setRoving(index)
     onCommit(index)
   }
@@ -116,17 +117,11 @@ export function createTuner({ list, labels, onCommit, reducedMotion }: TunerOpti
   list.addEventListener('scroll', onRailScroll, { signal })
   list.addEventListener('scrollend', settleSwipe, { signal })
 
+  // The dial's own label listener chooses on a tap, so the tuner only drops the swipe state.
   list.addEventListener(
     'click',
-    (event) => {
-      const index = labels.findIndex(
-        (label) => event.target instanceof Node && label.contains(event.target),
-      )
-      if (index === -1) return
-      event.preventDefault()
+    () => {
       swiped = false
-      setRoving(index)
-      onCommit(index)
     },
     { signal },
   )
