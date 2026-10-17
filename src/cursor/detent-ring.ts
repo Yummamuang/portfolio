@@ -143,6 +143,11 @@ export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => v
     place(lastPoint.x, lastPoint.y, document.elementFromPoint(lastPoint.x, lastPoint.y))
   }
 
+  // A click can re-render the control under a still pointer, so wait for layout before re-placing.
+  function onClick() {
+    requestAnimationFrame(replace)
+  }
+
   function onDown(event: MouseEvent) {
     if ('pointerType' in event && event.pointerType !== 'mouse') return
     ring.setAttribute('data-pressed', '')
@@ -166,6 +171,7 @@ export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => v
   document.addEventListener('pointercancel', onUp)
   document.addEventListener('pointerout', onLeave)
   document.addEventListener('keydown', onKeyDown)
+  document.addEventListener('click', onClick)
   window.addEventListener('scroll', replace, { passive: true })
   window.addEventListener('resize', replace)
 
@@ -176,6 +182,7 @@ export function createDetentRing({ ring, dialFace }: DetentRingOptions): () => v
     document.removeEventListener('pointercancel', onUp)
     document.removeEventListener('pointerout', onLeave)
     document.removeEventListener('keydown', onKeyDown)
+    document.removeEventListener('click', onClick)
     window.removeEventListener('scroll', replace)
     window.removeEventListener('resize', replace)
   }

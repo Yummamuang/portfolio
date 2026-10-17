@@ -187,6 +187,33 @@ describe('createDetentRing', () => {
     expect(ring.style.translate).toBe('296px 96px')
   })
 
+  it('follows a control that shifts after a click under a still pointer', () => {
+    const control = document.querySelector<HTMLElement>('.control')
+    if (!control) throw new Error('fixture missing')
+    control.getBoundingClientRect = () => rect(400, 100, 120, 48)
+    move(control, 410, 110)
+    control.getBoundingClientRect = () => rect(300, 100, 90, 48)
+    stubElementAtPointer(control)
+    control.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+    expect(ring.style.translate).toBe('296px 96px')
+    expect(ring.style.width).toBe('98px')
+  })
+
+  it('stops following clicks after teardown', () => {
+    const control = document.querySelector<HTMLElement>('.control')
+    if (!control) throw new Error('fixture missing')
+    control.getBoundingClientRect = () => rect(400, 100, 120, 48)
+    move(control, 410, 110)
+    stop()
+    control.getBoundingClientRect = () => rect(300, 100, 90, 48)
+    stubElementAtPointer(control)
+    control.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+
+    expect(ring.style.translate).toBe('396px 96px')
+    expect(ring.style.width).toBe('128px')
+  })
+
   it('does not show the ring on scroll before the pointer has moved', () => {
     stubElementAtPointer(document.querySelector('.plain'))
     window.dispatchEvent(new Event('scroll'))
