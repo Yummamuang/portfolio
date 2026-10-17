@@ -101,4 +101,5 @@
 
 .article pre:focus-visible {
   outline-offset: -3px;
+  outline-color: var(--strip-text);
 }
