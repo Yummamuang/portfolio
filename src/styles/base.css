@@ -45,15 +45,6 @@ a:hover {
   white-space: nowrap;
 }
 
-.kicker {
-  margin: 0;
-  font-size: 0.8125rem;
-  font-weight: 600;
-  letter-spacing: 0.14em;
-  text-transform: uppercase;
-  color: var(--signal-text);
-}
-
 .button-primary,
 .button-secondary {
   display: inline-flex;

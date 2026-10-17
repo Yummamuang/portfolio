@@ -161,20 +161,125 @@
                 </ul>
               </noscript>
             </section>
-            <section id="loops" class="program" aria-labelledby="loops-title">
-              <h2 id="loops-title">Loop engineering</h2>
+            <section id="loops" class="program program-panel" aria-labelledby="loops-title">
+              <h2 id="loops-title" class="panel-title">Loop engineering</h2>
+              <p class="panel-lede">
+                A coding agent can work in a loop: pick one task, check its own result, and stop
+                when the checks pass. I design those loops: one change per pass, a gate that has to
+                pass, and a rule for when to stop.
+              </p>
+              <ol class="stage-row" aria-label="One pass of the loop">
+                <li class="stage"><span class="stage-no">01</span>Next item in STATE.md</li>
+                <li class="stage"><span class="stage-no">02</span>Fix a red gate</li>
+                <li class="stage"><span class="stage-no">03</span>Oldest PR comment</li>
+                <li class="stage"><span class="stage-no">04</span>Nothing pending: stop</li>
+              </ol>
+              <ul class="rule-list">
+                <li>One logical change per pass</li>
+                <li>Never edit a test to make it pass</li>
+                <li>Same item fails twice: stop and report</li>
+              </ul>
+              <div class="panel-actions">
+                <a class="button-primary" href="./writing/loop-engineering.html"
+                  >Read the write-up</a
+                >
+              </div>
             </section>
-            <section id="agents" class="program" aria-labelledby="agents-title">
-              <h2 id="agents-title">Agent workflow</h2>
+
+            <section id="agents" class="program program-panel" aria-labelledby="agents-title">
+              <h2 id="agents-title" class="panel-title">Agent workflow</h2>
+              <p class="panel-lede">
+                How I split work for coding agents: a written plan, one fresh agent for each task, a
+                review after every task, and one broad review of the whole branch at the end.
+              </p>
+              <ol class="stage-row" aria-label="Agent workflow steps">
+                <li class="stage"><span class="stage-no">01</span>Write the plan</li>
+                <li class="stage"><span class="stage-no">02</span>One subagent per task</li>
+                <li class="stage"><span class="stage-no">03</span>Review every task</li>
+                <li class="stage"><span class="stage-no">04</span>Review the whole branch</li>
+              </ol>
+              <p class="panel-credit">Customized from the open-source superpowers skills.</p>
+              <div class="panel-actions">
+                <a class="button-primary" href="./writing/agent-workflow.html">Read the write-up</a>
+              </div>
             </section>
-            <section id="stack" class="program" aria-labelledby="stack-title">
-              <h2 id="stack-title">Stack</h2>
+
+            <section id="stack" class="program program-panel" aria-labelledby="stack-title">
+              <h2 id="stack-title" class="panel-title">Stack</h2>
+              <dl class="stack-grid">
+                <div class="stack-group">
+                  <dt>Frontend</dt>
+                  <dd>
+                    TypeScript, React, Next.js, Nx with pnpm, Mantine, Tailwind CSS, TanStack Query,
+                    React Hook Form with Zod, OpenAPI clients, OIDC, SignalR
+                  </dd>
+                </div>
+                <div class="stack-group">
+                  <dt>Backend</dt>
+                  <dd>
+                    C# and .NET 8, ASP.NET Core, Entity Framework Core, PostgreSQL, MassTransit,
+                    Quartz, OpenIddict, Clean Architecture
+                  </dd>
+                </div>
+                <div class="stack-group">
+                  <dt>Observability</dt>
+                  <dd>Serilog, OpenTelemetry</dd>
+                </div>
+                <div class="stack-group">
+                  <dt>Testing</dt>
+                  <dd>
+                    xUnit, FluentAssertions, Moq, property-based tests with CsCheck, Vitest, Testing
+                    Library, Playwright
+                  </dd>
+                </div>
+                <div class="stack-group">
+                  <dt>Infra and delivery</dt>
+                  <dd>Docker, Kubernetes, GitHub Actions</dd>
+                </div>
+                <div class="stack-group">
+                  <dt>AI-assisted engineering</dt>
+                  <dd>Claude Code agent workflows, loop engineering</dd>
+                </div>
+              </dl>
+              <p class="panel-credit">Earlier projects also used Node.js, Laravel and Python.</p>
             </section>
-            <section id="about" class="program" aria-labelledby="about-title">
-              <h2 id="about-title">About</h2>
+
+            <section
+              id="about"
+              class="program program-panel program-about"
+              aria-labelledby="about-title"
+            >
+              <div class="about-photo">
+                <img
+                  src="/img/my_pic.jpg"
+                  alt="Panatakorn Supak standing in front of a white wall"
+                  width="4032"
+                  height="1362"
+                  loading="lazy"
+                />
+              </div>
+              <div class="about-body">
+                <h2 id="about-title" class="panel-title">About</h2>
+                <p class="panel-lede">
+                  I'm Panatakorn Supak, a Software Engineer. I studied Computer Science at Khon Kaen
+                  University. I also design loops and agent workflows for Claude Code.
+                </p>
+                <p class="older-work">
+                  Older work:
+                  <a href="./pages/lab.html">Lab</a>
+                  <a href="./pages/project.html">Projects</a>
+                  <a href="./pages/about.html">About</a>
+                </p>
+              </div>
             </section>
-            <section id="contact" class="program" aria-labelledby="contact-title">
-              <h2 id="contact-title">Contact</h2>
+
+            <section id="contact" class="program program-panel" aria-labelledby="contact-title">
+              <h2 id="contact-title" class="panel-title">Contact</h2>
+              <p class="contact-mail"><a href="mailto:oak.ptkn@gmail.com">oak.ptkn@gmail.com</a></p>
+              <div class="panel-actions">
+                <a class="button-primary" href="mailto:oak.ptkn@gmail.com">Email me</a>
+                <a class="button-secondary" href="https://github.com/Yummamuang">GitHub</a>
+              </div>
             </section>
           </main>
         </div>
