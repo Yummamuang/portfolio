@@ -149,14 +149,16 @@ describe('createDial', () => {
     ctx.dial.setActive('stack')
 
     expect(ctx.next.getAttribute('href')).toBe('#about')
-    expect(ctx.next.textContent).toBe('Next: About ↓')
+    expect(ctx.next.textContent).toBe('Next: About')
+    expect(ctx.next.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
   })
 
   it('turns the next link into back to top on the last program', () => {
     ctx.dial.setActive('contact')
 
     expect(ctx.next.getAttribute('href')).toBe('#top')
-    expect(ctx.next.textContent).toBe('Back to top ↑')
+    expect(ctx.next.textContent).toBe('Back to top')
+    expect(ctx.next.querySelector('svg')?.getAttribute('aria-hidden')).toBe('true')
   })
 
   it('ignores a drag started with a non-primary button', () => {

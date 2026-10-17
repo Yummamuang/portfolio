@@ -31,6 +31,25 @@ const KEY_STEPS: Readonly<Record<string, number>> = {
 const ARC_LIMIT = 120
 const PENDING_TIMEOUT_MS = 1200
 
+const SVG_NS = 'http://www.w3.org/2000/svg'
+const ARROW_PATHS = {
+  down: 'M8 2.5v11M3.5 9 8 13.5 12.5 9',
+  up: 'M8 13.5v-11M3.5 7 8 2.5 12.5 7',
+} as const
+
+function arrowIcon(direction: keyof typeof ARROW_PATHS): SVGSVGElement {
+  const svg = document.createElementNS(SVG_NS, 'svg')
+  svg.setAttribute('viewBox', '0 0 16 16')
+  svg.setAttribute('aria-hidden', 'true')
+  svg.setAttribute('fill', 'none')
+  svg.setAttribute('stroke', 'currentColor')
+  svg.setAttribute('stroke-width', '1.5')
+  const path = document.createElementNS(SVG_NS, 'path')
+  path.setAttribute('d', ARROW_PATHS[direction])
+  svg.append(path)
+  return svg
+}
+
 export function createDial({ root, status, lamp, next, onSelect }: DialOptions): DialHandle {
   const knob = root.querySelector('[data-dial-knob]')
   if (!(knob instanceof HTMLElement)) throw new Error('Dial markup is missing [data-dial-knob]')
@@ -60,7 +79,10 @@ export function createDial({ root, status, lamp, next, onSelect }: DialOptions):
     if (!next) return
     const following = PROGRAMS[index + 1]
     next.setAttribute('href', following ? `#${following.id}` : '#top')
-    next.textContent = following ? `Next: ${following.title} ↓` : 'Back to top ↑'
+    next.replaceChildren(
+      following ? `Next: ${following.title}` : 'Back to top',
+      arrowIcon(following ? 'down' : 'up'),
+    )
   }
 
   function blinkLamp() {

@@ -1,5 +1,11 @@
 html {
   scroll-padding-bottom: 72px;
+  scrollbar-color: var(--stop-idle) var(--housing);
+}
+
+::selection {
+  background: var(--signal);
+  color: var(--ink);
 }
 
 *,
@@ -15,6 +21,7 @@ body {
   font-family: var(--font);
   font-size: 1rem;
   line-height: 1.5;
+  caret-color: var(--signal-text);
 }
 
 img,
