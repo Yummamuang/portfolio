@@ -1,193 +1,282 @@
 ---
 name: YM. Portfolio
-description: Black-and-white personal portfolio where oversized type rises onto a bare white stage.
+description: An appliance faceplate whose program dial is the navigation, in grey plastic, near-black ink and one signal orange.
 colors:
-  paper-white: "#ffffff"
-  ink-black: "#000000"
-  stage-black: "#151515"
+  housing: "#d6d6d1"
+  plate: "#eeeeea"
+  display: "#fafaf8"
+  ink: "#1c1c1c"
+  ink-muted: "#5c5c57"
+  ink-faint: "#64645e"
+  rule: "#c8c8c2"
+  rule-strong: "#c4c4be"
+  stop-idle: "#7d7d77"
+  signal: "#f2600c"
+  signal-text: "#b23d06"
+  knob: "#2a2a28"
+  knob-ring: "#333331"
+  knob-edge: "#444441"
+  strip: "#1c1c1c"
+  strip-text: "#e6e6e1"
 typography:
   display:
-    fontFamily: "Poppins, sans-serif"
-    fontSize: "clamp(3.5rem, calc(1rem + 8vw), 120px)"
-    fontWeight: 700
-    lineHeight: 1.2
+    fontFamily: "'Archivo Variable', 'Archivo', system-ui, sans-serif"
+    fontSize: "clamp(2.5rem, 5vw, 4.5rem)"
+    fontWeight: 800
+    lineHeight: 0.95
+    letterSpacing: "-0.035em"
   headline:
-    fontFamily: "Poppins, sans-serif"
-    fontSize: "clamp(2.5rem, 10vw, 100px)"
-    fontWeight: 700
-    lineHeight: 1.2
+    fontFamily: "'Archivo Variable', 'Archivo', system-ui, sans-serif"
+    fontSize: "clamp(1.5rem, 9cqi, 2.875rem)"
+    fontWeight: 800
+    lineHeight: 1
+    letterSpacing: "-0.03em"
   title:
-    fontFamily: "Poppins, sans-serif"
-    fontSize: "clamp(1.25rem, calc(0.8rem + 1vw), 2rem)"
-    fontWeight: 500
+    fontFamily: "'Archivo Variable', 'Archivo', system-ui, sans-serif"
+    fontSize: "1.625rem"
+    fontWeight: 800
+    lineHeight: 1.2
+    letterSpacing: "-0.02em"
+  lede:
+    fontFamily: "'Archivo Variable', 'Archivo', system-ui, sans-serif"
+    fontSize: "1.1875rem"
+    fontWeight: 400
+    lineHeight: 1.45
   body:
-    fontFamily: "Prompt, sans-serif"
-    fontSize: "clamp(1.25rem, 1.6vw, 1.8rem)"
+    fontFamily: "'Archivo Variable', 'Archivo', system-ui, sans-serif"
+    fontSize: "1rem"
     fontWeight: 400
+    lineHeight: 1.5
+  body-article:
+    fontFamily: "'Archivo Variable', 'Archivo', system-ui, sans-serif"
+    fontSize: "1.125rem"
+    fontWeight: 400
+    lineHeight: 1.65
   label:
-    fontFamily: "productsans, sans-serif"
-    fontSize: "larger"
+    fontFamily: "'Archivo Variable', 'Archivo', system-ui, sans-serif"
+    fontSize: "0.9375rem"
+    fontWeight: 600
+    lineHeight: 1.5
+    letterSpacing: "0.1em"
+  status:
+    fontFamily: "'Archivo Variable', 'Archivo', system-ui, sans-serif"
+    fontSize: "0.8125rem"
     fontWeight: 400
-  logo:
-    fontFamily: "Poppins, sans-serif"
-    fontSize: "2.25em"
-    fontWeight: 700
+    lineHeight: 1.5
+    letterSpacing: "0.08em"
+  code:
+    fontFamily: "ui-monospace, 'SF Mono', Menlo, monospace"
+    fontSize: "0.875rem"
+    lineHeight: 1.55
 rounded:
-  none: "0"
-  pill: "999rem"
+  plate: "28px"
+  display: "18px"
+  stop: "12px"
+  pill: "999px"
 spacing:
-  gutter: "6%"
-  gap: "2em"
-  stack: "2rem"
+  housing-pad: "clamp(8px, 1.6vw, 24px)"
+  gutter: "clamp(16px, 3vw, 40px)"
+  xs: "8px"
+  sm: "12px"
+  md: "16px"
+  lg: "24px"
+  xl: "32px"
 components:
-  button-outline:
+  button-primary:
+    backgroundColor: "{colors.signal}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.pill}"
+    padding: "0 24px"
+    height: "48px"
+  button-primary-hover:
+    backgroundColor: "#f47a2f"
+    textColor: "{colors.ink}"
+  button-secondary:
     backgroundColor: "transparent"
-    textColor: "{colors.ink-black}"
-    rounded: "{rounded.none}"
-    padding: "1em"
-  button-outline-hover:
-    backgroundColor: "{colors.ink-black}"
-    textColor: "{colors.paper-white}"
-    rounded: "{rounded.none}"
-    padding: "1em"
-  media-frame:
-    backgroundColor: "{colors.paper-white}"
-    rounded: "{rounded.none}"
-    height: "50vh"
-    width: "100%"
-  media-frame-dark:
-    backgroundColor: "{colors.ink-black}"
-    rounded: "{rounded.none}"
-    height: "50vh"
-    width: "100%"
-  nav-link:
-    textColor: "{colors.ink-black}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.pill}"
+    padding: "0 24px"
+    height: "48px"
+  button-secondary-hover:
+    backgroundColor: "{colors.ink}"
+    textColor: "{colors.plate}"
+  playback-pill:
+    backgroundColor: "{colors.plate}"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.pill}"
+    padding: "0 20px"
+    height: "44px"
+  stop:
+    backgroundColor: "transparent"
+    textColor: "{colors.ink}"
+    rounded: "{rounded.stop}"
+    padding: "12px 14px"
+    height: "56px"
+  stop-selected:
+    backgroundColor: "{colors.display}"
+    textColor: "{colors.ink}"
+  dial-label:
+    textColor: "{colors.ink-muted}"
     typography: "{typography.label}"
-  preloader:
-    backgroundColor: "{colors.ink-black}"
-    textColor: "{colors.paper-white}"
-    height: "100vh"
-    width: "100%"
+    padding: "0 8px"
+    height: "44px"
+  dial-label-current:
+    textColor: "{colors.signal-text}"
+  display-panel:
+    backgroundColor: "{colors.display}"
+    rounded: "{rounded.display}"
+    padding: "clamp(24px, 3vw, 44px) clamp(20px, 3vw, 48px)"
+  status-strip:
+    backgroundColor: "{colors.strip}"
+    textColor: "{colors.strip-text}"
+    typography: "{typography.status}"
+    padding: "16px clamp(16px, 3vw, 40px)"
 ---
 
 # Design System: YM. Portfolio
 
 ## Overview
 
-**Creative North Star: "The Monochrome Stage"**
+**Creative North Star: "The Program Dial"**
 
-The site is a bare white stage lit in black. Every page opens the same way: a black curtain carrying the "YM." monogram lifts away, and then oversized Poppins headlines rise into view from behind a mask, one line after another, like actors stepping up through a trap door. Nothing on the stage is coloured. The work itself, shown as looping videos and screenshots inside thin black frames, supplies the only colour on the page.
+The site is a household appliance seen face-on. A light grey plastic housing frames one rounded faceplate; on the faceplate a dark knob with an orange pointer turns between six programs, and turning it is how you move through the page. Every surface reads as a panel, display window or control on that machine: flat, tonal, edged by 1px rules, with one signal orange that behaves like an indicator lamp rather than a brand colour.
 
-The mood is clean, editorial, and confident. Type is huge and set tight, sections are announced with a single centred word, and there is a lot of empty white around everything. Personality comes from motion rather than ornament: a hollow ring cursor that inverts whatever it passes over, frames that zoom their media on hover, and outlined controls that flood solid black when touched.
+Density is moderate and calm. The type is a single grotesk, Archivo, used tight and heavy for display and tracked in caps for machine labels. Motion is mechanical: the knob detents with a small overshoot, the lamp blinks once, the cursor becomes a ring that snaps around controls like a bezel. Nothing floats, glows or casts a drop shadow.
 
-This record captures the system as it stands before the planned Vite migration and redesign. Treat it as the incumbent reference, not a mandate for the next world.
+Write-ups live on the same faceplate in a narrow reading column, so a long read still sits inside the machine and ends on the same black status strip.
 
 **Key Characteristics:**
-- Pure black and white. Colour only enters through project media.
-- Oversized bold type that animates up from an overflow mask.
-- Square corners and 1px black outlines. No shadows anywhere.
-- Hover means inversion: outline becomes fill, white becomes black.
-- `mix-blend-mode: difference` on the logo, hamburger, and cursor so they read over any background.
+- Housing, plate and display window as three tonal layers, separated by 1px rules, never by shadow.
+- One orange (signal) used only as fill: pointer, lamp, active tick, primary button, text selection.
+- One typeface, Archivo Variable, from tight 800-weight display to 0.1em tracked caps labels.
+- Dashed outline means "available stop", solid means "selected stop", everywhere stops appear.
+- A sticky black status strip names the current program and the next one.
 
 ## Colors
 
-A strict two-ink palette, with one near-black reserved for a single animated panel.
+A neutral warm-grey appliance palette with a single orange indicator and a darker orange reserved for text.
 
 ### Primary
-- **Ink Black** (`{colors.ink-black}`): all text, every outline, hover fills, the preloader curtain, and the dark media frame behind video thumbnails.
+- **Signal Orange** (signal): the indicator. Fills the dial pointer, the lamp, the active tick, primary buttons and the text-selection background. Always carries ink text on top, never sits as text on the plate.
+- **Burnt Signal** (signal-text): the readable orange. Current dial label, links on hover, inline links in the role statement, stage numbers, the focus outline and the caret.
 
 ### Neutral
-- **Paper White** (`{colors.paper-white}`): the page background, text on black, the cursor ring, and the logo before blending.
-- **Stage Black** (`{colors.stage-black}`): the sliding panel behind screenshot cards (the `webdesign` sweep animation). Slightly softer than ink so the sweep reads as a layer rather than a hole.
+- **Plastic Housing** (housing): page background and the frame around the faceplate; also the scrollbar track.
+- **Faceplate** (plate): the main surface every page sits on; text colour on ink fills.
+- **Display Window** (display): the lighter inset for panels, the featured project card, blockquotes and the pressed stop.
+- **Ink** (ink): body text, display type, secondary button border, selected stop border, portrait rule.
+- **Muted Ink** (ink-muted): roles, credits, rule lists, the counter, idle dial labels, write-up dek.
+- **Faint Ink** (ink-faint): idle dial ticks and the dial hint.
+- **Rule / Strong Rule** (rule, rule-strong): 1px dividers; strong rule edges the plate and draws the dial ring.
+- **Stop Idle** (stop-idle): the 2px dashed outline of unselected stops; scrollbar thumb.
+- **Knob, Knob Ring, Knob Edge** (knob, knob-ring, knob-edge): the dial knob body and its two inset rings. Used nowhere else.
+- **Status Strip / Strip Text** (strip, strip-text): the black strip and code blocks, with their light text.
 
 ### Named Rules
-**The Two Inks Rule.** Interface chrome uses only Ink Black and Paper White. A third colour in UI is a defect. Colour belongs to the work being shown.
+**The Lamp Rule.** Signal orange is a fill, never text. Any orange type uses signal-text. Signal covers small indicators and the primary action only; one primary button per panel.
 
-**The Difference Rule.** Elements that float above content, the logo, hamburger lines, and cursor, use `mix-blend-mode: difference` so they invert against whatever is beneath instead of carrying their own background.
+**The Ink-On-Orange Rule.** Text on a signal fill is ink, weight 800, never white.
 
 ## Typography
 
-**Display Font:** Poppins (with sans-serif), loaded from Google Fonts at 300 to 700
-**Body Font:** Prompt (with sans-serif), used for longer Thai-capable reading text on About
-**Label Font:** Product Sans Regular, self-hosted from `font/Product-Sans-Regular.ttf`, used for desktop nav links
+**Display Font:** Archivo Variable (with Archivo, system-ui, sans-serif)
+**Body Font:** Archivo Variable (same family)
+**Label/Mono Font:** ui-monospace, SF Mono, Menlo for code in write-ups only
 
-**Character:** Geometric and round. Poppins at 700 carries the voice at poster scale, Prompt keeps the same geometry for paragraphs and supports Thai, Product Sans gives the nav a softer, lighter tone.
+**Character:** One grotesk doing every job, the way an appliance faceplate uses one typeface for its brand mark and its program labels. Display is heavy and tightly tracked; labels are small, tracked caps.
 
 ### Hierarchy
-- **Display** (700, `calc(1rem + 8vw)` capped at 120px from 1280px, line-height 120%): the hero name on Home. On phones the hero switches to `calc(5px + 12vw)` with "Hi there! I'm" stacked above the name.
-- **Hero lead and tail** (lead 500 at `7vw` capped at 85px, tail 400 at `4vw` capped at 50px, desktop sizes): "Hi there!" above and "this is my portfolio" below the display line.
-- **Headline** (700, `10vw` on mobile, fixed 100px from 1024px, centred): the one-word page titles "Project", "My Lab", "About Me?".
-- **Title** (500, `calc(0.8rem + 1vw)` rising to 2rem at 1536px, centred): captions under project and lab cards.
-- **Body** (400 Prompt, 1.25rem at 375px, 1.5rem at 768px, 1.6rem at 1024px, 1.8rem at 1536px): the About paragraph. Large and airy, padded by the page gutter.
-- **Label** (400 Product Sans, `larger`): desktop nav links.
+- **Display** (800, clamp 2.5rem to 4.5rem, 0.95, -0.035em): panel titles on Home and the write-up h1.
+- **Headline** (800, clamp 1.5rem to 2.875rem by container width, 1, -0.03em, balanced): the featured project title.
+- **Title** (800, 1.625rem, 1.2, -0.02em): write-up section headings.
+- **Lede** (400, 1.1875rem, 1.45, max 56ch): the plain paragraph under a panel title. The write-up dek (1.3125rem, muted) and the role statement above the featured project (1.25rem, 600, max 60ch) are its siblings.
+- **Body** (400, 1rem, 1.5): Home copy. Project summary runs 1.0625rem at max 48ch.
+- **Article body** (400, 1.125rem, 1.65; 1.25rem from 1200px; 1.0625rem at 640px and below): write-ups, held to the registered measure below.
+- **Label** (600, 0.9375rem, 0.1em, uppercase): dial program labels; 800 and signal-text when current. Stack group terms use 0.8125rem 800 caps; the dial hint 0.875rem 0.14em caps in faint ink.
+- **Status** (400, 0.8125rem, 0.08em, uppercase): the status strip.
 
 ### Named Rules
-**The Rising Line Rule.** Headlines never fade or pop in. Each line sits inside an `overflow: hidden` wrapper and slides up from `translateY(100%)` to 0 over 0.4s, staggered by about 0.2s per line.
+**The Plain Lede Rule.** A heading is followed directly by a plain sentence: panel title then lede, write-up h1 then dek. No kicker, eyebrow or category label sits above a heading; the build has none and its tests assert none.
 
-**The One Word Rule.** A page title is a single short word or phrase at headline size, centred. Explanatory copy never sits at headline scale.
+**The Write-up Measure Rule.** Write-ups set `--measure` as a registered custom property (`@property`, `<length>`, inherited) at 48ch, and every direct child of the article takes it as max-width. Code blocks may grow to fit their content up to the column, and blockquotes get the measure plus 96px. At 1200px and wider the measure stays 48ch while the body rises to 20px.
 
 ## Layout
 
-Single-column flow on a centred canvas capped at 1980px. Horizontal breathing room is a percentage gutter of 6% on desktop, about 2em on mobile.
+The housing pads the viewport by a fluid frame (housing-pad) and holds one plate that fills at least the viewport height. The plate has a header band (maker mark, name, role; lamp, email, GitHub) over a 1px rule, a body, and the status strip pinned to its bottom edge.
 
-- **Home** is a fixed full-viewport stage with no scroll. The hero text block sits top-left on desktop, centred on mobile, and the portrait cut-out (`img/bg.png`) anchors the bottom-right corner, sized `calc(22vw + 22vh)` to `calc(25vw + 25vh)` and capped at 650px.
-- **Grids** for cards: one column on mobile, two columns for Lab and three columns for Project from 1024px, with a 2em gap.
-- **Page titles** sit about 2rem to 4rem below the top, centred.
-- **Breakpoints:** 375, 768, 1024, 1280, 1536, 1800, and 1980px. 1024px is the major switch: hamburger becomes inline nav, the custom cursor turns on, and grids go multi-column.
-- **Navigation chrome** is fixed. The logo pins top-left and the hamburger pins top-right, both 15px to 25px from the edges on mobile.
+Home body is two columns: the dial (380px to 560px, sticky at 16px) flush left, and the display column on the right with gutter padding. Programs stack in the display column as display-window panels 24px apart. At 900px and below the plate becomes one column, the dial collapses into a sticky bar of wrapping stop labels across the top, and the strip stops being sticky. The featured project stacks media over text below 1280px; the project list and portrait stack at 640px; stage rows and the stack grid go 4 to 2 to 1 columns at 900px and 480px.
+
+Write-ups centre a column inside the plate (max 1040px wide, fluid top padding, 96px bottom), with every child held to the measure. On phones, code blocks bleed to the plate edges and lose their radius.
+
+Spacing runs on 8, 12, 16, 24 and 32px steps with occasional 10, 14, 22 and 28px fits inside cards. Every interactive target is at least 44px tall.
 
 ## Elevation & Depth
 
-Completely flat. There are no box shadows in the main site. Depth comes from three sources only: inversion (black fill behind white text on hover), blend mode (floating chrome inverts what is beneath), and scale (media zooms to 1.125 inside a clipped frame on hover, implying a window onto something larger).
+Flat. Depth comes from three tonal layers, housing to plate to display window, each edged by a 1px rule. The only shadow in the system is the knob's pair of inset rings, which draw the knob's turned bezel rather than lift anything.
+
+### Shadow Vocabulary
+- **Knob bezel** (`box-shadow: inset 0 0 0 12px var(--knob-ring), inset 0 0 0 13px var(--knob-edge)`): the dial knob only.
 
 ### Named Rules
-**The No Shadow Rule.** Do not add `box-shadow` or `drop-shadow`. If something needs to stand out, invert it or frame it with a 1px line.
+**The Faceplate Rule.** Surfaces never cast shadows. A new surface is a lighter inset (display) with a 1px rule, not a raised card.
 
 ## Shapes
 
-Every rectangle has square corners. Frames and buttons are drawn with a single 1px solid Ink Black outline. The only rounded forms are the circular cursor ring (50px, 2px white stroke) and the pill-capped hamburger bars (3px tall, `{rounded.pill}`). Media is clipped by its frame with `overflow: hidden`, so images and videos always fill a hard rectangle.
+Corners step down as surfaces nest: plate 28px, display windows 18px, stops, media, photos and code blocks 12px, all buttons and badges fully pill. The lamp and knob are circles; the pointer is an 8px bar with 4px ends. Lines are 1px rules for structure, 2px for stops and the portrait baseline, 3px for the focus outline. The portrait cut-out stands on a 2px ink rule with no frame. The status strip is square.
+
+### Named Rules
+**The Stop Grammar Rule.** An unselected stop is a 2px dashed outline in stop-idle; the selected stop is a 2px solid ink outline (and display fill for project stops). Dial ticks follow the same grammar: 2px dashed faint ink idle, 4px solid signal active. Hover on a stop darkens its border to ink without making it solid.
 
 ## Components
 
 ### Buttons
-Outlined, inverting on touch.
-- **Shape:** square corners (`{rounded.none}`), 1px Ink Black border.
-- **Default:** transparent background, Ink Black text, 1em padding, about 1.2em text.
-- **Hover:** background floods to Ink Black and text turns Paper White over 0.25s with `cubic-bezier(0.645, 0.045, 0.355, 1)`.
+Pills that read like appliance push-buttons.
+- **Shape:** fully round (pill), 48px tall, 24px horizontal padding, 0.9375rem.
+- **Primary:** signal fill, ink text at 800, no border. Hover lightens the fill. One per panel.
+- **Secondary:** transparent, 1px ink border, ink text at 600. Hover inverts to ink fill with plate text.
+- **Playback pill:** 44px pill on the media corner, plate fill, 1px ink border; hover inverts. Its label follows the video state.
+- **Focus:** a 3px signal-text outline, 3px offset, on every control; on the strip it switches to strip-text, inset.
+
+### Chips
+- **Desktop-only badge:** small pill, 1px ink border, 0.8125rem 600, shown under the summary for projects that need a desktop.
+- **Portrait tag:** a square ink label with plate caps, sitting on the portrait baseline as the link name for About.
 
 ### Cards / Containers
-The media frame is the signature container, used for every project and lab tile.
-- **Corner Style:** square.
-- **Background:** Paper White, or Ink Black (`media-frame-dark`) behind videos so letterboxing disappears.
-- **Shadow Strategy:** none, see Elevation & Depth.
-- **Border:** 1px solid Ink Black.
-- **Size:** full column width, 50vh tall. Image or video fills it with `object-fit: cover`.
-- **Hover:** the media scales to 1.125 over 0.4s inside the clipped frame.
-- **Caption:** a Title-level line centred 20px below the frame. Platform limits go in parentheses, such as "(Desktop only)" or "(Github)".
-- **Screenshot sweep:** frames with a still image carry a Stage Black panel that slides down and back up on an 8.8s loop behind the image.
+- **Display panel:** display fill, 1px rule border, 18px corners, fluid padding, 22px internal gap. Holds a display title, a plain lede, optional stage row, actions.
+- **Featured project:** a display panel with media (16:10, 12px corners) beside title, summary, badge slot, actions and a tabular "1 / 6" counter. Title and summary hold minimum heights so switching projects does not move the actions.
+- **Stage row:** numbered steps separated by a 1px top rule, numbers in signal-text 800.
+
+### Project stops
+Six buttons in two columns under the featured project, each a stop: 56px minimum, 12px corners, title only at 0.9375rem 600 (no tag line). Selected uses `aria-pressed` and the solid grammar.
 
 ### Navigation
-- **Desktop (1024px and up):** inline links at top-right in Product Sans, Ink Black, 2em apart. Hover draws an underline from left to right, a 0.1em `currentColor` bar animated by the `--underline-width` custom property over 0.4s.
-- **Mobile:** a three-bar hamburger at top-right that blends with `difference`. It opens a full-viewport panel that slides in from the right over 0.5s, with large centred links in Poppins 500 at `calc(2rem + 2vw)`.
-- **Logo:** "YM." in Poppins 700 at 2.25em, fixed top-left, white with `mix-blend-mode: difference`.
+The dial is the navigation (below). The header carries the maker mark (YM., 1.75rem 800), name, role, the lamp, email and GitHub, all 44px targets. Write-ups reuse the header, with the mark linking home.
 
-### Preloader
-A full-screen Ink Black curtain. The letters Y, M, and "." sweep across from the left in a staggered loop. On page load the letters fade out at 0.4s, the curtain collapses to zero height by 0.6s, and is removed at 1.1s.
+### Program Dial (signature)
+A 560px square face with a thin ring, six program labels placed by angle (first stop at -120°, 48° apart), a tick per stop, and a dark knob carrying an orange pointer. Drag, arrow keys, Home/End or page scroll move the pointer; it detents onto the program with an overshoot curve (`cubic-bezier(0.3, 1.4, 0.5, 1)`, 280ms), the current label turns signal-text, the tick goes solid orange, and the lamp blinks once (400ms, two steps). Dragging tracks the pointer angle without easing and holds at the arc ends. Below 900px the face becomes a wrapping row of labels drawn with the stop grammar.
 
-### Cursor
-On desktop only, a 50px hollow circle with a 2px white ring and `mix-blend-mode: difference` follows the pointer, trailing it by 0.4s with `cubic-bezier(0.165, 0.84, 0.44, 1)`. It ignores pointer events.
+### Detent ring cursor
+On fine pointers the system cursor is joined by a 24px ring with a 1.5px ink border. Over any link or button it snaps around the control with a 4px outset, taking the control's corner radius plus 4px (120ms, `cubic-bezier(0.25, 1, 0.5, 1)`). Inside the dial face it hops to a pill around the program label nearest the pointer's angle, showing where a drag would land. Over the status strip the ring turns strip-text. It shrinks to 0.9 while pressed, hides on Tab and when the pointer leaves the window, and never renders on touch or coarse pointers.
+
+### Status strip
+A sticky black band at the bottom of the plate: current program and position on the left ("Work · 1 of 6"), a "Next: Loops" link with a drawn arrow icon on the right that becomes "Back to top" at the last program. Write-ups use the same strip with the write-up name and "Back to the dial".
 
 ## Do's and Don'ts
 
 ### Do:
-- **Do** keep interface colour to Ink Black and Paper White, and let project media carry all colour.
-- **Do** reveal headlines line by line from an overflow mask with `cubic-bezier(.615, .19, .305, .91)` over 0.4s.
-- **Do** frame every piece of work in a square, 1px black outlined, clipped frame with a centred caption beneath.
-- **Do** express hover as inversion or as a 1.125 media zoom.
-- **Do** use `mix-blend-mode: difference` for chrome that floats over content.
+- **Do** put every new surface on the plate as a display window with a 1px rule and 18px corners.
+- **Do** use signal only as a fill and signal-text for any orange type.
+- **Do** follow a heading with a plain lede sentence.
+- **Do** draw selectable stops dashed when idle and solid when selected.
+- **Do** make every control at least 44px tall and pill-shaped if it is a button.
+- **Do** hold write-up text to the registered `--measure` of 48ch.
+- **Do** draw icons as inline SVG strokes in currentColor.
+- **Do** honour reduced motion: the detent, blink and ring transitions collapse to 1ms.
 
 ### Don't:
-- **Don't** add rounded corners to frames or buttons.
-- **Don't** add shadows, tinted surfaces, or decorative gradients to the interface.
-- **Don't** introduce a fourth typeface. Poppins, Prompt, and Product Sans already cover display, body, and nav.
-- **Don't** fade headlines in. They rise.
+- **Don't** put a kicker, eyebrow or category label above a heading.
+- **Don't** set orange text in signal (#f2600c); it fails contrast on the plate.
+- **Don't** add drop shadows; the knob bezel is the only shadow.
+- **Don't** add a second accent colour or a second typeface.
+- **Don't** add a tag or meta line under project stop titles.
+- **Don't** show the detent ring on touch devices.

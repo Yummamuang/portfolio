@@ -8,8 +8,7 @@ web
 
 ## Stack
 
-Today: plain static HTML/CSS/JS, no build step, deployed to GitHub Pages straight from the repo.
-Decided: migrate to Vite. The built static output keeps deploying to GitHub Pages, via a GitHub Actions build-and-deploy workflow. Hosting does not change.
+Vite with vanilla TypeScript, built and deployed to GitHub Pages by `.github/workflows/deploy.yml` on every push to `main`. The old static site is kept unchanged in `public/`.
 
 ## Users
 
@@ -52,7 +51,7 @@ Every project links to something real: a live demo, a recorded video walkthrough
 - Existing pages: `index.html`, `pages/home.html`, `pages/lab.html`, `pages/project.html`, `pages/about.html`.
 - Bundled sub-sites that must keep working after any migration: `pages/project/WebDesign-SpaceCat/` (Cat Space shop design, many pages) and `pages/lab/lab5/`, `pages/lab/lab7/` (class lab pages).
 - `pages/about.html` still describes a KKU student and uses the old email. Rewrite it from About Facts above.
-- The AI-engineering work is published as write-up pages on the site: problem, approach, how it works with short code snippets, outcome, credits. Raw skill files are not published, because they mention workplace names and paths. A cleaned public repo may come later and would be linked from the write-up.
+- The AI-engineering work is published as write-up pages: `writing/loop-engineering.html` and `writing/agent-workflow.html`. Raw skill files are not published, because they mention workplace names and paths. A cleaned public repo may come later and would be linked from the write-ups.
 
 ## Brand Commitments
 

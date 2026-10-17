@@ -1,118 +1,469 @@
 {
   "schemaVersion": 2,
-  "generatedAt": "2026-10-17T12:44:37Z",
+  "generatedAt": "2026-10-18T00:00:00Z",
   "title": "Design System: YM. Portfolio",
   "extensions": {
     "colorMeta": {
-      "ink-black": { "role": "primary", "displayName": "Ink Black", "canonical": "#000000", "tonalRamp": ["#000000", "#151515", "#2b2b2b", "#474747", "#6b6b6b", "#999999", "#cccccc", "#f2f2f2"] },
-      "paper-white": { "role": "neutral", "displayName": "Paper White", "canonical": "#ffffff", "tonalRamp": ["#262626", "#474747", "#6b6b6b", "#949494", "#bdbdbd", "#dedede", "#f2f2f2", "#ffffff"] },
-      "stage-black": { "role": "neutral", "displayName": "Stage Black", "canonical": "#151515", "tonalRamp": ["#151515", "#262626", "#3b3b3b", "#555555", "#777777", "#a0a0a0", "#cfcfcf", "#f0f0f0"] }
+      "housing": {
+        "role": "neutral",
+        "displayName": "Plastic Housing",
+        "canonical": "#d6d6d1",
+        "tonalRamp": [
+          "#282824",
+          "#474740",
+          "#66665b",
+          "#858576",
+          "#a1a195",
+          "#bcbcb4",
+          "#d8d8d3",
+          "#f3f3f2"
+        ]
+      },
+      "plate": {
+        "role": "neutral",
+        "displayName": "Faceplate",
+        "canonical": "#eeeeea",
+        "tonalRamp": [
+          "#2a2a22",
+          "#4a4a3c",
+          "#6b6b56",
+          "#8b8b70",
+          "#a5a590",
+          "#bfbfb0",
+          "#dadad1",
+          "#f4f4f1"
+        ]
+      },
+      "display": {
+        "role": "neutral",
+        "displayName": "Display Window",
+        "canonical": "#fafaf8",
+        "tonalRamp": [
+          "#2d2d20",
+          "#4f4f38",
+          "#717150",
+          "#939369",
+          "#acac8a",
+          "#c4c4ac",
+          "#dcdcce",
+          "#f4f4f0"
+        ]
+      },
+      "ink": {
+        "role": "neutral",
+        "displayName": "Ink",
+        "canonical": "#1c1c1c",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ]
+      },
+      "ink-muted": {
+        "role": "neutral",
+        "displayName": "Muted Ink",
+        "canonical": "#5c5c57",
+        "tonalRamp": [
+          "#272725",
+          "#454542",
+          "#63635e",
+          "#81817a",
+          "#9e9e98",
+          "#babab6",
+          "#d6d6d4",
+          "#f3f3f2"
+        ]
+      },
+      "ink-faint": {
+        "role": "neutral",
+        "displayName": "Faint Ink",
+        "canonical": "#64645e",
+        "tonalRamp": [
+          "#272725",
+          "#454541",
+          "#64645e",
+          "#82827a",
+          "#9e9e98",
+          "#babab6",
+          "#d6d6d4",
+          "#f3f3f2"
+        ]
+      },
+      "rule": {
+        "role": "neutral",
+        "displayName": "Rule",
+        "canonical": "#c8c8c2",
+        "tonalRamp": [
+          "#282824",
+          "#474740",
+          "#66665c",
+          "#848477",
+          "#a0a096",
+          "#bcbcb4",
+          "#d7d7d3",
+          "#f3f3f2"
+        ]
+      },
+      "rule-strong": {
+        "role": "neutral",
+        "displayName": "Strong Rule",
+        "canonical": "#c4c4be",
+        "tonalRamp": [
+          "#282824",
+          "#474740",
+          "#65655c",
+          "#848478",
+          "#a0a096",
+          "#bbbbb5",
+          "#d7d7d3",
+          "#f3f3f2"
+        ]
+      },
+      "stop-idle": {
+        "role": "neutral",
+        "displayName": "Stop Idle",
+        "canonical": "#7d7d77",
+        "tonalRamp": [
+          "#272725",
+          "#454542",
+          "#63635e",
+          "#81817b",
+          "#9d9d98",
+          "#babab6",
+          "#d6d6d4",
+          "#f3f3f2"
+        ]
+      },
+      "signal": {
+        "role": "primary",
+        "displayName": "Signal Orange (fill only)",
+        "canonical": "#f2600c",
+        "tonalRamp": [
+          "#491d04",
+          "#803306",
+          "#b84909",
+          "#ef5f0c",
+          "#f68240",
+          "#f8a778",
+          "#fbcbaf",
+          "#feefe7"
+        ]
+      },
+      "signal-text": {
+        "role": "primary",
+        "displayName": "Burnt Signal (text)",
+        "canonical": "#b23d06",
+        "tonalRamp": [
+          "#4a1902",
+          "#822d04",
+          "#bb4006",
+          "#f35308",
+          "#f8793d",
+          "#faa076",
+          "#fcc7ae",
+          "#feeee6"
+        ]
+      },
+      "knob": {
+        "role": "neutral",
+        "displayName": "Knob",
+        "canonical": "#2a2a28",
+        "tonalRamp": [
+          "#272725",
+          "#454542",
+          "#63635e",
+          "#81817b",
+          "#9d9d98",
+          "#babab6",
+          "#d6d6d4",
+          "#f3f3f2"
+        ]
+      },
+      "knob-ring": {
+        "role": "neutral",
+        "displayName": "Knob Ring",
+        "canonical": "#333331",
+        "tonalRamp": [
+          "#272725",
+          "#454542",
+          "#62625f",
+          "#80807b",
+          "#9d9d99",
+          "#b9b9b7",
+          "#d6d6d4",
+          "#f3f3f2"
+        ]
+      },
+      "knob-edge": {
+        "role": "neutral",
+        "displayName": "Knob Edge",
+        "canonical": "#444441",
+        "tonalRamp": [
+          "#272725",
+          "#454542",
+          "#63635e",
+          "#81817b",
+          "#9d9d99",
+          "#babab6",
+          "#d6d6d4",
+          "#f3f3f2"
+        ]
+      },
+      "strip": {
+        "role": "neutral",
+        "displayName": "Status Strip",
+        "canonical": "#1c1c1c",
+        "tonalRamp": [
+          "#262626",
+          "#434343",
+          "#616161",
+          "#7e7e7e",
+          "#9b9b9b",
+          "#b8b8b8",
+          "#d5d5d5",
+          "#f2f2f2"
+        ]
+      },
+      "strip-text": {
+        "role": "neutral",
+        "displayName": "Strip Text",
+        "canonical": "#e6e6e1",
+        "tonalRamp": [
+          "#2a2a23",
+          "#4a4a3d",
+          "#696958",
+          "#898972",
+          "#a4a492",
+          "#bebeb2",
+          "#d9d9d1",
+          "#f3f3f1"
+        ]
+      }
     },
     "typographyMeta": {
-      "display": { "displayName": "Display", "purpose": "Hero name on Home only." },
-      "headline": { "displayName": "Headline", "purpose": "One-word centred page titles." },
-      "title": { "displayName": "Title", "purpose": "Captions under project and lab frames." },
-      "body": { "displayName": "Body", "purpose": "About paragraph, set in Prompt." },
-      "label": { "displayName": "Label", "purpose": "Desktop nav links, set in Product Sans." },
-      "logo": { "displayName": "Logo", "purpose": "The fixed YM. monogram." }
+      "display": {
+        "displayName": "Display",
+        "purpose": "Panel titles and the write-up h1."
+      },
+      "headline": {
+        "displayName": "Headline",
+        "purpose": "Featured project title, sized by container width."
+      },
+      "title": {
+        "displayName": "Title",
+        "purpose": "Write-up section headings."
+      },
+      "lede": {
+        "displayName": "Lede",
+        "purpose": "Plain sentence directly under a panel title; no kicker above the heading."
+      },
+      "body": {
+        "displayName": "Body",
+        "purpose": "Home copy."
+      },
+      "body-article": {
+        "displayName": "Article body",
+        "purpose": "Write-ups: 1.125rem, 1.25rem from 1200px, 1.0625rem at 640px and below; max-width is the registered --measure (48ch)."
+      },
+      "label": {
+        "displayName": "Label",
+        "purpose": "Dial program labels, tracked caps; 800 and signal-text when current."
+      },
+      "status": {
+        "displayName": "Status",
+        "purpose": "Status strip caps."
+      },
+      "code": {
+        "displayName": "Code",
+        "purpose": "Code blocks and inline code in write-ups."
+      }
     },
-    "shadows": [],
+    "shadows": [
+      {
+        "name": "knob-bezel",
+        "value": "inset 0 0 0 12px var(--knob-ring), inset 0 0 0 13px var(--knob-edge)",
+        "purpose": "The dial knob's turned bezel. The only shadow in the system."
+      }
+    ],
     "motion": [
-      { "name": "ease-stage", "value": "cubic-bezier(.615, .19, .305, .91)", "purpose": "Headline rise, preloader, mobile menu slide, hamburger." },
-      { "name": "ease-frame", "value": "cubic-bezier(0.645, 0.045, 0.355, 1)", "purpose": "Media zoom, button inversion, link underline, portrait entrance." },
-      { "name": "ease-cursor", "value": "cubic-bezier(0.165, 0.84, 0.44, 1)", "purpose": "Cursor trailing the pointer over 0.4s." },
-      { "name": "duration-rise", "value": "0.4s", "purpose": "Headline line reveal, staggered about 0.2s per line." },
-      { "name": "duration-invert", "value": "0.25s", "purpose": "Button hover fill." }
+      {
+        "name": "ease-detent",
+        "value": "cubic-bezier(0.3, 1.4, 0.5, 1) 280ms",
+        "purpose": "Knob rotation onto a program; overshoots slightly and settles like a detent. Off while dragging."
+      },
+      {
+        "name": "lamp-blink",
+        "value": "400ms steps(2, jump-none) 1",
+        "purpose": "Lamp dims to 0.15 opacity once when the program changes."
+      },
+      {
+        "name": "ring-snap",
+        "value": "120ms cubic-bezier(0.25, 1, 0.5, 1)",
+        "purpose": "Detent ring position, size and radius when snapped to a control."
+      },
+      {
+        "name": "ring-fade",
+        "value": "opacity 120ms ease-out",
+        "purpose": "Detent ring show and hide."
+      },
+      {
+        "name": "reduced-motion",
+        "value": "1ms",
+        "purpose": "All animation and transition durations under prefers-reduced-motion."
+      }
     ],
     "breakpoints": [
-      { "name": "xs", "value": "375px" },
-      { "name": "md", "value": "768px" },
-      { "name": "lg", "value": "1024px" },
-      { "name": "xl", "value": "1280px" },
-      { "name": "2xl", "value": "1536px" },
-      { "name": "3xl", "value": "1800px" },
-      { "name": "max", "value": "1980px" }
-    ]
+      {
+        "name": "article-wide",
+        "value": "min-width: 1200px"
+      },
+      {
+        "name": "featured-stack",
+        "value": "max-width: 1280px"
+      },
+      {
+        "name": "single-column",
+        "value": "max-width: 900px"
+      },
+      {
+        "name": "phone",
+        "value": "max-width: 640px"
+      },
+      {
+        "name": "narrow",
+        "value": "max-width: 480px"
+      }
+    ],
+    "measure": {
+      "property": "--measure",
+      "syntax": "<length>",
+      "inherits": true,
+      "value": "48ch",
+      "appliesTo": ".article > *"
+    }
   },
   "components": [
     {
-      "name": "Outline Button",
+      "name": "Primary Button",
       "kind": "button",
-      "refersTo": "button-outline",
-      "description": "Square outlined button that floods black on hover.",
-      "html": "<button class=\"ds-btn-outline\">View Lab</button>",
-      "css": ".ds-btn-outline { font: 400 1.2em 'Poppins', sans-serif; color: #000; background: transparent; border: 1px solid #000; border-radius: 0; padding: 1em; cursor: pointer; transition: background 0.25s cubic-bezier(0.645, 0.045, 0.355, 1), color 0.25s cubic-bezier(0.645, 0.045, 0.355, 1); } .ds-btn-outline:hover { background: #000; color: #fff; } .ds-btn-outline:focus-visible { outline: 2px solid #000; outline-offset: 3px; }"
+      "refersTo": "button-primary",
+      "description": "Signal-filled pill for the one primary action per panel.",
+      "html": "<a class=\"ds-btn-primary\" href=\"#\">View on GitHub</a>",
+      "css": ".ds-btn-primary { display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border: 0; border-radius: var(--radius-pill); background: var(--signal); color: var(--ink); font-family: var(--font); font-size: 0.9375rem; font-weight: 800; text-decoration: none; } .ds-btn-primary:hover { background: #f47a2f; color: var(--ink); } .ds-btn-primary:focus-visible { outline: 3px solid var(--signal-text); outline-offset: 3px; }"
     },
     {
-      "name": "Media Frame",
+      "name": "Secondary Button",
+      "kind": "button",
+      "refersTo": "button-secondary",
+      "description": "Outlined ink pill for secondary actions; inverts on hover.",
+      "html": "<a class=\"ds-btn-secondary\" href=\"#\">Next project</a>",
+      "css": ".ds-btn-secondary { display: inline-flex; align-items: center; min-height: 48px; padding: 0 24px; border: 1px solid var(--ink); border-radius: var(--radius-pill); background: transparent; color: var(--ink); font-family: var(--font); font-size: 0.9375rem; font-weight: 600; text-decoration: none; } .ds-btn-secondary:hover { background: var(--ink); color: var(--plate); } .ds-btn-secondary:focus-visible { outline: 3px solid var(--signal-text); outline-offset: 3px; }"
+    },
+    {
+      "name": "Project Stops",
+      "kind": "chip",
+      "refersTo": "stop",
+      "description": "Dashed idle and solid selected stop grammar; title only, no tag line.",
+      "html": "<div class=\"ds-stops\"><button class=\"ds-stop\" aria-pressed=\"true\">Impacted canine assessment</button><button class=\"ds-stop\" aria-pressed=\"false\">Manga recommendation</button></div>",
+      "css": ".ds-stops { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; } .ds-stop { min-height: 56px; padding: 12px 14px; text-align: left; background: transparent; border: 2px dashed var(--stop-idle); border-radius: var(--radius-stop); color: var(--ink); font-family: var(--font); font-size: 0.9375rem; font-weight: 600; cursor: pointer; } .ds-stop:hover { border-color: var(--ink); } .ds-stop[aria-pressed='true'] { background: var(--display); border-style: solid; border-color: var(--ink); } .ds-stop:focus-visible { outline: 3px solid var(--signal-text); outline-offset: 3px; }"
+    },
+    {
+      "name": "Display Panel",
       "kind": "card",
-      "refersTo": "media-frame",
-      "description": "Project or lab tile: clipped 1px frame whose media zooms on hover, caption below.",
-      "html": "<a class=\"ds-frame-link\" href=\"#\"><div class=\"ds-frame\"><div class=\"ds-frame-media\"></div></div><p class=\"ds-frame-caption\">Cat Space Shop Website Design</p></a>",
-      "css": ".ds-frame-link { display: block; width: 320px; color: #000; text-decoration: none; } .ds-frame { border: 1px solid #000; height: 220px; overflow: hidden; background: #000; } .ds-frame-media { width: 100%; height: 100%; background: repeating-linear-gradient(135deg, #151515 0 12px, #2b2b2b 12px 24px); transition: transform 0.4s cubic-bezier(0.645, 0.045, 0.355, 1); } .ds-frame-link:hover .ds-frame-media, .ds-frame-link:focus-visible .ds-frame-media { transform: scale(1.125); } .ds-frame-link:focus-visible { outline: 2px solid #000; outline-offset: 4px; } .ds-frame-caption { font: 500 1.25rem 'Poppins', sans-serif; text-align: center; margin: 20px 0 0; }"
+      "refersTo": "display-panel",
+      "description": "Display window on the plate: display title, plain lede, actions. No kicker.",
+      "html": "<section class=\"ds-panel\"><h2 class=\"ds-panel-title\">Loop engineering</h2><p class=\"ds-panel-lede\">A coding agent can work in a loop: one change per pass, a gate that has to pass, and a rule for when to stop.</p></section>",
+      "css": ".ds-panel { display: flex; flex-direction: column; gap: 22px; padding: clamp(24px, 3vw, 44px) clamp(20px, 3vw, 48px); background: var(--display); border: 1px solid var(--rule); border-radius: var(--radius-display); color: var(--ink); font-family: var(--font); } .ds-panel-title { margin: 0; font-size: clamp(2.5rem, 5vw, 4.5rem); line-height: 0.95; font-weight: 800; letter-spacing: -0.035em; } .ds-panel-lede { margin: 0; max-width: 56ch; font-size: 1.1875rem; line-height: 1.45; }"
     },
     {
-      "name": "Nav Link",
+      "name": "Program Dial",
+      "kind": "custom",
+      "refersTo": "dial-label",
+      "description": "Knob with signal pointer that detents onto six programs with an overshoot ease; current label in signal-text.",
+      "html": "<div class=\"ds-dial\"><div class=\"ds-knob\" tabindex=\"0\" role=\"slider\" aria-label=\"Program\" aria-valuenow=\"1\"><span class=\"ds-pointer\"></span></div><a class=\"ds-dial-label ds-current\" href=\"#\">Work</a><a class=\"ds-dial-label\" href=\"#\">Loops</a></div>",
+      "css": ".ds-dial { position: relative; width: 240px; height: 240px; border: 1px solid var(--rule-strong); border-radius: 50%; font-family: var(--font); } .ds-knob { position: absolute; inset: 26.8%; border-radius: 50%; background: var(--knob); box-shadow: inset 0 0 0 12px var(--knob-ring), inset 0 0 0 13px var(--knob-edge); transform: rotate(-120deg); transition: transform var(--dur-detent) var(--ease-detent); cursor: grab; } .ds-knob:hover { transform: rotate(-72deg); } .ds-knob:focus-visible { outline: 3px solid var(--signal-text); outline-offset: 6px; } .ds-pointer { position: absolute; left: calc(50% - 4px); top: 7%; width: 8px; height: 24%; border-radius: 4px; background: var(--signal); } .ds-dial-label { position: absolute; display: inline-flex; align-items: center; min-height: 44px; padding: 0 8px; font-size: 0.9375rem; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; text-decoration: none; color: var(--ink-muted); } .ds-dial-label:first-of-type { left: -40px; bottom: 30px; } .ds-dial-label:last-of-type { left: -48px; top: 50px; } .ds-dial-label.ds-current { font-weight: 800; color: var(--signal-text); }"
+    },
+    {
+      "name": "Status Strip",
       "kind": "nav",
-      "refersTo": "nav-link",
-      "description": "Desktop nav with an underline that draws left to right on hover.",
-      "html": "<nav class=\"ds-nav\"><a href=\"#\">Home</a><a href=\"#\">Lab</a><a href=\"#\">Project</a><a href=\"#\">About me</a></nav>",
-      "css": ".ds-nav { display: flex; gap: 2em; } .ds-nav a { color: #000; text-decoration: none; font: larger productsans, 'Product Sans', sans-serif; padding-bottom: 4px; background: linear-gradient(currentColor 0 0) bottom left / var(--u, 0%) 0.1em no-repeat; transition: background-size 0.4s cubic-bezier(0.645, 0.045, 0.355, 1); } .ds-nav a:hover, .ds-nav a:focus-visible { --u: 100%; background-size: 100% 0.1em; outline: none; }"
+      "refersTo": "status-strip",
+      "description": "Sticky black strip naming the current program and linking the next one.",
+      "html": "<footer class=\"ds-strip\"><span>Work · 1 of 6</span><a class=\"ds-strip-next\" href=\"#\">Next: Loops<svg viewBox=\"0 0 16 16\" fill=\"none\" stroke=\"currentColor\" stroke-width=\"1.5\" aria-hidden=\"true\"><path d=\"M8 2.5v11M3.5 9 8 13.5 12.5 9\"/></svg></a></footer>",
+      "css": ".ds-strip { display: flex; justify-content: space-between; align-items: center; gap: 16px; padding: 16px var(--gutter); background: var(--strip); color: var(--strip-text); font-family: var(--font); font-size: 0.8125rem; letter-spacing: 0.08em; text-transform: uppercase; } .ds-strip-next { min-height: 44px; margin-block: -14px; display: inline-flex; align-items: center; color: var(--strip-text); text-decoration: none; } .ds-strip-next svg { width: 0.9em; height: 0.9em; margin-left: 0.5em; } .ds-strip-next:hover { color: var(--plate); text-decoration: underline; text-underline-offset: 4px; } .ds-strip-next:focus-visible { outline: 3px solid var(--strip-text); outline-offset: -3px; }"
     },
     {
-      "name": "Rising Headline",
-      "kind": "custom",
-      "refersTo": "headline",
-      "description": "One-word page title that slides up out of an overflow mask.",
-      "html": "<div class=\"ds-rise\"><h1>Project</h1></div>",
-      "css": ".ds-rise { overflow: hidden; text-align: center; } .ds-rise h1 { font: 700 72px/1.2 'Poppins', sans-serif; color: #000; margin: 0; transform: translateY(100%); animation: ds-moveup 0.4s cubic-bezier(.615, .19, .305, .91) forwards 0.3s; } @keyframes ds-moveup { to { transform: translateY(0); } } @media (prefers-reduced-motion: reduce) { .ds-rise h1 { animation: none; transform: none; } }"
-    },
-    {
-      "name": "Preloader Curtain",
-      "kind": "custom",
-      "refersTo": "preloader",
-      "description": "Black curtain with the YM. monogram sweeping across before the page reveals.",
-      "html": "<div class=\"ds-preloader\"><span>Y</span><span>M</span><span>.</span></div>",
-      "css": ".ds-preloader { display: flex; align-items: center; justify-content: center; width: 320px; height: 160px; background: #000; overflow: hidden; } .ds-preloader span { color: #fff; font: 700 48px 'Poppins', sans-serif; animation: ds-preload 5s cubic-bezier(.615, .19, .305, .91) infinite; } .ds-preloader span:nth-child(1) { animation-delay: 0.4s; } .ds-preloader span:nth-child(2) { animation-delay: 0.2s; } @keyframes ds-preload { 0% { transform: translateX(-1000%); } 40% { transform: translateX(0); } 80% { transform: translateX(200%); } 100% { transform: translateX(1000%); } }"
-    },
-    {
-      "name": "Difference Cursor",
-      "kind": "custom",
-      "refersTo": "cursor",
-      "description": "Hollow ring that inverts whatever it passes over. Desktop only.",
-      "html": "<div class=\"ds-cursor-stage\"><span class=\"ds-cursor-word\">Panatakorn</span><span class=\"ds-cursor\"></span></div>",
-      "css": ".ds-cursor-stage { position: relative; width: 320px; height: 120px; background: #fff; display: flex; align-items: center; justify-content: center; } .ds-cursor-word { font: 700 44px 'Poppins', sans-serif; color: #000; } .ds-cursor { position: absolute; left: 58%; top: 50%; width: 50px; height: 50px; border-radius: 50%; border: 2px solid #fff; mix-blend-mode: difference; transform: translate(-50%, -50%); pointer-events: none; transition: left 0.4s cubic-bezier(0.165, 0.84, 0.44, 1); } .ds-cursor-stage:hover .ds-cursor { left: 40%; }"
+      "name": "Playback Pill",
+      "kind": "button",
+      "refersTo": "playback-pill",
+      "description": "Plate pill on the media corner that plays or pauses the project video.",
+      "html": "<button class=\"ds-playback\" type=\"button\">Play</button>",
+      "css": ".ds-playback { min-width: 96px; min-height: 44px; padding: 0 20px; background: var(--plate); color: var(--ink); border: 1px solid var(--ink); border-radius: var(--radius-pill); font-family: var(--font); font-size: 0.9375rem; font-weight: 600; cursor: pointer; } .ds-playback:hover { background: var(--ink); color: var(--plate); border-color: var(--plate); } .ds-playback:focus-visible { outline: 3px solid var(--signal-text); outline-offset: 3px; }"
     }
   ],
   "narrative": {
-    "northStar": "The Monochrome Stage",
-    "overview": "The site is a bare white stage lit in black. Every page opens the same way: a black curtain carrying the \"YM.\" monogram lifts away, and then oversized Poppins headlines rise into view from behind a mask, one line after another, like actors stepping up through a trap door. Nothing on the stage is coloured. The work itself, shown as looping videos and screenshots inside thin black frames, supplies the only colour on the page.\n\nThe mood is clean, editorial, and confident. Type is huge and set tight, sections are announced with a single centred word, and there is a lot of empty white around everything. Personality comes from motion rather than ornament: a hollow ring cursor that inverts whatever it passes over, frames that zoom their media on hover, and outlined controls that flood solid black when touched.\n\nThis record captures the system as it stands before the planned Vite migration and redesign. Treat it as the incumbent reference, not a mandate for the next world.",
+    "northStar": "The Program Dial",
+    "overview": "The site is a household appliance seen face-on. A light grey plastic housing frames one rounded faceplate; on the faceplate a dark knob with an orange pointer turns between six programs, and turning it is how you move through the page. Every surface reads as a panel, display window or control on that machine: flat, tonal, edged by 1px rules, with one signal orange that behaves like an indicator lamp rather than a brand colour.\n\nDensity is moderate and calm. The type is a single grotesk, Archivo, used tight and heavy for display and tracked in caps for machine labels. Motion is mechanical: the knob detents with a small overshoot, the lamp blinks once, the cursor becomes a ring that snaps around controls like a bezel. Nothing floats, glows or casts a drop shadow.\n\nWrite-ups live on the same faceplate in a narrow reading column, so a long read still sits inside the machine and ends on the same black status strip.",
     "keyCharacteristics": [
-      "Pure black and white. Colour only enters through project media.",
-      "Oversized bold type that animates up from an overflow mask.",
-      "Square corners and 1px black outlines. No shadows anywhere.",
-      "Hover means inversion: outline becomes fill, white becomes black.",
-      "`mix-blend-mode: difference` on the logo, hamburger, and cursor so they read over any background."
+      "Housing, plate and display window as three tonal layers, separated by 1px rules, never by shadow.",
+      "One orange (signal) used only as fill: pointer, lamp, active tick, primary button, text selection.",
+      "One typeface, Archivo Variable, from tight 800-weight display to 0.1em tracked caps labels.",
+      "Dashed outline means \"available stop\", solid means \"selected stop\", everywhere stops appear.",
+      "A sticky black status strip names the current program and the next one."
     ],
     "rules": [
-      { "name": "The Two Inks Rule", "body": "Interface chrome uses only Ink Black and Paper White. A third colour in UI is a defect. Colour belongs to the work being shown.", "section": "colors" },
-      { "name": "The Difference Rule", "body": "Elements that float above content, the logo, hamburger lines, and cursor, use `mix-blend-mode: difference` so they invert against whatever is beneath instead of carrying their own background.", "section": "colors" },
-      { "name": "The Rising Line Rule", "body": "Headlines never fade or pop in. Each line sits inside an `overflow: hidden` wrapper and slides up from `translateY(100%)` to 0 over 0.4s, staggered by about 0.2s per line.", "section": "typography" },
-      { "name": "The One Word Rule", "body": "A page title is a single short word or phrase at headline size, centred. Explanatory copy never sits at headline scale.", "section": "typography" },
-      { "name": "The No Shadow Rule", "body": "Do not add `box-shadow` or `drop-shadow`. If something needs to stand out, invert it or frame it with a 1px line.", "section": "elevation" }
+      {
+        "name": "The Lamp Rule",
+        "body": "Signal orange is a fill, never text. Any orange type uses signal-text. Signal covers small indicators and the primary action only; one primary button per panel.",
+        "section": "colors"
+      },
+      {
+        "name": "The Ink-On-Orange Rule",
+        "body": "Text on a signal fill is ink, weight 800, never white.",
+        "section": "colors"
+      },
+      {
+        "name": "The Plain Lede Rule",
+        "body": "A heading is followed directly by a plain sentence: panel title then lede, write-up h1 then dek. No kicker, eyebrow or category label sits above a heading; the build has none and its tests assert none.",
+        "section": "typography"
+      },
+      {
+        "name": "The Write-up Measure Rule",
+        "body": "Write-ups set `--measure` as a registered custom property (`@property`, `<length>`, inherited) at 48ch, and every direct child of the article takes it as max-width. Code blocks may grow to fit their content up to the column, and blockquotes get the measure plus 96px. At 1200px and wider the measure stays 48ch while the body rises to 20px.",
+        "section": "typography"
+      },
+      {
+        "name": "The Faceplate Rule",
+        "body": "Surfaces never cast shadows. A new surface is a lighter inset (display) with a 1px rule, not a raised card.",
+        "section": "elevation"
+      },
+      {
+        "name": "The Stop Grammar Rule",
+        "body": "An unselected stop is a 2px dashed outline in stop-idle; the selected stop is a 2px solid ink outline (and display fill for project stops). Dial ticks follow the same grammar: 2px dashed faint ink idle, 4px solid signal active. Hover on a stop darkens its border to ink without making it solid.",
+        "section": "shapes"
+      }
     ],
     "dos": [
-      "Do keep interface colour to Ink Black and Paper White, and let project media carry all colour.",
-      "Do reveal headlines line by line from an overflow mask with `cubic-bezier(.615, .19, .305, .91)` over 0.4s.",
-      "Do frame every piece of work in a square, 1px black outlined, clipped frame with a centred caption beneath.",
-      "Do express hover as inversion or as a 1.125 media zoom.",
-      "Do use `mix-blend-mode: difference` for chrome that floats over content."
+      "Do put every new surface on the plate as a display window with a 1px rule and 18px corners.",
+      "Do use signal only as a fill and signal-text for any orange type.",
+      "Do follow a heading with a plain lede sentence.",
+      "Do draw selectable stops dashed when idle and solid when selected.",
+      "Do make every control at least 44px tall and pill-shaped if it is a button.",
+      "Do hold write-up text to the registered `--measure` of 48ch.",
+      "Do draw icons as inline SVG strokes in currentColor.",
+      "Do honour reduced motion: the detent, blink and ring transitions collapse to 1ms."
     ],
     "donts": [
-      "Don't add rounded corners to frames or buttons.",
-      "Don't add shadows, tinted surfaces, or decorative gradients to the interface.",
-      "Don't introduce a fourth typeface. Poppins, Prompt, and Product Sans already cover display, body, and nav.",
-      "Don't fade headlines in. They rise."
+      "Don't put a kicker, eyebrow or category label above a heading.",
+      "Don't set orange text in signal (#f2600c); it fails contrast on the plate.",
+      "Don't add drop shadows; the knob bezel is the only shadow.",
+      "Don't add a second accent colour or a second typeface.",
+      "Don't add a tag or meta line under project stop titles.",
+      "Don't show the detent ring on touch devices."
     ]
   }
 }
