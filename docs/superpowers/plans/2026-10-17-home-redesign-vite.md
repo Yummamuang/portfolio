@@ -1179,7 +1179,7 @@ git commit -m "feat(home): add dial stop math"
 |---|---|---|
 | 1 | Open the base URL | Dial on the left with labels WORK, LOOPS, AGENTS, STACK, ABOUT, CONTACT around a dark knob; WORK is dark orange and bold; the pointer points at WORK |
 | 2 | Click "LOOPS" | Page scrolls to the "Loop engineering" heading; pointer turns to LOOPS; strip reads "Program 2 / 6 · Loops"; the orange dot blinks once |
-| 3 | Tab to the knob and press ArrowRight twice | Pointer moves to STACK; page scrolls to the "Stack" heading |
+| 3 | Tab to the knob and press ArrowRight twice | Pointer moves to AGENTS without flicking back through other labels; page scrolls to the "Agent workflow" heading |
 | 4 | Drag the knob clockwise to the right side and release | Pointer settles exactly on the nearest label; page scrolls to that section |
 | 5 | Scroll the page back to the top with the mouse wheel | Pointer returns to WORK; strip reads "Program 1 / 6 · Work" |
 | 6 | Resize to 390×844 | Knob is hidden; six outlined stops sit at the top, wrapping onto a second line with no sideways scrolling; the current one has a solid border and the rest dashed; the black strip sits at the end of the page instead of staying pinned |
