@@ -4,6 +4,7 @@ import { createWorkPanel } from './work-panel'
 
 const PANEL_MARKUP = `
   <div data-work-featured></div>
+  <p data-work-status></p>
   <ol data-work-list></ol>`
 
 function setup(autoplay = true) {
@@ -36,6 +37,9 @@ describe('createWorkPanel', () => {
       'https://github.com/Yummamuang/prediction-of-maxillary-impacted-canine',
     )
     expect(text(root, '[data-work-featured] .work-count')).toBe('1 / 6')
+    expect(text(root, '[data-work-featured] .work-summary')).toBe(PROJECTS[0]?.summary)
+    expect(root.querySelector('[data-work-featured] .kicker')).toBeNull()
+    expect(root.querySelector('[data-work-featured] .work-media')).not.toBeNull()
   })
 
   it('links an image project media frame to the project', () => {
@@ -91,5 +95,34 @@ describe('createWorkPanel', () => {
 
     expect(video?.hasAttribute('autoplay')).toBe(false)
     expect(video?.hasAttribute('controls')).toBe(true)
+  })
+
+  it('keeps focus on Next project after it is pressed', () => {
+    document.body.append(root)
+    const next = root.querySelector('[data-work-next]')
+    if (!(next instanceof HTMLElement)) throw new Error('missing next')
+    next.focus()
+    next.click()
+
+    expect(document.activeElement).toBe(root.querySelector('[data-work-next]'))
+    expect(text(root, '[data-work-featured] h3')).toBe('Manga recommendation')
+    root.remove()
+  })
+
+  it('labels each list entry with its tag only', () => {
+    expect(text(root, '[data-work-list] .work-stop-tag')).toBe('GitHub')
+  })
+
+  it('offers playback controls when autoplay is on', () => {
+    const video = root.querySelector('[data-work-featured] video')
+
+    expect(video?.hasAttribute('autoplay')).toBe(true)
+    expect(video?.hasAttribute('controls')).toBe(true)
+  })
+
+  it('announces the selected project in the status region', () => {
+    click(root, '[data-work-next]')
+
+    expect(text(root, '[data-work-status]')).toBe('Project 2 of 6: Manga recommendation')
   })
 })

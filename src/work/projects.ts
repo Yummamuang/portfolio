@@ -40,7 +40,7 @@ export const PROJECTS: readonly Project[] = [
     media: {
       kind: 'image',
       src: `${base}img/manga-direct.png`,
-      alt: 'Screenshot of the manga recommendation website',
+      alt: 'Screenshot of the Manga Direct recommendation website',
     },
     desktopOnly: true,
   },
@@ -99,7 +99,7 @@ export const PROJECTS: readonly Project[] = [
     media: {
       kind: 'image',
       src: `${base}img/snakegame.jpg`,
-      alt: 'Screenshot of the snake game',
+      alt: 'Two-player snake game match',
     },
     desktopOnly: false,
   },

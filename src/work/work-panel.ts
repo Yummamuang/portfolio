@@ -21,6 +21,8 @@ function renderMedia(project: Project, autoplay: boolean): HTMLElement {
   if (project.media.kind === 'image') {
     const frameLink = el('a', 'work-media')
     frameLink.href = project.link.href
+    frameLink.tabIndex = -1
+    frameLink.setAttribute('aria-hidden', 'true')
     const image = el('img', '')
     image.src = project.media.src
     image.alt = project.media.alt
@@ -37,14 +39,10 @@ function renderMedia(project: Project, autoplay: boolean): HTMLElement {
   video.muted = true
   video.setAttribute('muted', '')
   video.setAttribute('aria-label', `Video of ${project.title}`)
+  video.setAttribute('controls', '')
   if (autoplay) video.setAttribute('autoplay', '')
-  else video.setAttribute('controls', '')
   frame.append(video)
   return frame
-}
-
-function pad(value: number) {
-  return String(value).padStart(2, '0')
 }
 
 export function createWorkPanel({ root, projects, autoplay }: WorkPanelOptions) {
@@ -54,11 +52,20 @@ export function createWorkPanel({ root, projects, autoplay }: WorkPanelOptions) 
     throw new Error('Work markup is missing [data-work-featured] or [data-work-list]')
   }
   const featuredRoot = featured
+  const status = root.querySelector('[data-work-status]')
   let current = 0
+
+  const next = el('button', 'button-secondary', ['Next project'])
+  next.type = 'button'
+  next.dataset.workNext = ''
+  next.addEventListener('click', () => select((current + 1) % projects.length))
+
+  const count = el('span', 'work-count')
+  count.setAttribute('aria-hidden', 'true')
 
   const buttons = projects.map((project, index) => {
     const button = el('button', 'work-stop', [
-      el('span', 'work-stop-tag', [`${pad(index + 1)} · ${project.tag}`]),
+      el('span', 'work-stop-tag', [project.tag]),
       el('span', 'work-stop-title', [project.title]),
     ])
     button.type = 'button'
@@ -71,16 +78,13 @@ export function createWorkPanel({ root, projects, autoplay }: WorkPanelOptions) 
     const project = projects[index]
     if (!project) return
     current = index
+    // Moving the button between rows drops focus, so hand it back.
+    const nextHadFocus = document.activeElement === next
 
     const link = el('a', 'button-primary', [project.link.label])
     link.href = project.link.href
-    const next = el('button', 'button-secondary', ['Next project'])
-    next.type = 'button'
-    next.dataset.workNext = ''
-    next.addEventListener('click', () => select((current + 1) % projects.length))
-
-    const count = el('span', 'work-count', [`${index + 1} / ${projects.length}`])
-    count.setAttribute('aria-label', `Project ${index + 1} of ${projects.length}`)
+    count.textContent = `${index + 1} / ${projects.length}`
+    if (status) status.textContent = `Project ${index + 1} of ${projects.length}: ${project.title}`
 
     const body = el('div', 'work-body', [
       el('h3', 'work-title', [project.title]),
@@ -90,6 +94,7 @@ export function createWorkPanel({ root, projects, autoplay }: WorkPanelOptions) 
     body.append(el('div', 'work-actions', [link, next, count]))
 
     featuredRoot.replaceChildren(renderMedia(project, autoplay), body)
+    if (nextHadFocus) next.focus()
     buttons.forEach((button, buttonIndex) =>
       button.setAttribute('aria-pressed', String(buttonIndex === index)),
     )
