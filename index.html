@@ -27,7 +27,97 @@
           </div>
         </header>
         <div class="plate-body">
-          <nav class="dial" id="dial" aria-label="Programs"></nav>
+          <nav class="dial" id="dial" aria-label="Programs" data-active="work">
+            <div class="dial-face">
+              <svg class="dial-ticks" viewBox="0 0 560 560" aria-hidden="true">
+                <circle class="dial-ring" cx="280" cy="280" r="196"></circle>
+                <line
+                  class="tick"
+                  data-stop="work"
+                  x1="280"
+                  y1="64"
+                  x2="280"
+                  y2="92"
+                  transform="rotate(-120 280 280)"
+                ></line>
+                <line
+                  class="tick"
+                  data-stop="loops"
+                  x1="280"
+                  y1="64"
+                  x2="280"
+                  y2="92"
+                  transform="rotate(-72 280 280)"
+                ></line>
+                <line
+                  class="tick"
+                  data-stop="agents"
+                  x1="280"
+                  y1="64"
+                  x2="280"
+                  y2="92"
+                  transform="rotate(-24 280 280)"
+                ></line>
+                <line
+                  class="tick"
+                  data-stop="stack"
+                  x1="280"
+                  y1="64"
+                  x2="280"
+                  y2="92"
+                  transform="rotate(24 280 280)"
+                ></line>
+                <line
+                  class="tick"
+                  data-stop="about"
+                  x1="280"
+                  y1="64"
+                  x2="280"
+                  y2="92"
+                  transform="rotate(72 280 280)"
+                ></line>
+                <line
+                  class="tick"
+                  data-stop="contact"
+                  x1="280"
+                  y1="64"
+                  x2="280"
+                  y2="92"
+                  transform="rotate(120 280 280)"
+                ></line>
+              </svg>
+              <div
+                class="dial-knob"
+                data-dial-knob
+                role="slider"
+                tabindex="0"
+                aria-label="Program"
+                aria-valuemin="1"
+                aria-valuemax="6"
+                aria-valuenow="1"
+                aria-valuetext="Work"
+              >
+                <span class="dial-pointer"></span>
+              </div>
+              <ol class="dial-labels">
+                <li style="--stop-angle: -120deg">
+                  <a href="#work" data-program="work" aria-current="true">Work</a>
+                </li>
+                <li style="--stop-angle: -72deg">
+                  <a href="#loops" data-program="loops">Loops</a>
+                </li>
+                <li style="--stop-angle: -24deg">
+                  <a href="#agents" data-program="agents">Agents</a>
+                </li>
+                <li style="--stop-angle: 24deg"><a href="#stack" data-program="stack">Stack</a></li>
+                <li style="--stop-angle: 72deg"><a href="#about" data-program="about">About</a></li>
+                <li style="--stop-angle: 120deg">
+                  <a href="#contact" data-program="contact">Contact</a>
+                </li>
+              </ol>
+            </div>
+            <p class="dial-hint">Drag the dial or scroll</p>
+          </nav>
           <main class="display">
             <section id="work" class="program" aria-labelledby="work-title">
               <h2 id="work-title">Work</h2>
