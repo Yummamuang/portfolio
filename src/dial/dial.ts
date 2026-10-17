@@ -111,10 +111,10 @@ export function createDial({
     return true
   }
 
-  function choose(index: number) {
+  function choose(index: number, scrollEvenIfCurrent = false) {
     const changed = activate(index)
     const program = PROGRAMS[index]
-    if (changed && program) {
+    if ((changed || scrollEvenIfCurrent) && program) {
       pendingIndex = index
       clearTimeout(pendingTimer)
       pendingTimer = setTimeout(settle, PENDING_TIMEOUT_MS)
@@ -138,7 +138,7 @@ export function createDial({
       const id = label.dataset.program
       if (id === undefined || !isProgramId(id)) return
       event.preventDefault()
-      choose(indexForProgram(id))
+      choose(indexForProgram(id), true)
     })
   }
 
@@ -220,7 +220,7 @@ export function createDial({
       activate(index)
     },
     select(id) {
-      choose(indexForProgram(id))
+      choose(indexForProgram(id), true)
     },
     settle,
   }

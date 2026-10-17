@@ -237,4 +237,21 @@ describe('createDial', () => {
     expect(ctx.onSelect).toHaveBeenCalledWith('stack')
     expect(click.defaultPrevented).toBe(true)
   })
+
+  it('scrolls to the section again when the current program label is clicked', () => {
+    const label = ctx.root.querySelector('a[data-program="work"]')
+    const click = new MouseEvent('click', { bubbles: true, cancelable: true })
+    label?.dispatchEvent(click)
+
+    expect(ctx.onSelect).toHaveBeenCalledExactlyOnceWith('work')
+    expect(click.defaultPrevented).toBe(true)
+  })
+
+  it('keeps the pending guard while a re-chosen current program scrolls', () => {
+    ctx.root.querySelector('a[data-program="work"]')?.dispatchEvent(new MouseEvent('click'))
+
+    ctx.dial.setActive('loops')
+
+    expect(ctx.knob.getAttribute('aria-valuetext')).toBe('Work')
+  })
 })
