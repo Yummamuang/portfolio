@@ -1,4 +1,11 @@
+@property --measure {
+  syntax: '<length>';
+  inherits: true;
+  initial-value: 0px;
+}
+
 .article {
+  --measure: 48ch;
   width: min(100%, 1040px);
   margin: 0 auto;
   padding: clamp(32px, 6vw, 72px) 20px 96px;
@@ -8,23 +15,24 @@
 
 @media (min-width: 1200px) {
   .article {
+    --measure: 48ch;
     font-size: 1.25rem;
   }
 }
 
 .article > * {
-  max-width: 48ch;
+  max-width: var(--measure);
   margin-inline: auto;
 }
 
 .article > pre {
   width: fit-content;
-  min-width: min(100%, 48ch);
+  min-width: min(100%, var(--measure));
   max-width: 100%;
 }
 
 .article > blockquote {
-  max-width: calc(48ch + 96px);
+  max-width: calc(var(--measure) + 96px);
 }
 
 .article blockquote p {
