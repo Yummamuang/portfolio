@@ -17,6 +17,7 @@ export interface DialOptions {
 
 export interface DialHandle {
   setActive(id: ProgramId): void
+  settle(): void
 }
 
 const KEY_STEPS: Readonly<Record<string, number>> = {
@@ -27,13 +28,17 @@ const KEY_STEPS: Readonly<Record<string, number>> = {
 }
 
 const ARC_LIMIT = 120
+const PENDING_TIMEOUT_MS = 1200
 
 export function createDial({ root, status, lamp, onSelect }: DialOptions): DialHandle {
   const knob = root.querySelector('[data-dial-knob]')
   if (!(knob instanceof HTMLElement)) throw new Error('Dial markup is missing [data-dial-knob]')
   const dialKnob = knob
   const labels = Array.from(root.querySelectorAll<HTMLAnchorElement>('a[data-program]'))
+  const face = root.querySelector<HTMLElement>('.dial-face') ?? root
   let activeIndex = 0
+  let pendingIndex: number | null = null
+  let pendingTimer: ReturnType<typeof setTimeout> | undefined
 
   function render(index: number) {
     const program = PROGRAMS[index]
@@ -52,6 +57,7 @@ export function createDial({ root, status, lamp, onSelect }: DialOptions): DialH
   function blinkLamp() {
     if (!lamp) return
     lamp.removeAttribute('data-blink')
+    void lamp.offsetWidth
     lamp.setAttribute('data-blink', '')
   }
 
@@ -66,7 +72,19 @@ export function createDial({ root, status, lamp, onSelect }: DialOptions): DialH
   function choose(index: number) {
     const changed = activate(index)
     const program = PROGRAMS[index]
-    if (changed && program) onSelect(program.id)
+    if (changed && program) {
+      pendingIndex = index
+      clearTimeout(pendingTimer)
+      pendingTimer = setTimeout(settle, PENDING_TIMEOUT_MS)
+      onSelect(program.id)
+    }
+  }
+
+  // While a chosen program is scrolling into view, the scroll spy reports every
+  // section it passes. Those reports must not move the knob off the choice.
+  function settle() {
+    pendingIndex = null
+    clearTimeout(pendingTimer)
   }
 
   if (lamp) {
@@ -92,7 +110,7 @@ export function createDial({ root, status, lamp, onSelect }: DialOptions): DialH
   })
 
   function angleFromEvent(event: MouseEvent) {
-    const box = root.getBoundingClientRect()
+    const box = face.getBoundingClientRect()
     const center = { x: box.left + box.width / 2, y: box.top + box.height / 2 }
     return pointerAngle(center, { x: event.clientX, y: event.clientY })
   }
@@ -110,6 +128,7 @@ export function createDial({ root, status, lamp, onSelect }: DialOptions): DialH
   }
 
   dialKnob.addEventListener('pointerdown', (event) => {
+    if (event.button !== 0) return
     dragging = true
     dragAngle = angleForIndex(activeIndex)
     dialKnob.setAttribute('data-dragging', '')
@@ -121,6 +140,13 @@ export function createDial({ root, status, lamp, onSelect }: DialOptions): DialH
   dialKnob.addEventListener('pointermove', (event) => {
     if (!dragging) return
     trackDrag(event)
+  })
+
+  dialKnob.addEventListener('pointercancel', () => {
+    if (!dragging) return
+    dragging = false
+    dialKnob.removeAttribute('data-dragging')
+    render(activeIndex)
   })
 
   dialKnob.addEventListener('pointerup', (event) => {
@@ -137,7 +163,11 @@ export function createDial({ root, status, lamp, onSelect }: DialOptions): DialH
 
   return {
     setActive(id) {
-      activate(indexForProgram(id))
+      const index = indexForProgram(id)
+      if (pendingIndex !== null && index !== pendingIndex) return
+      settle()
+      activate(index)
     },
+    settle,
   }
 }

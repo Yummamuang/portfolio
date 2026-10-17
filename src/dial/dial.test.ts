@@ -18,7 +18,9 @@ const DIAL_MARKUP = `
 function setup() {
   const root = document.createElement('nav')
   root.innerHTML = DIAL_MARKUP
-  root.getBoundingClientRect = () => ({
+  const face = root.querySelector('.dial-face')
+  if (!(face instanceof HTMLElement)) throw new Error('face missing from fixture')
+  face.getBoundingClientRect = () => ({
     x: 0,
     y: 0,
     left: 0,
@@ -114,5 +116,31 @@ describe('createDial', () => {
 
     expect(ctx.onSelect).toHaveBeenCalledWith('contact')
     expect(ctx.onSelect).not.toHaveBeenCalledWith('work')
+  })
+
+  it('ignores scroll spy reports for other programs while moving to a chosen one', () => {
+    press(ctx.knob, 'End')
+
+    ctx.dial.setActive('loops')
+
+    expect(ctx.knob.getAttribute('aria-valuetext')).toBe('Contact')
+  })
+
+  it('accepts scroll spy reports again once the chosen program reports', () => {
+    press(ctx.knob, 'End')
+
+    ctx.dial.setActive('contact')
+    ctx.dial.setActive('about')
+
+    expect(ctx.knob.getAttribute('aria-valuetext')).toBe('About')
+  })
+
+  it('accepts scroll spy reports again after settle', () => {
+    press(ctx.knob, 'End')
+
+    ctx.dial.settle()
+    ctx.dial.setActive('loops')
+
+    expect(ctx.knob.getAttribute('aria-valuetext')).toBe('Loops')
   })
 })

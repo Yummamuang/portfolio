@@ -29,6 +29,7 @@
   background: var(--plate);
   border: 1px solid var(--rule-strong);
   border-radius: var(--radius-plate);
+  overflow: clip;
 }
 
 .plate-header {
@@ -136,7 +137,7 @@
   font-size: 0.8125rem;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  border-radius: 0 0 var(--radius-plate) var(--radius-plate);
+  border-radius: 0;
 }
 
 .status-cycle {

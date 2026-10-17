@@ -24,6 +24,7 @@ if (dialRoot) {
   const sections = PROGRAMS.map((program) => document.getElementById(program.id)).filter(
     (section): section is HTMLElement => section !== null,
   )
+  window.addEventListener('scrollend', () => dial.settle())
   observeSections(sections, (id) => {
     if (isProgramId(id)) dial.setActive(id)
   })
