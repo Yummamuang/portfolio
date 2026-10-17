@@ -1,3 +1,7 @@
+html {
+  scroll-padding-bottom: 72px;
+}
+
 *,
 *::before,
 *::after {
@@ -71,7 +75,7 @@ a:hover {
 }
 
 .button-primary:hover {
-  background: #d85508;
+  background: #f47a2f;
   color: var(--ink);
 }
 

@@ -13,6 +13,10 @@
   top: 16px;
 }
 
+.skip-link:hover {
+  color: var(--plate);
+}
+
 .housing {
   min-height: 100svh;
   padding: var(--housing-pad);
@@ -46,6 +50,9 @@
 }
 
 .maker-mark {
+  min-height: 44px;
+  display: inline-flex;
+  align-items: center;
   font-size: 1.75rem;
   font-weight: 800;
   letter-spacing: -0.02em;
@@ -53,6 +60,9 @@
 }
 
 .maker-name {
+  margin: 0;
+  font-size: 1rem;
+  line-height: inherit;
   font-weight: 600;
 }
 
